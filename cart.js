@@ -72,9 +72,9 @@ function initCartDOM() {
 
             <label style="display:block; font-size:0.72rem; text-transform:uppercase; letter-spacing:1.5px; font-weight:700; color:#555; margin-bottom:8px;">Select Payment Method</label>
             <div class="payment-methods-grid">
-              <div class="payment-option selected" id="optPaystack">
-                <i class="fa-solid fa-credit-card"></i>
-                <span>Paystack (Card / Transfer)</span>
+              <div class="payment-option selected" id="optTransfer">
+                <i class="fa-solid fa-building-columns"></i>
+                <span>Bank Transfer</span>
               </div>
               <div class="payment-option" id="optPOD">
                 <i class="fa-solid fa-hand-holding-dollar"></i>
@@ -82,8 +82,29 @@ function initCartDOM() {
               </div>
             </div>
 
+            <div class="bank-transfer-details" id="bankTransferDetails">
+              <p class="bank-transfer-title"><i class="fa-solid fa-circle-info"></i> Transfer the exact amount below, then click "I Have Made Payment"</p>
+              <div class="bank-detail-row">
+                <span class="bank-detail-label">Bank Name</span>
+                <span class="bank-detail-value">Moniepoint</span>
+              </div>
+              <div class="bank-detail-row">
+                <span class="bank-detail-label">Account Name</span>
+                <span class="bank-detail-value">Olayinka Akintelu</span>
+              </div>
+              <div class="bank-detail-row">
+                <span class="bank-detail-label">Account Number</span>
+                <span class="bank-detail-value" id="bankAccountNumber">8033016335</span>
+                <button type="button" class="copy-account-btn" id="copyAccountBtn">Copy</button>
+              </div>
+              <div class="bank-detail-row">
+                <span class="bank-detail-label">Amount to Transfer</span>
+                <span class="bank-detail-value" id="bankTransferAmount">₦0</span>
+              </div>
+            </div>
+
             <button type="submit" class="pay-submit-btn" id="paySubmitBtn">
-              <i class="fa-solid fa-lock"></i> Pay ₦<span id="checkoutTotalBtnAmount">0</span> Now
+              <i class="fa-solid fa-circle-check"></i> I Have Made Payment
             </button>
           </form>
         </div>
@@ -99,8 +120,9 @@ function initCartDOM() {
   const proceedCheckoutBtn = document.getElementById('proceedCheckoutBtn');
   const closeModalBtn = document.getElementById('closeModalBtn');
   const checkoutModalOverlay = document.getElementById('checkoutModalOverlay');
-  const optPaystack = document.getElementById('optPaystack');
+  const optTransfer = document.getElementById('optTransfer');
   const optPOD = document.getElementById('optPOD');
+  const copyAccountBtn = document.getElementById('copyAccountBtn');
 
   if (cartBtn) cartBtn.addEventListener('click', openCartDrawer);
   if (cartOverlay) cartOverlay.addEventListener('click', closeCartDrawer);
@@ -108,21 +130,33 @@ function initCartDOM() {
   if (proceedCheckoutBtn) proceedCheckoutBtn.addEventListener('click', openCheckoutModal);
   if (closeModalBtn) closeModalBtn.addEventListener('click', closeCheckoutModal);
 
-  let selectedPayment = 'paystack';
+  let selectedPayment = 'transfer';
 
-  if (optPaystack && optPOD) {
-    optPaystack.addEventListener('click', () => {
-      optPaystack.classList.add('selected');
+  if (optTransfer && optPOD) {
+    optTransfer.addEventListener('click', () => {
+      optTransfer.classList.add('selected');
       optPOD.classList.remove('selected');
-      selectedPayment = 'paystack';
-      document.getElementById('paySubmitBtn').innerHTML = `<i class="fa-solid fa-lock"></i> Pay ₦${calculateSubtotal().toLocaleString()} Now`;
+      selectedPayment = 'transfer';
+      document.getElementById('bankTransferDetails').style.display = 'block';
+      document.getElementById('paySubmitBtn').innerHTML = `<i class="fa-solid fa-circle-check"></i> I Have Made Payment`;
     });
 
     optPOD.addEventListener('click', () => {
       optPOD.classList.add('selected');
-      optPaystack.classList.remove('selected');
+      optTransfer.classList.remove('selected');
       selectedPayment = 'pod';
+      document.getElementById('bankTransferDetails').style.display = 'none';
       document.getElementById('paySubmitBtn').innerHTML = `<i class="fa-solid fa-truck-ramp-box"></i> Confirm Pay on Delivery`;
+    });
+  }
+
+  if (copyAccountBtn) {
+    copyAccountBtn.addEventListener('click', () => {
+      const accountNumber = document.getElementById('bankAccountNumber').textContent;
+      navigator.clipboard.writeText(accountNumber).then(() => {
+        copyAccountBtn.textContent = 'Copied!';
+        setTimeout(() => { copyAccountBtn.textContent = 'Copy'; }, 2000);
+      });
     });
   }
 
@@ -141,8 +175,8 @@ function initCartDOM() {
       const city = document.getElementById('custCity').value;
       const total_amount = calculateSubtotal();
 
-      if (selectedPayment === 'paystack') {
-        processPaystackPayment({ customer_name, customer_email, phone, address, city, total_amount });
+      if (selectedPayment === 'transfer') {
+        processDirectOrder({ customer_name, customer_email, phone, address, city, total_amount, payment_status: 'Pending Payment Confirmation - Bank Transfer' });
       } else {
         processDirectOrder({ customer_name, customer_email, phone, address, city, total_amount, payment_status: 'Pay on Delivery' });
       }
@@ -164,7 +198,11 @@ function closeCartDrawer() {
 function openCheckoutModal() {
   if (cart.length === 0) return alert('Your cart is empty! Add items first.');
   closeCartDrawer();
-  document.getElementById('checkoutTotalBtnAmount').textContent = calculateSubtotal().toLocaleString();
+  const subtotal = calculateSubtotal();
+  document.getElementById('checkoutTotalBtnAmount') && (document.getElementById('checkoutTotalBtnAmount').textContent = subtotal.toLocaleString());
+  const bankAmountEl = document.getElementById('bankTransferAmount');
+  if (bankAmountEl) bankAmountEl.textContent = '₦' + subtotal.toLocaleString();
+  document.getElementById('bankTransferDetails').style.display = 'block';
   document.getElementById('checkoutModalOverlay')?.classList.add('active');
 }
 
@@ -258,43 +296,6 @@ function renderCartDrawer() {
   if (subtotalEl) subtotalEl.textContent = `₦${calculateSubtotal().toLocaleString()}`;
 }
 
-// PAYSTACK INTEGRATION ENGINE
-function processPaystackPayment(orderData) {
-  // Paystack Public Key
-  const paystackKey = 'pk_test_a08891517441544a86b36be9f55e5db8d94c9f11'; // Placeholder test key
-
-  if (typeof PaystackPop === 'undefined') {
-    alert('Paystack SDK is loading. Please check your internet connection and try again.');
-    return;
-  }
-
-  const handler = PaystackPop.setup({
-    key: paystackKey,
-    email: orderData.customer_email,
-    amount: orderData.total_amount * 100, // Paystack operates in kobo (NGN x 100)
-    currency: 'NGN',
-    ref: 'BETAH_' + Math.floor((Math.random() * 1000000000) + 1),
-    metadata: {
-      custom_fields: [
-        { display_name: "Customer Name", variable_name: "customer_name", value: orderData.customer_name },
-        { display_name: "Phone Number", variable_name: "phone", value: orderData.phone }
-      ]
-    },
-    callback: function(response) {
-      // Payment Successful! Save order to Supabase
-      processDirectOrder({
-        ...orderData,
-        payment_status: 'Paid via Paystack (Ref: ' + response.reference + ')'
-      });
-    },
-    onClose: function() {
-      alert('Transaction was cancelled.');
-    }
-  });
-
-  handler.openIframe();
-}
-
 // SAVE ORDER TO SUPABASE DATABASE
 async function processDirectOrder(orderData) {
   try {
@@ -313,7 +314,7 @@ async function processDirectOrder(orderData) {
 
     if (error) throw error;
 
-    alert(`🎉 Order Placed Successfully!\n\nThank you ${orderData.customer_name}, your order has been sent to Betah Kids Abuja.`);
+    alert(`Order Placed Successfully!\n\nThank you ${orderData.customer_name}, your order has been sent to Betah Kids Abuja. We will confirm your payment shortly.`);
 
     // Clear Cart
     cart = [];
@@ -326,3 +327,5 @@ async function processDirectOrder(orderData) {
     alert('Error submitting order: ' + err.message);
   }
 }
+
+
