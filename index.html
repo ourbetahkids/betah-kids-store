@@ -1,0 +1,272 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Betah Kids Beauty World LTD — Luxury Children's Fashion</title>
+  <meta name="description" content="Betah Kids Beauty World LTD — High-end children's fashion boutique in Wuse Market, Abuja. Wholesale and retail luxury children's wear, shoes, and accessories.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Swiper Carousel CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  
+  <!-- Website Styles & Cart Drawer Styles -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="cart.css">
+
+  <!-- Paystack Inline Payment SDK -->
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+</head>
+<body>
+
+  <!-- TOP UTILITY BAR -->
+  <div class="top-bar">
+    <div class="top-bar-inner">
+      <span><i class="fa-solid fa-location-dot"></i> Wuse Market, Abuja</span>
+      <span><i class="fa-solid fa-phone"></i> Call / WhatsApp for orders</span>
+      <span><i class="fa-solid fa-truck-fast"></i> Fast delivery across Nigeria</span>
+    </div>
+  </div>
+
+  <nav id="main-nav">
+    <a href="index.html" class="logo">
+      <span class="logo-main"><span class="betah">Betah</span> <span class="kids">Kids</span></span>
+      <span class="logo-sub">Beauty World LTD</span>
+    </a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="retail.html">Retail</a></li>
+      <li><a href="wholesale.html">Wholesale</a></li>
+      <li><a href="maternity.html">Maternity</a></li>
+      <li><a href="back-to-school.html">Back to School</a></li>
+      <li><a href="toys.html">Toys</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="admin.html" class="nav-cta" target="_blank">Admin Panel</a>
+      <button class="cart-btn" id="cartBtn" type="button" aria-label="Cart" style="position: relative; border: none; background: white; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.06); color: #2A2A2A;">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span class="cart-count" id="cartCount" style="position: absolute; top: -4px; right: -4px; background: #FF7A1A; color: white; font-size: 0.65rem; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">0</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- UPGRADED HERO SLIDER -->
+  <header class="hero-slider-section">
+    <div class="swiper hero-swiper">
+      <div class="swiper-wrapper">
+        
+        <!-- Slide 1: General Luxury -->
+        <div class="swiper-slide hero-slide">
+          <div class="slide-bg" style="background-image: url('images/product-01.jpg');"></div>
+          <div class="slide-overlay"></div>
+          <div class="hero-text-lux">
+            <span class="overline">Wuse Market, Abuja — Est. Premium</span>
+            <h1>Where <em>elegance</em> meets <em>childhood</em><br><span class="line-break">fashion</span></h1>
+            <p class="subtitle">Imported, refined, and affordable children's fashion — from baby to school age. Experience luxury children's wear that makes every moment feel special.</p>
+            <div class="cta-group">
+              <a href="retail.html" class="btn-luxury btn-primary-lux">Explore Retail</a>
+              <a href="wholesale.html" class="btn-luxury btn-ghost-lux">Wholesale Enquiry</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2: Back to School -->
+        <div class="swiper-slide hero-slide">
+          <div class="slide-bg" style="background-image: url('images/product-02.jpg');"></div>
+          <div class="slide-overlay"></div>
+          <div class="hero-text-lux">
+            <span class="overline">Seasonal Collection</span>
+            <h1>Premium <em>Back to School</em><br><span class="line-break">Essentials</span></h1>
+            <p class="subtitle">Durable, stylish, and comfortable uniforms, bags, and shoes designed to last the entire academic year.</p>
+            <div class="cta-group">
+              <a href="back-to-school.html" class="btn-luxury btn-primary-lux">Shop School Gear</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3: Maternity & Newborn -->
+        <div class="swiper-slide hero-slide">
+          <div class="slide-bg" style="background-image: url('images/product-03.jpg');"></div>
+          <div class="slide-overlay"></div>
+          <div class="hero-text-lux">
+            <span class="overline">New Arrivals</span>
+            <h1>Maternity & <em>Newborn</em><br><span class="line-break">Care</span></h1>
+            <p class="subtitle">Everything expectant mothers and delicate newborns need for supreme comfort and care.</p>
+            <div class="cta-group">
+              <a href="maternity.html" class="btn-luxury btn-primary-lux">Explore Maternity</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      
+      <!-- Swiper Controls -->
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </header>
+
+  <!-- LIVE PRODUCTS CATALOG (Populated from Supabase) -->
+  <section class="section" id="featured">
+    <div class="section-header">
+      <h2>Featured <em>Collection</em></h2>
+      <p>Explore luxury children's fashion uploaded live from our Wuse Market boutique inventory.</p>
+    </div>
+    <div class="divider-gold"></div>
+    <div class="product-grid" id="featuredGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 24px;">
+      <article class="product-card" style="background: white; border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-subtle); border: 1px solid rgba(201,169,110,0.12);">
+        <div class="product-img" style="height: 220px; overflow: hidden;"><img src="images/product-04.jpg" alt="Luxury set" style="width:100%; height:100%; object-fit:cover;"></div>
+        <div class="product-body" style="padding: 16px; text-align: center;">
+          <span class="product-cat" style="font-size:0.68rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-light); display:block; margin-bottom:6px;">Retail</span>
+          <h3 style="font-family:'Cormorant Garamond', serif; font-size:1.2rem; margin-bottom:6px;">Luxury Kids Set</h3>
+          <p class="price" style="color:var(--primary-orange-deep); font-weight:700; margin-bottom:12px;">₦25,000</p>
+          <button class="add-cart-btn" type="button" onclick="window.addToCart('sample-1', 'Luxury Kids Set', 25000, 'images/product-04.jpg')" style="width:100%; border:1.5px solid #FF7A1A; background:white; color:#FF7A1A; padding:8px 10px; border-radius:6px; font-size:0.75rem; font-weight:700; text-transform:uppercase; cursor:pointer;">Add to Cart</button>
+        </div>
+      </article>
+      <article class="product-card" style="background: white; border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-subtle); border: 1px solid rgba(201,169,110,0.12);">
+        <div class="product-img" style="height: 220px; overflow: hidden;"><img src="images/product-05.jpg" alt="Boutique shoes" style="width:100%; height:100%; object-fit:cover;"></div>
+        <div class="product-body" style="padding: 16px; text-align: center;">
+          <span class="product-cat" style="font-size:0.68rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-light); display:block; margin-bottom:6px;">Shoes</span>
+          <h3 style="font-family:'Cormorant Garamond', serif; font-size:1.2rem; margin-bottom:6px;">Boutique Shoes</h3>
+          <p class="price" style="color:var(--primary-orange-deep); font-weight:700; margin-bottom:12px;">₦18,500</p>
+          <button class="add-cart-btn" type="button" onclick="window.addToCart('sample-2', 'Boutique Shoes', 18500, 'images/product-05.jpg')" style="width:100%; border:1.5px solid #FF7A1A; background:white; color:#FF7A1A; padding:8px 10px; border-radius:6px; font-size:0.75rem; font-weight:700; text-transform:uppercase; cursor:pointer;">Add to Cart</button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="experience">
+    <div class="section-header">
+      <h2>The <em>Betah</em> Experience</h2>
+      <p>We believe children's fashion should feel as exceptional as the children who wear it. Every piece in our collection is chosen for quality, comfort, and refined beauty.</p>
+    </div>
+    <div class="divider-gold"></div>
+    <div class="card-grid">
+      <a href="retail.html" class="card-lux" style="text-decoration:none; color:inherit;">
+        <div class="card-img">
+          <img src="images/product-04.jpg" alt="Luxury children's fashion product">
+          <span class="card-badge">Retail</span>
+        </div>
+        <div class="card-body">
+          <h3>Curated <em>Retail</em></h3>
+          <p>Hand-selected children's clothing, shoes, and accessories crafted for high quality and everyday comfort.</p>
+          <span class="card-link">Discover Collection &rarr;</span>
+        </div>
+      </a>
+      <a href="wholesale.html" class="card-lux" style="text-decoration:none; color:inherit;">
+        <div class="card-img">
+          <img src="images/product-05.jpg" alt="Luxury children's shoes and accessories">
+          <span class="card-badge">Wholesale</span>
+        </div>
+        <div class="card-body">
+          <h3>Premium <em>Wholesale</em></h3>
+          <p>Exclusive bulk pricing for retailers and schools across Abuja and nationwide.</p>
+          <span class="card-link">Request Pricing &rarr;</span>
+        </div>
+      </a>
+      <a href="about.html" class="card-lux" style="text-decoration:none; color:inherit;">
+        <div class="card-img">
+          <img src="images/product-06.jpg" alt="Luxury children's baby to school wear">
+          <span class="card-badge">Our Story</span>
+        </div>
+        <div class="card-body">
+          <h3>Our <em>Heritage</em></h3>
+          <p>Based in Wuse Market, Abuja. Dedicated to providing imported and affordable luxury fashion for kids.</p>
+          <span class="card-link">Read More &rarr;</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section class="section" style="background: linear-gradient(180deg, var(--bg-cream) 0%, #FFF3E6 100%); border-radius: 4px;">
+    <div class="section-header">
+      <h2>Why Families <em>Choose</em> Us</h2>
+      <p>Quality, elegance, and trust — the pillars of every purchase at Betah Kids.</p>
+    </div>
+    <div class="divider-gold"></div>
+    <div class="product-editorial">
+      <img src="images/product-04.jpg" alt="Luxury collection">
+      <div class="editorial-text">
+        <h3>Imported <em>Quality</em>, <em>Affordable</em> Luxury</h3>
+        <p>We source directly from premium manufacturers to bring you children's fashion that rivals international luxury brands — without the premium markup. Every garment is selected for durability, comfort, and refined style.</p>
+        <ul>
+          <li>Hand-selected imported children's wear</li>
+          <li>Baby to school-age sizes available</li>
+          <li>Personal styling assistance in-store</li>
+          <li>Custom wholesale packages for retailers</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="luxury-bar">
+      <div>
+        <h4>Imported</h4>
+        <p>Global Sourcing</p>
+      </div>
+      <div>
+        <h4>Affordable</h4>
+        <p>Luxury Pricing</p>
+      </div>
+      <div>
+        <h4>Personal</h4>
+        <p>Client Service</p>
+      </div>
+      <div>
+        <h4>Wholesale</h4>
+        <p>Retail Partners</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <h2 class="logo-main"><span class="betah">Betah</span> <span class="kids">Kids</span></h2>
+    <p>Beauty World LTD — Wholesale & Retail</p>
+    <p>Wuse Market, Abuja, Nigeria &mdash; Imported & Affordable Children's Fashion</p>
+    <div class="socials-lux">
+      <a href="contact.html">Instagram</a>
+      <a href="contact.html">Email</a>
+      <a href="contact.html">Inquire</a>
+    </div>
+    <p style="margin-top:30px; font-size:0.7rem; opacity:0.35;">© 2026 Betah Kids Beauty World LTD. All rights reserved.</p>
+  </footer>
+
+  <!-- WhatsApp Floating Button -->
+  <a href="https://wa.me/2340000000000" style="position: fixed; right: 22px; bottom: 22px; width: 56px; height: 56px; background: #25D366; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.7rem; box-shadow: 0 10px 30px rgba(37,211,102,0.4); z-index: 1200; text-decoration: none;" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
+  <!-- Swiper JS Library for Carousel -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+    // Navigation Scroll Effect
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    });
+
+    // Initialize Luxury Hero Slider
+    window.heroSwiper = new Swiper('.hero-swiper', {
+      loop: true,
+      effect: 'fade',
+      fadeEffect: { crossFade: true },
+      speed: 1200,
+      autoplay: { delay: 5000, disableOnInteraction: false },
+      pagination: { el: '.swiper-pagination', clickable: true },
+      navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+    });
+  </script>
+
+  <!-- Connect Storefront & Shopping Cart Logic -->
+  <script type="module" src="store.js"></script>
+  <script type="module" src="cart.js"></script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Betah Kids Beauty World LTD</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- ADMIN LOGIN OVERLAY -->
+  <div class="admin-login-overlay" id="loginOverlay">
+    <div class="admin-login-card">
+      <div class="brand-badge"><i class="fa-solid fa-shield-halved"></i> Control Room</div>
+      <h2>Betah Kids <em>Admin</em></h2>
+      <p>Enter your store administrator email and password.</p>
+      <form id="adminLoginForm">
+        <div class="form-group">
+          <label for="adminEmail">Email Address</label>
+          <input type="email" id="adminEmail" placeholder="admin@betahkids.com" required>
+        </div>
+        <div class="form-group">
+          <label for="adminPassword">Password</label>
+          <input type="password" id="adminPassword" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="admin-btn btn-primary" id="loginBtn">Login to Control Panel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN ADMIN DASHBOARD WORKSPACE -->
+  <div class="admin-wrapper" id="adminDashboard" style="display: none;">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar">
+      <div class="admin-logo">
+        <span class="betah">Betah</span> <span class="kids">Kids</span>
+        <span class="sub">Beauty World LTD</span>
+      </div>
+      
+      <div class="admin-nav">
+        <button class="admin-nav-item active" data-tab="tab-overview"><i class="fa-solid fa-chart-pie"></i> Overview</button>
+        <button class="admin-nav-item" data-tab="tab-hero"><i class="fa-solid fa-sliders"></i> Hero Slider &amp; Video</button>
+        <button class="admin-nav-item" data-tab="tab-products"><i class="fa-solid fa-boxes-stacked"></i> Product Catalog</button>
+        <button class="admin-nav-item" data-tab="tab-orders"><i class="fa-solid fa-receipt"></i> Orders &amp; Sales</button>
+      </div>
+
+      <div class="admin-sidebar-footer">
+        <button class="admin-logout-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Content -->
+    <main class="admin-main">
+      
+      <header class="admin-header">
+        <div>
+          <h1 id="pageTitle">Dashboard <em>Overview</em></h1>
+          <p class="admin-subhead">Manage products, hero banners, and order activity for Betah Kids Abuja.</p>
+        </div>
+        <div class="admin-user-tag">
+          <i class="fa-solid fa-circle-user"></i>
+          <span id="currentUserEmail">admin@betahkids.com</span>
+        </div>
+      </header>
+
+      <!-- TAB 1: OVERVIEW STATS -->
+      <section class="admin-tab-content active" id="tab-overview">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon icon-orange"><i class="fa-solid fa-boxes-packing"></i></div>
+            <div>
+              <h3>Total Products</h3>
+              <p class="stat-number" id="statTotalProducts">0</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon icon-blue"><i class="fa-solid fa-bag-shopping"></i></div>
+            <div>
+              <h3>Total Orders</h3>
+              <p class="stat-number" id="statTotalOrders">0</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon icon-green"><i class="fa-solid fa-naira-sign"></i></div>
+            <div>
+              <h3>Total Revenue</h3>
+              <p class="stat-number" id="statTotalRevenue">₦0</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: HERO SLIDER & VIDEO MANAGER -->
+      <section class="admin-tab-content" id="tab-hero">
+        <div class="admin-card">
+          <h2><i class="fa-solid fa-photo-film"></i> Upload New Hero Banner or Video</h2>
+          <p>Add new background photos or short MP4 video clips to the homepage slider.</p>
+          
+          <form id="heroUploadForm" class="admin-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Media Type</label>
+                <select id="slideMediaType" required>
+                  <option value="image">Image Slide</option>
+                  <option value="video">Short Video Clip (.mp4)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Slide Title / Headline</label>
+                <input type="text" id="slideTitle" placeholder="e.g. Boys & Girls Clothing" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Subtitle / Description</label>
+              <textarea id="slideSubtitle" rows="2" placeholder="e.g. Checkout our great selection of imported kids wear..." required></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Button Action Text</label>
+                <input type="text" id="slideButtonText" placeholder="e.g. Shop Collection" value="Shop Collection">
+              </div>
+              <div class="form-group">
+                <label>Media File (Photo or MP4 Video)</label>
+                <input type="file" id="slideFile" accept="image/*,video/mp4" required>
+              </div>
+            </div>
+
+            <button type="submit" class="admin-btn btn-primary"><i class="fa-solid fa-cloud-arrow-up"></i> Publish to Hero Slider</button>
+          </form>
+        </div>
+
+        <!-- Live Hero Slides List -->
+        <div class="admin-card">
+          <h2>Active Hero Slides</h2>
+          <div class="hero-slides-preview-grid" id="heroSlidesList">
+            <p class="empty-text">Loading slides...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: PRODUCT CATALOG MANAGER -->
+      <section class="admin-tab-content" id="tab-products">
+        <div class="admin-card">
+          <h2><i class="fa-solid fa-square-plus"></i> Add New Product to Store</h2>
+          <form id="productAddForm" class="admin-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Product Title</label>
+                <input type="text" id="prodTitle" placeholder="e.g. Premium Kids Set" required>
+              </div>
+              <div class="form-group">
+                <label>Price in NGN (₦)</label>
+                <input type="number" id="prodPrice" placeholder="25000" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Store Category</label>
+                <select id="prodCategory" required>
+                  <option value="retail">Retail</option>
+                  <option value="wholesale">Wholesale</option>
+                  <option value="maternity">Maternity</option>
+                  <option value="back-to-school">Back to School</option>
+                  <option value="toys">Toys</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Product Photo</label>
+                <input type="file" id="prodImage" accept="image/*" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Product Description</label>
+              <textarea id="prodDesc" rows="2" placeholder="Item details, size options, material..."></textarea>
+            </div>
+
+            <button type="submit" class="admin-btn btn-primary"><i class="fa-solid fa-plus"></i> Add Product to Store</button>
+          </form>
+        </div>
+
+        <!-- Existing Products Table -->
+        <div class="admin-card">
+          <h2>Live Product Inventory</h2>
+          <div class="table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Photo</th>
+                  <th>Title</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="productsTableBody">
+                <tr><td colspan="5" class="text-center">Loading inventory...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: ORDERS MANAGER -->
+      <section class="admin-tab-content" id="tab-orders">
+        <div class="admin-card">
+          <h2><i class="fa-solid fa-cart-flatbed"></i> Customer Orders</h2>
+          <div class="table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Phone</th>
+                  <th>Address</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTableBody">
+                <tr><td colspan="6" class="text-center">No orders recorded yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

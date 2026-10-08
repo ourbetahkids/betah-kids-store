@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Betah Kids Beauty World LTD</title>
+  <meta name="description" content="Contact Betah Kids Beauty World LTD — luxury children's fashion boutique in Wuse Market, Abuja. Retail, wholesale, and business enquiries welcome.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <nav id="main-nav">
+    <a href="index.html" class="logo">
+      <span class="logo-main"><span class="betah">Betah</span> <span class="kids">Kids</span></span>
+      <span class="logo-sub">Beauty World LTD</span>
+    </a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="retail.html">Retail</a></li>
+      <li><a href="wholesale.html">Wholesale</a></li>
+      <li><a href="maternity.html">Maternity</a></li>
+      <li><a href="back-to-school.html">Back to School</a></li>
+      <li><a href="toys.html">Toys</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="contact.html" class="nav-cta">Inquire</a>
+  </nav>
+
+  <header class="hero" style="min-height: 45vh; padding-top: 140px;">
+    <div style="text-align:center; max-width:720px; margin:0 auto; position:relative; z-index:1;">
+      <span class="overline">Get in Touch</span>
+      <h1>Begin Your <em>Experience</em></h1>
+      <p class="subtitle">Whether you are shopping for your child, exploring wholesale partnerships, or simply want to visit — we are here to assist with personal attention.</p>
+    </div>
+  </header>
+
+  <section class="section" style="padding-top: 40px;">
+    <div class="contact-grid-lux">
+      <div class="contact-info">
+        <h3>Contact Information</h3>
+        <div class="divider-gold" style="margin: 0 0 36px 0;"></div>
+
+        <div class="contact-block-lux">
+          <h4>Location</h4>
+          <p>NO. 41T IS, SHOP 457<br>WUSE MARKET, ABUJA<br>NIGERIA</p>
+        </div>
+
+        <div class="contact-block-lux">
+          <h4>Phone</h4>
+          <p><a href="tel:+2348053016355">+234 805 301 6355</a><br><a href="tel:+2348127710425">+234 812 771 0425</a></p>
+        </div>
+
+        <div class="contact-block-lux">
+          <h4>Email</h4>
+          <p><a href="mailto:betahkids@gmail.com">betahkids@gmail.com</a></p>
+        </div>
+
+        <div class="contact-block-lux">
+          <h4>Social Media</h4>
+          <p><a href="#">Instagram — @betahkids</a></p>
+          <p><a href="#">Twitter / X — @betahkids</a></p>
+        </div>
+
+        <div class="contact-block-lux">
+          <h4>Hours</h4>
+          <p>Monday — Saturday: 9:00 AM — 6:00 PM<br>Sunday: By appointment only</p>
+        </div>
+      </div>
+
+      <form class="form-lux" onsubmit="event.preventDefault(); this.innerHTML='<div style=\'padding:30px 0;\'><h3 style=\'font-family:Cormorant Garamond, serif; font-size:2rem; font-weight:300; color:var(--charcoal); letter-spacing:-1px; text-align:center;\'>Message <em style=\'color:var(--burnt-orange);\'>Sent</em></h3><p style=\'text-align:center; color:var(--text-body); font-weight:300;\'>We will respond within 24 hours.</p></div>';">
+        <h3>Send an Enquiry</h3>
+        <label for="c-name">Your Name</label>
+        <input type="text" id="c-name" placeholder="Enter your full name" required>
+
+        <label for="c-email">Email Address</label>
+        <input type="email" id="c-email" placeholder="you@example.com" required>
+
+        <label for="c-phone">Phone Number</label>
+        <input type="tel" id="c-phone" placeholder="+234 ..." required>
+
+        <label for="c-interest">I'm Interested In</label>
+        <select id="c-interest">
+          <option>Retail Purchase</option>
+          <option>Wholesale / Bulk Order</option>
+          <option>Business Partnership</option>
+          <option>General Enquiry</option>
+        </select>
+
+        <label for="c-message">Your Message</label>
+        <textarea id="c-message" rows="4" placeholder="Tell us about your needs..." required></textarea>
+
+        <button type="submit">Send Enquiry</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="section" style="text-align:center; padding-top: 20px;">
+    <img src="images/product-05.jpg" alt="Luxury children's fashion boutique storefront" style="max-width:100%; border-radius: var(--radius-soft); box-shadow: var(--shadow-luxury); max-height: 480px; object-fit: cover; filter: contrast(1.05);">
+    <p style="margin-top: 24px; color: var(--text-muted); font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase;">Our Boutique — Wuse Market, Abuja</p>
+  </section>
+
+  <footer>
+    <h2 class="logo-main"><span class="betah">Betah</span> <span class="kids">Kids</span></h2>
+    <p>Beauty World LTD — Wholesale & Retail</p>
+    <p>Wuse Market, Abuja, Nigeria — Imported & Affordable Children's Fashion</p>
+    <div class="socials-lux">
+      <a href="#">Instagram</a>
+      <a href="#">Email</a>
+      <a href="#">Inquire</a>
+    </div>
+    <p style="margin-top:30px; font-size:0.7rem; opacity:0.35;">© 2026 Betah Kids Beauty World LTD. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    });
+  </script>
+
+</body>
+</html>

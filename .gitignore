@@ -1,0 +1,24 @@
+# Betah Kids Store - Git Ignore Rules
+
+# Large backup files (not source code)
+betah-kids-ready.zip
+
+# Old backup folder
+flash-copy/
+
+# VS Code personal workspace settings
+*.code-workspace
+
+# OS junk files
+.DS_Store
+Thumbs.db
+
+# Windows shortcut files
+*.lnk
+
+# Future-proofing: Node modules (if npm ever added)
+node_modules/
+
+# Future-proofing: Environment secrets file
+.env
+.env.local
