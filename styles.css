@@ -1585,3 +1585,69 @@ body.has-site-header {
 }
 .hero-text-lux { pointer-events: none; }
 .hero-text-lux a { pointer-events: auto; }
+
+/* ============================================================
+   HEADER STICKY FIX
+   Header was position:fixed with guessed top spacing, which hid the
+   top of every page (breadcrumb, titles, part of the hero).
+   Now it sits in normal flow, takes its real height on every screen
+   size, and still stays at the top while scrolling.
+   ============================================================ */
+body.has-site-header {
+  padding-top: 0;
+}
+.site-header {
+  position: sticky;
+  top: 0;
+}
+
+
+/* ============================================================
+   BREADCRUMB NAV RESET
+   The breadcrumb is a <nav> tag, so the old general "nav { }" rule
+   (written for the old top menu) was hiding or distorting it.
+   This resets it to a plain block of text.
+   ============================================================ */
+nav.cp-breadcrumb {
+  position: static;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  width: auto;
+  height: auto;
+  display: block;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  z-index: auto;
+  backdrop-filter: none;
+}
+
+
+/* ============================================================
+   MOBILE CHIPS WRAP
+   On phones the subcategory chips scrolled sideways and were cut off.
+   Now they wrap onto several lines so every subcategory is visible.
+   Slightly smaller chips keep the list compact.
+   ============================================================ */
+@media (max-width: 560px) {
+  .cp-wrap .cp-filters {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    gap: 6px;
+    padding-bottom: 0;
+    margin-bottom: 18px;
+  }
+  .cp-wrap .cp-chip {
+    padding: 7px 12px;
+    font-size: .8rem;
+    white-space: normal;
+    max-width: 100%;
+    line-height: 1.25;
+  }
+}
