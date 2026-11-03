@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="robots" content="noindex">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="cart.css">
+
+<title>School | Betah Kids Beauty World LTD</title>
+<style>
+.cp-wrap{max-width:1200px;margin:0 auto;padding:24px 16px 56px;}
+.cp-breadcrumb{font-size:.9rem;color:#555555;margin-bottom:14px;}
+.cp-breadcrumb a{color:#E56510;text-decoration:none;font-weight:600;}
+.cp-breadcrumb a:hover{text-decoration:underline;}
+.cp-breadcrumb .cp-sep{margin:0 6px;color:#999999;}
+.cp-title{font-size:2rem;color:#2A2A2A;margin:0 0 4px;}
+.cp-sub{color:#555555;margin:0 0 18px;}
+.cp-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;}
+.cp-chip{padding:8px 14px;border-radius:999px;border:1.5px solid #E6DCCF;background:#FFFFFF;color:#2A2A2A;font-size:.88rem;font-weight:600;text-decoration:none;cursor:pointer;white-space:nowrap;}
+.cp-chip:hover{border-color:#FF7A1A;color:#E56510;}
+.cp-chip.active{background:#FF7A1A;border-color:#FF7A1A;color:#FFFFFF;}
+.cp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:20px;}
+.cp-empty{grid-column:1 / -1;text-align:center;padding:48px 16px;background:#FFF8F0;border-radius:16px;color:#555555;}
+.cp-empty h3{margin:0 0 8px;color:#2A2A2A;}
+.cp-empty a{color:#E56510;font-weight:700;text-decoration:none;}
+@media (max-width:560px){
+  .cp-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
+  .cp-title{font-size:1.5rem;}
+  .cp-filters{flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;}
+}
+</style>
+</head>
+<body class="has-site-header">
+
+<div id="header-placeholder"></div>
+
+<main class="cp-wrap">
+  <nav class="cp-breadcrumb" id="cpBreadcrumb" aria-label="Breadcrumb"></nav>
+  <h1 class="cp-title" id="cpTitle">School</h1>
+  <p class="cp-sub" id="cpSubtitle">Loading...</p>
+  <div class="cp-filters" id="cpFilters"></div>
+  <div class="cp-grid" id="cpGrid"></div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="partials.js"></script>
+<script type="module" src="cart.js"></script>
+<script type="module" src="nav.js"></script>
+<script type="module">
+import { supabase } from './db.js';
+
+const CATEGORY = 'School';
+const PAGE = window.location.pathname.split('/').pop();
+const GIFT_LABEL = 'Gifts Under \u20A630k';
+const GIFT_MAX = 30000;
+
+const SUBS = {
+  'Accessories': ['Baby Accessories', 'Boys Accessories', 'Girls Accessories', 'Socks', 'Hats & Sunglasses', 'Headbands & Hair Clips', 'Bibs & Muslins', 'Rain Gear', 'Ballet Attire'],
+  'Baby Essentials': ['Diapering & Bath', 'Feeding & Nursing', 'Bedding & Furniture', 'Travel, Health & Safety'],
+  'Clothing': ['Baby Boy Clothing', 'Baby Girl Clothing', 'Boys Clothing', 'Girls Clothing', 'Boys Underwear', 'Girls Underwear'],
+  'Maternity': ['Maternity Dresses', 'Maternity Trousers', 'Maternity Sleepwear'],
+  'School': ['Uniforms', 'Bags & Backpacks', 'Lunch Boxes & Bottles', 'Stationery & Supplies', 'Books'],
+  'Shoes': ['Baby Shoes', 'Boys Shoes', 'Girls Shoes', 'School Shoes'],
+  'Toys': [GIFT_LABEL, 'Babies & Preschoolers (0-2)', 'Toddlers (2+)', 'Kids (4+)', 'Big Kids (7+)', 'Playmats & Activity', 'Costumes & Dress-Up', 'Bicycles, Scooters & Ride-Ons', 'Outdoor & Garden Play', 'Swimming & Beach', 'Party & Balloons']
+};
+
+let allProducts = [];
+let activeSub = new URLSearchParams(window.location.search).get('subcategory') || '';
+
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function filteredProducts() {
+  if (!activeSub) return allProducts;
+  if (activeSub === GIFT_LABEL) {
+    return allProducts.filter(function (p) { return Number(p.price) <= GIFT_MAX; });
+  }
+  return allProducts.filter(function (p) { return p.subcategory === activeSub; });
+}
+
+function renderBreadcrumb() {
+  let html = '<a href="index.html">Home</a><span class="cp-sep">&rsaquo;</span>';
+  if (activeSub) {
+    html += '<a href="' + PAGE + '">' + esc(CATEGORY) + '</a><span class="cp-sep">&rsaquo;</span>' + esc(activeSub);
+  } else {
+    html += esc(CATEGORY);
+  }
+  document.getElementById('cpBreadcrumb').innerHTML = html;
+}
+
+function renderFilters() {
+  const subs = SUBS[CATEGORY] || [];
+  let html = '<a class="cp-chip' + (activeSub === '' ? ' active' : '') + '" href="' + PAGE + '" data-sub="">All</a>';
+  subs.forEach(function (s) {
+    html += '<a class="cp-chip' + (activeSub === s ? ' active' : '') + '" href="' + PAGE + '?subcategory=' + encodeURIComponent(s) + '" data-sub="' + esc(s) + '">' + esc(s) + '</a>';
+  });
+  document.getElementById('cpFilters').innerHTML = html;
+}
+
+function cardHtml(p) {
+  const inStock = p.in_stock !== false;
+  const img = p.image_url || 'images/logo.png';
+  const price = Number(p.price) || 0;
+  const link = 'product.html?id=' + encodeURIComponent(p.id);
+  return '' +
+    '<div class="product-card">' +
+      '<a class="product-img-link" href="' + link + '">' +
+        '<div class="product-img"><img src="' + esc(img) + '" alt="' + esc(p.title) + '" loading="lazy">' +
+        (inStock ? '' : '<span class="sold-out-badge">Sold Out</span>') + '</div>' +
+      '</a>' +
+      '<div class="product-body">' +
+        '<span class="product-cat">' + esc(p.subcategory || p.category) + '</span>' +
+        '<h3 class="product-title"><a href="' + link + '" style="color:inherit;text-decoration:none;">' + esc(p.title) + '</a></h3>' +
+        '<p class="price">&#8358;' + price.toLocaleString() + '</p>' +
+        '<button type="button" class="add-cart-btn" data-id="' + esc(p.id) + '" data-title="' + esc(p.title) + '" data-price="' + price + '" data-image="' + esc(img) + '"' + (inStock ? '' : ' disabled') + '>' +
+          (inStock ? 'Add to Cart' : 'Sold Out') +
+        '</button>' +
+      '</div>' +
+    '</div>';
+}
+
+function renderGrid() {
+  const list = filteredProducts();
+  const grid = document.getElementById('cpGrid');
+  const title = document.getElementById('cpTitle');
+  const subtitle = document.getElementById('cpSubtitle');
+
+  title.textContent = activeSub || CATEGORY;
+  document.title = (activeSub || CATEGORY) + ' | Betah Kids Beauty World LTD';
+
+  if (activeSub === GIFT_LABEL) {
+    subtitle.textContent = 'Toys priced at \u20A630,000 or less \u2014 ' + list.length + (list.length === 1 ? ' item' : ' items');
+  } else {
+    subtitle.textContent = list.length + (list.length === 1 ? ' item' : ' items') + (activeSub ? ' in ' + CATEGORY : '');
+  }
+
+  if (list.length === 0) {
+    grid.innerHTML = '<div class="cp-empty"><h3>Nothing here yet</h3>' +
+      '<p>New arrivals are added often. ' +
+      (activeSub ? '<a href="' + PAGE + '">View all ' + esc(CATEGORY) + '</a> or ' : '') +
+      '<a href="index.html">go back home</a>.</p></div>';
+    return;
+  }
+  grid.innerHTML = list.map(cardHtml).join('');
+}
+
+function renderAll() {
+  renderBreadcrumb();
+  renderFilters();
+  renderGrid();
+}
+
+document.getElementById('cpFilters').addEventListener('click', function (e) {
+  const chip = e.target.closest('.cp-chip');
+  if (!chip) return;
+  e.preventDefault();
+  activeSub = chip.getAttribute('data-sub') || '';
+  history.pushState({}, '', activeSub ? PAGE + '?subcategory=' + encodeURIComponent(activeSub) : PAGE);
+  renderAll();
+});
+
+window.addEventListener('popstate', function () {
+  activeSub = new URLSearchParams(window.location.search).get('subcategory') || '';
+  renderAll();
+});
+
+document.getElementById('cpGrid').addEventListener('click', function (e) {
+  const btn = e.target.closest('.add-cart-btn');
+  if (!btn || btn.disabled) return;
+  if (typeof window.addToCart === 'function') {
+    window.addToCart(btn.dataset.id, btn.dataset.title, Number(btn.dataset.price), btn.dataset.image);
+  }
+});
+
+async function loadProducts() {
+  renderBreadcrumb();
+  renderFilters();
+  document.getElementById('cpGrid').innerHTML = '<div class="cp-empty"><p>Loading products...</p></div>';
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('category', CATEGORY)
+      .order('created_at', { ascending: false })
+      .limit(200);
+    if (error) throw error;
+    allProducts = data || [];
+    renderAll();
+  } catch (err) {
+    console.error('[category page] Could not load products:', err);
+    document.getElementById('cpSubtitle').textContent = '';
+    document.getElementById('cpGrid').innerHTML = '<div class="cp-empty"><h3>Could not load products</h3><p>Please refresh the page or try again shortly.</p></div>';
+  }
+}
+
+loadProducts();
+</script>
+</body>
+</html>

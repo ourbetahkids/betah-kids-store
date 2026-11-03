@@ -1,4 +1,4 @@
-﻿/* Betah Kids Beauty World LTD — Luxury Edition */
+/* Betah Kids Beauty World LTD — Luxury Edition */
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
@@ -146,8 +146,7 @@ nav .nav-cta:hover {
 .hero-slider-section {
   position: relative;
   width: 100%;
-  height: 100vh;
-  min-height: 600px;
+  height: clamp(440px, 58vh, 540px);
   background: var(--bg-cream);
 }
 
@@ -218,7 +217,7 @@ nav .nav-cta:hover {
 
 .hero-text-lux h1 {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(3rem, 5.5vw, 5rem);
+  font-size: clamp(2.2rem, 3.6vw, 3.4rem);
   font-weight: 300;
   line-height: 1.08;
   letter-spacing: -1.5px;
@@ -490,3 +489,1099 @@ footer .socials-lux a:hover {
   nav, footer, .hero-slider-section { display: none; }
   body { background: white; color: black; }
 }
+
+/* ============================================================
+   BETAH KIDS — SHARED NAVBAR / MOBILE HEADER / SEARCH BAR
+   STEP 3 OF "THE REVOLUTION" REBUILD
+   Mobile-first: base rules = mobile, min-width queries scale up.
+   Activate per-page by adding class="has-site-header" to <body>.
+   ============================================================ */
+
+body.has-site-header {
+  padding-top: 128px;
+}
+
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  background: var(--bg-white);
+  box-shadow: var(--shadow-subtle, 0 2px 10px rgba(0,0,0,0.08));
+}
+
+/* ---------- MOBILE TOP ROW ---------- */
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+}
+
+.hamburger-btn {
+  width: 32px;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0;
+}
+.hamburger-btn span {
+  display: block;
+  height: 2.5px;
+  width: 100%;
+  background: var(--text-dark);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+.hamburger-btn.active span:nth-child(1) { transform: translateY(10.5px) rotate(45deg); }
+.hamburger-btn.active span:nth-child(2) { opacity: 0; }
+.hamburger-btn.active span:nth-child(3) { transform: translateY(-10.5px) rotate(-45deg); }
+
+.logo-mobile {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.header-icons { display: flex; align-items: center; gap: 16px; }
+
+.icon-link {
+  position: relative;
+  color: var(--text-dark);
+  font-size: 1.15rem;
+  text-decoration: none;
+  display: inline-flex;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background: var(--primary-orange);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  min-width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ---------- DESKTOP NAV (hidden on mobile) ---------- */
+.desktop-nav { display: none; }
+
+/* ---------- SEARCH BAR ROW (always visible, mobile + desktop) ---------- */
+.search-bar-row {
+  position: relative;
+  padding: 0 16px 14px;
+}
+
+.search-form {
+  display: flex;
+  align-items: stretch;
+  border: 1.5px solid #e1e4e8;
+  border-radius: var(--radius-elegant, 4px);
+  overflow: hidden;
+  background: var(--bg-white);
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 10px 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  min-width: 0;
+}
+
+.search-btn {
+  border: none;
+  background: var(--primary-orange);
+  color: #fff;
+  padding: 0 18px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.25s ease;
+}
+.search-btn:hover { background: var(--primary-orange-deep); }
+
+.search-suggestions {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 16px;
+  right: 16px;
+  background: var(--bg-white);
+  border-radius: var(--radius-elegant, 4px);
+  box-shadow: var(--shadow-luxury, 0 10px 30px rgba(0,0,0,0.15));
+  max-height: 340px;
+  overflow-y: auto;
+  z-index: 10000;
+}
+.search-suggestions.active { display: block; }
+
+.search-suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  text-decoration: none;
+  color: var(--text-dark);
+  border-bottom: 1px solid #f0f0f0;
+}
+.search-suggestion-item:last-child { border-bottom: none; }
+.search-suggestion-item:hover { background: var(--bg-cream); }
+
+.search-suggestion-img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.search-suggestion-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.search-suggestion-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.search-suggestion-category { font-size: 0.72rem; color: var(--text-light); }
+.search-suggestion-price {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--primary-orange-deep);
+  white-space: nowrap;
+}
+.search-no-results {
+  padding: 16px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-light);
+}
+
+/* ---------- MOBILE FULL-SCREEN ACCORDION MENU ---------- */
+.mobile-menu-overlay {
+  position: fixed;
+  top: 128px;
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 128px);
+  background: var(--bg-white);
+  transform: translateX(-100%);
+  transition: transform 0.35s ease;
+  overflow-y: auto;
+  z-index: 9998;
+}
+.mobile-menu-overlay.open { transform: translateX(0); }
+
+.mobile-menu-list { list-style: none; margin: 0; padding: 10px 0; }
+.mobile-menu-list > li { border-bottom: 1px solid #f0f0f0; }
+.mobile-menu-list > li > a {
+  display: block;
+  padding: 16px 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  text-decoration: none;
+}
+
+/* ---------- MOBILE CATEGORY ACCORDIONS (7 independent) ---------- */
+.mobile-accordion-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  cursor: pointer;
+}
+.mobile-accordion-toggle i { transition: transform 0.3s ease; color: var(--primary-orange); }
+.mobile-accordion-toggle.active i { transform: rotate(180deg); }
+
+.mobile-accordion-panel {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0 20px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+  background: var(--bg-cream);
+}
+.mobile-accordion-panel.open { max-height: 640px; }
+.mobile-accordion-panel a {
+  display: block;
+  padding: 12px 10px;
+  font-size: 0.9rem;
+  color: var(--text-light);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.mobile-accordion-panel a:last-child { border-bottom: none; }
+
+.nav-links > li > a.active-link,
+.mobile-menu-list > li > a.active-link {
+  color: var(--primary-orange-deep);
+}
+
+/* ============================================================
+   DESKTOP BREAKPOINT — min-width: 900px
+   ============================================================ */
+@media (min-width: 900px) {
+
+  body.has-site-header { padding-top: 118px; }
+
+  .header-top { display: none; }
+  .mobile-menu-overlay { display: none; }
+
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 48px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    row-gap: 12px;
+    gap: 26px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nav-links > li > a {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    text-decoration: none;
+    position: relative;
+    padding: 6px 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.25s ease;
+  }
+  .nav-links > li > a:hover { color: var(--primary-orange); }
+
+  .nav-caret { font-size: 0.65rem; transition: transform 0.25s ease; }
+  .nav-dropdown:hover .nav-caret { transform: rotate(180deg); }
+
+  .nav-dropdown { position: relative; }
+  .nav-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 16px);
+    left: 0;
+    transform: translateY(10px);
+    background: var(--bg-white);
+    box-shadow: var(--shadow-luxury, 0 15px 40px rgba(0,0,0,0.15));
+    border-radius: var(--radius-elegant, 4px);
+    min-width: 220px;
+    max-height: 420px;
+    overflow-y: auto;
+    padding: 10px 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.25s ease;
+    z-index: 10000;
+    list-style: none;
+  }
+  .nav-dropdown:last-child .nav-dropdown-menu {
+    left: auto;
+    right: 0;
+  }
+  .nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown:focus-within .nav-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .nav-dropdown-menu a {
+    display: block;
+    padding: 10px 24px;
+    font-size: 0.85rem;
+    color: var(--text-dark);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav-dropdown-menu a:hover { background: var(--bg-cream); color: var(--primary-orange-deep); }
+
+  .nav-icons-desktop { display: flex; align-items: center; gap: 22px; }
+
+  .search-bar-row {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 48px 16px;
+  }
+  .search-input { font-size: 0.95rem; padding: 12px 18px; }
+}
+
+/* ============================================================
+   BETAH KIDS — HOMEPAGE REBUILD ADDITIONS (STEP 4)
+   Product cards, Shop-by-Category tiles, Trust Bar, empty states
+   Mobile-first.
+   ============================================================ */
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.product-card {
+  background: var(--bg-white);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow-subtle, 0 4px 15px rgba(0,0,0,0.06));
+  border: 1px solid rgba(201,169,110,0.12);
+  display: flex;
+  flex-direction: column;
+}
+
+.product-img-link { display: block; }
+.product-img { position: relative; height: 160px; overflow: hidden; background: #f5f5f5; }
+.product-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.sold-out-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #D64545;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.product-body { padding: 14px; text-align: center; flex: 1; display: flex; flex-direction: column; }
+.product-cat {
+  font-size: 0.62rem;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+  color: var(--text-light);
+  display: block;
+  margin-bottom: 4px;
+}
+.product-body h3 { font-size: 1rem; margin-bottom: 4px; line-height: 1.3; }
+.product-body h3 a { color: var(--text-dark); text-decoration: none; font-family: 'Cormorant Garamond', serif; }
+.product-body .price { color: var(--primary-orange-deep); font-weight: 700; margin-bottom: 10px; font-size: 0.95rem; }
+
+.add-cart-btn {
+  margin-top: auto;
+  width: 100%;
+  border: 1.5px solid var(--primary-orange);
+  background: var(--bg-white);
+  color: var(--primary-orange);
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.add-cart-btn:hover:not(:disabled) { background: var(--primary-orange); color: #fff; }
+.add-cart-btn:disabled { opacity: 0.5; cursor: not-allowed; border-color: #ccc; color: #999; }
+
+.empty-state-msg {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 50px 20px;
+  color: var(--text-light);
+}
+.empty-state-msg i { font-size: 2rem; color: var(--primary-orange); opacity: 0.4; margin-bottom: 12px; display: block; }
+.empty-state-msg p { font-size: 0.95rem; }
+
+/* ---------- SHOP BY CATEGORY TILES ---------- */
+.category-tiles-row {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 6px 4px 16px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.category-tiles-row::-webkit-scrollbar { height: 4px; }
+.category-tiles-row::-webkit-scrollbar-thumb { background: var(--primary-orange); border-radius: 4px; }
+
+.category-tile {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  width: 128px;
+  background: var(--bg-white);
+  border: 1px solid rgba(201,169,110,0.15);
+  border-radius: 12px;
+  padding: 20px 12px;
+  text-align: center;
+  text-decoration: none;
+  color: var(--text-dark);
+  box-shadow: var(--shadow-subtle, 0 4px 15px rgba(0,0,0,0.05));
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.category-tile:hover { transform: translateY(-4px); box-shadow: var(--shadow-luxury, 0 15px 35px rgba(0,0,0,0.1)); }
+.category-tile i { font-size: 1.6rem; color: var(--primary-orange); margin-bottom: 10px; display: block; }
+.category-tile-name { display: block; font-weight: 700; font-size: 0.8rem; margin-bottom: 4px; }
+.category-tile-count { display: block; font-size: 0.68rem; color: var(--text-light); }
+
+/* ---------- TRUST BAR ---------- */
+.trust-bar-section {
+  background: var(--bg-cream);
+  padding: 32px 16px;
+}
+.trust-bar-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: center;
+  text-align: left;
+}
+.trust-item i { font-size: 1.4rem; color: var(--primary-orange-deep); flex-shrink: 0; }
+.trust-item span { font-size: 0.85rem; font-weight: 600; color: var(--text-dark); }
+
+/* ---------- FOOTER QUICK LINKS ---------- */
+.footer-quick-links {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+  padding: 0;
+  list-style: none;
+}
+.footer-quick-links a {
+  color: inherit;
+  text-decoration: none;
+  font-size: 0.82rem;
+  opacity: 0.75;
+  transition: opacity 0.25s ease;
+}
+.footer-quick-links a:hover { opacity: 1; }
+
+/* ============================================================
+   DESKTOP BREAKPOINT — min-width: 900px
+   ============================================================ */
+@media (min-width: 900px) {
+  .product-grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .product-img { height: 220px; }
+  .product-body { padding: 18px; }
+  .product-body h3 { font-size: 1.2rem; }
+
+  .category-tiles-row {
+    overflow-x: visible;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 18px;
+  }
+  .category-tile { width: auto; padding: 28px 14px; }
+
+  .trust-bar-grid { grid-template-columns: repeat(4, 1fr); }
+  .trust-item { justify-content: flex-start; }
+}
+
+/* ============================================================
+   BETAH KIDS - DESKTOP HEADER REDESIGN
+   Reference pattern: LizzyDerin / Suzillicious / Shuks layout.
+   Row 1: Logo | Search bar | Account/Wishlist/Cart (labeled icons)
+   Row 2: Home + 7 categories (alphabetical), hover dropdowns
+   Scoped entirely to min-width:900px - mobile header is UNCHANGED.
+   ============================================================ */
+
+.icon-label-desktop { display: none; }
+.icon-visual { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+
+/* Hide desktop-only header elements on mobile (<900px).
+   Restored via display rules inside the min-width:900px block below. */
+.logo-desktop,
+.nav-icons-desktop,
+.desktop-nav-row {
+  display: none;
+}
+
+@media (min-width: 900px) {
+
+  .site-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      "logo search icons"
+      "navrow navrow navrow";
+    align-items: center;
+    column-gap: 36px;
+    row-gap: 16px;
+    padding: 20px 48px 0;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .header-top { display: none; }
+  .mobile-menu-overlay { display: none; }
+
+  .logo-desktop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    grid-area: logo;
+    text-decoration: none;
+  }
+
+  .search-bar-row {
+    grid-area: search;
+    padding: 0;
+    margin: 0;
+    max-width: none;
+  }
+
+  .nav-icons-desktop {
+    grid-area: icons;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .nav-icons-desktop .icon-link {
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-size: 1.25rem;
+  }
+
+  .icon-label-desktop {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.2px;
+  }
+
+  .desktop-nav-row {
+    display: block;
+    grid-area: navrow;
+    border-top: 1px solid #f0f0f0;
+    padding: 14px 0 16px;
+  }
+
+  .desktop-nav-row .nav-links {
+    justify-content: center;
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+}
+
+
+/* ============================================================
+   BETAH KIDS -- LOGO IMAGE SIZING (replaces old text logo)
+   ============================================================ */
+.logo-img-mobile {
+  height: 42px;
+  width: auto;
+  display: block;
+}
+
+.logo-img-desktop {
+  height: 64px;
+  width: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.logo-tagline {
+  display: block;
+  text-align: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  color: var(--primary-orange-deep);
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   BETAH KIDS -- CONTACT PAGE STYLING (Step E content-fix)
+   ============================================================ */
+
+.map-embed-section {
+  width: 100%;
+  margin: 0;
+}
+.map-embed-section iframe {
+  width: 100%;
+  height: 360px;
+  border: 0;
+  display: block;
+}
+
+.contact-grid-lux {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 50px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.contact-info h3 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--text-dark);
+  letter-spacing: -1px;
+}
+
+.contact-block-lux { margin-bottom: 28px; }
+.contact-block-lux h4 {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--primary-orange-deep);
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+.contact-block-lux p {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+.contact-block-lux p a {
+  color: var(--text-dark);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+.contact-block-lux p a:hover { color: var(--primary-orange); }
+
+.form-lux {
+  background: var(--bg-white);
+  border-radius: var(--radius-soft);
+  padding: 36px 32px;
+  box-shadow: var(--shadow-subtle);
+  border: 1px solid rgba(201,169,110,0.12);
+  display: flex;
+  flex-direction: column;
+}
+.form-lux h3 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 300;
+  margin-bottom: 20px;
+  color: var(--text-dark);
+}
+.form-lux label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-dark);
+  margin-bottom: 6px;
+  margin-top: 16px;
+  display: block;
+}
+.form-lux label:first-of-type { margin-top: 0; }
+.form-lux input,
+.form-lux select,
+.form-lux textarea {
+  width: 100%;
+  border: 1.5px solid #e1e4e8;
+  border-radius: var(--radius-elegant, 4px);
+  padding: 11px 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  outline: none;
+  transition: border-color 0.25s ease;
+  background: var(--bg-white);
+}
+.form-lux input:focus,
+.form-lux select:focus,
+.form-lux textarea:focus { border-color: var(--primary-orange); }
+.form-lux textarea { resize: vertical; }
+.form-lux button[type="submit"] {
+  margin-top: 26px;
+  background: var(--text-dark);
+  color: var(--bg-white);
+  border: none;
+  padding: 14px 28px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+}
+.form-lux button[type="submit"]:hover { background: var(--primary-orange-deep); }
+
+@media (min-width: 900px) {
+  .contact-grid-lux {
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+  }
+  .map-embed-section iframe { height: 440px; }
+}
+
+/* ============================================================
+   BETAH KIDS -- GENERIC PAGE HERO (contact/about style sub-hero)
+   ============================================================ */
+
+.hero {
+  width: 100%;
+  background: var(--bg-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero .overline {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--primary-orange-deep);
+  font-weight: 700;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.hero h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  margin-bottom: 20px;
+  color: var(--text-dark);
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--primary-orange);
+  font-weight: 400;
+}
+
+.hero p.subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
+  color: var(--text-light);
+  line-height: 1.75;
+  font-weight: 300;
+}
+
+/* ============================================================
+   BETAH KIDS -- ABOUT PAGE HERO LAYOUT (two-column variant)
+   ============================================================ */
+
+.hero-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 6vw;
+}
+
+.hero-text { text-align: center; max-width: 600px; }
+
+.hero-image img {
+  width: 100%;
+  border-radius: var(--radius-soft);
+  box-shadow: var(--shadow-luxury);
+  object-fit: cover;
+  max-height: 420px;
+}
+
+@media (min-width: 900px) {
+  .hero-inner { flex-direction: row; text-align: left; }
+  .hero-text { text-align: left; }
+}
+
+/* ===== SHARED SITE FOOTER (bk-footer) ===== */
+.bk-footer {
+  background: var(--text-dark, #2A2A2A);
+  color: rgba(255, 255, 255, 0.78);
+  font-family: 'Inter', sans-serif;
+  text-align: left;
+  margin-top: 80px;
+  position: relative;
+}
+.bk-footer-stripe {
+  height: 5px;
+  background: linear-gradient(90deg,
+    #FF7A1A 0%, #FF7A1A 14.28%,
+    #FFC107 14.28%, #FFC107 28.56%,
+    #3BB84D 28.56%, #3BB84D 42.84%,
+    #2A6EBB 42.84%, #2A6EBB 57.12%,
+    #8A2BE2 57.12%, #8A2BE2 71.4%,
+    #F23D8C 71.4%, #F23D8C 85.68%,
+    #E62E3B 85.68%, #E62E3B 100%);
+}
+.bk-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 64px 24px 44px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.3fr;
+  gap: 48px;
+}
+.bk-footer .bk-wordmark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1;
+  margin: 0 0 6px;
+}
+.bk-footer .bk-wordmark .bk-w1 { color: #FF7A1A; }
+.bk-footer .bk-wordmark .bk-w2 { color: #FFC107; }
+.bk-footer .bk-company {
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0 0 18px;
+}
+.bk-footer .bk-about {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  margin: 0 0 22px;
+  max-width: 340px;
+}
+.bk-footer .bk-social {
+  display: flex;
+  gap: 10px;
+}
+.bk-footer .bk-social a {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background 0.25s, border-color 0.25s, transform 0.25s;
+}
+.bk-footer .bk-social a:hover {
+  background: #FF7A1A;
+  border-color: #FF7A1A;
+  transform: translateY(-3px);
+}
+.bk-footer h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #fff;
+  margin: 0 0 22px;
+  padding-bottom: 12px;
+  position: relative;
+}
+.bk-footer h4::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 34px;
+  height: 3px;
+  border-radius: 2px;
+  background: #FF7A1A;
+}
+.bk-footer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.bk-footer ul li {
+  margin: 0 0 12px;
+}
+.bk-footer ul a {
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+  font-size: 0.93rem;
+  transition: color 0.2s, padding-left 0.2s;
+}
+.bk-footer ul a:hover {
+  color: #FF7A1A;
+  padding-left: 6px;
+}
+.bk-footer .bk-contact li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 0.93rem;
+  line-height: 1.55;
+}
+.bk-footer .bk-contact li i {
+  color: #FF7A1A;
+  margin-top: 4px;
+  width: 16px;
+  text-align: center;
+}
+.bk-footer .bk-contact a:hover {
+  padding-left: 0;
+}
+.bk-footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+.bk-footer-bottom-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+.bk-footer-bottom-inner p {
+  margin: 0;
+}
+@media (max-width: 900px) {
+  .bk-footer-inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px 32px;
+    padding: 52px 24px 36px;
+  }
+}
+@media (max-width: 560px) {
+  .bk-footer { margin-top: 56px; }
+  .bk-footer-inner {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+  .bk-footer-bottom-inner {
+    flex-direction: column;
+    text-align: center;
+    padding-bottom: 88px;
+  }
+}
+
+/* ============================================================
+   HERO SIZE TUNING (smaller hero, scaled text, video slide rule)
+   ============================================================ */
+.hero-text-lux { max-width: 620px; }
+.hero-text-lux .overline { margin-bottom: 14px; }
+.hero-text-lux h1 { margin-bottom: 16px; }
+.hero-text-lux p.subtitle { font-size: 1rem; line-height: 1.65; margin-bottom: 26px; }
+
+.slide-video {
+  position: absolute;
+  top: 0; right: 0;
+  width: 65%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+@media (max-width: 1100px) {
+  .slide-video { width: 100%; }
+  .hero-slider-section { height: 440px; }
+  .hero-text-lux h1 { font-size: clamp(1.9rem, 7vw, 2.6rem); letter-spacing: -0.5px; }
+  .hero-text-lux .overline { font-size: 0.68rem; letter-spacing: 3px; }
+  .hero-text-lux p.subtitle {
+    font-size: 0.92rem;
+    margin-bottom: 20px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .btn-luxury { padding: 12px 26px; font-size: 0.78rem; }
+}
+
+/* ============================================================
+   HEADER CENTERING FIX (desktop)
+   Fixed header was pinned left at 1400px wide on wider screens.
+   Now: full-width white bar, content centered inside max 1400px.
+   ============================================================ */
+@media (min-width: 900px) {
+  .site-header {
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding-left: max(48px, calc((100% - 1400px) / 2 + 48px));
+    padding-right: max(48px, calc((100% - 1400px) / 2 + 48px));
+  }
+}
+
+/* ============================================================
+   HERO CENTERING FIX (desktop)
+   Hero was full-bleed: text hugged far left, image far right.
+   Now: centered box, max 1400px, aligned with the header.
+   ============================================================ */
+.hero-slider-section {
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 1101px) {
+  .hero-slide { padding: 0 48px; }
+}
+
+@media (min-width: 1432px) {
+  .hero-slider-section,
+  .hero-swiper {
+    border-radius: 0 0 16px 16px;
+    overflow: hidden;
+  }
+}
+
+/* ============================================================
+   HERO SLIDE CLICKABLE (whole slide links to its product/category)
+   ============================================================ */
+.slide-click {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+.hero-text-lux { pointer-events: none; }
+.hero-text-lux a { pointer-events: auto; }

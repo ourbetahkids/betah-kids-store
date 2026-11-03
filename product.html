@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" id="metaDesc" content="Shop imported children's fashion at Betah Kids Beauty World LTD, Wuse Market, Abuja.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="cart.css">
+
+  <title>Product | Betah Kids Beauty World LTD</title>
+  <style>
+    .pp-wrap{max-width:1200px;margin:0 auto;padding:24px 16px 56px;}
+    .pp-breadcrumb{font-size:.9rem;color:#555555;margin-bottom:18px;}
+    .pp-breadcrumb a{color:#E56510;text-decoration:none;font-weight:600;}
+    .pp-breadcrumb a:hover{text-decoration:underline;}
+    .pp-sep{margin:0 6px;color:#999999;}
+    .pp-current{color:#2A2A2A;}
+    .pp-layout{display:grid;grid-template-columns:1fr;gap:28px;}
+    .pp-image-box{position:relative;background:#FFFFFF;border:1px solid rgba(201,169,110,.2);border-radius:16px;overflow:hidden;}
+    .pp-image-box img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;}
+    .pp-badge-out{position:absolute;top:14px;left:14px;background:#D64545;color:#FFFFFF;font-size:.75rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:6px 12px;border-radius:6px;}
+    .pp-cat{display:inline-block;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:#555555;margin-bottom:8px;}
+    .pp-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:2rem;font-weight:600;line-height:1.15;color:#2A2A2A;margin:0 0 12px;}
+    .pp-price{font-size:1.8rem;font-weight:700;color:#E56510;margin:0 0 12px;}
+    .pp-stock{display:inline-block;font-size:.8rem;font-weight:700;padding:5px 12px;border-radius:50px;margin-bottom:18px;}
+    .pp-in{background:#E8F8EE;color:#27AE60;}
+    .pp-low{background:#FFF6E5;color:#E56510;}
+    .pp-out{background:#FDEAEA;color:#E62E3B;}
+    .pp-desc{color:#555555;line-height:1.75;margin:0 0 22px;white-space:pre-line;}
+    .pp-qty-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+    .pp-label{font-size:.78rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2A2A2A;}
+    .pp-qty{display:inline-flex;align-items:stretch;border:1.5px solid #E1E4E8;border-radius:8px;overflow:hidden;background:#FFFFFF;}
+    .pp-qty-btn{width:42px;border:none;background:#FFF8F0;color:#2A2A2A;font-size:1.2rem;font-weight:700;cursor:pointer;}
+    .pp-qty-btn:hover{background:#FF7A1A;color:#FFFFFF;}
+    .pp-qty input{width:60px;border:none;outline:none;text-align:center;font-size:1rem;font-weight:600;font-family:'Inter',sans-serif;padding:10px 0;}
+    .pp-actions{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
+    .pp-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px 20px;border-radius:50px;border:2px solid transparent;font-family:'Inter',sans-serif;font-size:.88rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:all .25s ease;}
+    .pp-btn-cart{background:#FF7A1A;color:#FFFFFF;border-color:#FF7A1A;}
+    .pp-btn-cart:hover:not(:disabled){background:#E56510;border-color:#E56510;}
+    .pp-btn-cart:disabled{background:#CCCCCC;border-color:#CCCCCC;cursor:not-allowed;}
+    .pp-btn-wa{background:#25D366;color:#FFFFFF;border-color:#25D366;}
+    .pp-btn-wa:hover{background:#1EBE5A;border-color:#1EBE5A;}
+    .pp-notes{list-style:none;margin:0;padding:18px 0 0;border-top:1px solid #F0E6D8;}
+    .pp-notes li{display:flex;align-items:center;gap:12px;font-size:.88rem;color:#555555;margin-bottom:10px;}
+    .pp-notes i{color:#E56510;width:18px;text-align:center;}
+    .pp-related{margin-top:56px;}
+    .pp-related-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.8rem;font-weight:600;color:#2A2A2A;margin:0 0 20px;text-align:center;}
+    .pp-message{text-align:center;padding:64px 16px;background:#FFF8F0;border-radius:16px;color:#555555;}
+    .pp-message h2{color:#2A2A2A;margin:0 0 10px;}
+    .pp-message a{color:#E56510;font-weight:700;text-decoration:none;}
+    @media (min-width:900px){
+      .pp-layout{grid-template-columns:1fr 1fr;gap:56px;align-items:start;}
+      .pp-title{font-size:2.6rem;}
+      .pp-actions{flex-direction:row;}
+    }
+  </style>
+</head>
+<body class="has-site-header">
+
+<div id="header-placeholder"></div>
+
+<main class="pp-wrap" id="ppRoot">
+  <div class="pp-message"><p>Loading product...</p></div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="partials.js"></script>
+<script type="module" src="cart.js"></script>
+<script type="module" src="nav.js"></script>
+<script type="module">
+import { supabase } from './db.js';
+
+const WHATSAPP = '2348033016335';
+const CATEGORY_PAGES = {
+  'Accessories': 'accessories.html',
+  'Baby Essentials': 'baby-essentials.html',
+  'Clothing': 'clothing.html',
+  'Maternity': 'maternity.html',
+  'School': 'school.html',
+  'Shoes': 'shoes.html',
+  'Toys': 'toys.html'
+};
+
+const root = document.getElementById('ppRoot');
+const productId = new URLSearchParams(window.location.search).get('id');
+let product = null;
+let qty = 1;
+let maxQty = 99;
+
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function naira(n) {
+  return '\u20A6' + (Number(n) || 0).toLocaleString();
+}
+
+function isInStock(p) {
+  return p.in_stock !== false && (p.stock_quantity == null || Number(p.stock_quantity) > 0);
+}
+
+function showMessage(title, text) {
+  root.innerHTML = '<div class="pp-message"><h2>' + esc(title) + '</h2><p>' + text + '</p></div>';
+}
+
+function updateWhatsApp() {
+  const a = document.getElementById('ppWhatsApp');
+  if (!a || !product) return;
+  const verb = isInStock(product) ? 'order' : 'ask about';
+  const price = Number(product.price) || 0;
+  const msg = 'Hello Betah Kids! I would like to ' + verb + ':\n\n' +
+    product.title + '\n' +
+    'Quantity: ' + qty + '\n' +
+    'Price: ' + naira(price) + ' each\n' +
+    'Total: ' + naira(price * qty) + '\n\n' +
+    window.location.href;
+  a.href = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg);
+}
+
+function setQty(n) {
+  let v = parseInt(n, 10);
+  if (!v || v < 1) v = 1;
+  if (v > maxQty) v = maxQty;
+  qty = v;
+  const input = document.getElementById('ppQty');
+  if (input) input.value = qty;
+  updateWhatsApp();
+}
+
+function bindBuyControls() {
+  const input = document.getElementById('ppQty');
+  const minus = document.getElementById('ppMinus');
+  const plus = document.getElementById('ppPlus');
+  const add = document.getElementById('ppAdd');
+
+  if (input && minus && plus) {
+    minus.addEventListener('click', function () { setQty(qty - 1); });
+    plus.addEventListener('click', function () { setQty(qty + 1); });
+    input.addEventListener('change', function () { setQty(input.value); });
+  }
+
+  if (add && !add.disabled) {
+    add.addEventListener('click', function () {
+      if (typeof window.addToCart === 'function') {
+        window.addToCart(
+          String(product.id),
+          product.title,
+          Number(product.price) || 0,
+          product.image_url || 'images/logo.png',
+          qty
+        );
+      }
+    });
+  }
+}
+
+function renderProduct(p) {
+  const inStock = isInStock(p);
+  const stockQty = p.stock_quantity == null ? null : Number(p.stock_quantity);
+  maxQty = (stockQty && stockQty > 0) ? Math.min(stockQty, 99) : 99;
+  qty = 1;
+
+  const img = p.image_url || 'images/logo.png';
+  const price = Number(p.price) || 0;
+  const catPage = CATEGORY_PAGES[p.category];
+
+  let crumb = '<a href="index.html">Home</a><span class="pp-sep">&rsaquo;</span>';
+  if (catPage) {
+    crumb += '<a href="' + catPage + '">' + esc(p.category) + '</a>';
+  } else {
+    crumb += esc(p.category || 'Shop');
+  }
+  if (p.subcategory && catPage) {
+    crumb += '<span class="pp-sep">&rsaquo;</span><a href="' + catPage + '?subcategory=' + encodeURIComponent(p.subcategory) + '">' + esc(p.subcategory) + '</a>';
+  }
+  crumb += '<span class="pp-sep">&rsaquo;</span><span class="pp-current">' + esc(p.title) + '</span>';
+
+  let stockHtml;
+  if (!inStock) {
+    stockHtml = '<span class="pp-stock pp-out">Sold Out</span>';
+  } else if (stockQty !== null && stockQty <= 3) {
+    stockHtml = '<span class="pp-stock pp-low">Only ' + stockQty + ' left</span>';
+  } else {
+    stockHtml = '<span class="pp-stock pp-in">In Stock</span>';
+  }
+
+  const qtyHtml = inStock
+    ? '<div class="pp-qty-row"><span class="pp-label">Quantity</span>' +
+        '<div class="pp-qty">' +
+          '<button type="button" class="pp-qty-btn" id="ppMinus" aria-label="Decrease quantity">&minus;</button>' +
+          '<input type="number" id="ppQty" value="1" min="1" max="' + maxQty + '" inputmode="numeric">' +
+          '<button type="button" class="pp-qty-btn" id="ppPlus" aria-label="Increase quantity">+</button>' +
+        '</div></div>'
+    : '';
+
+  const addHtml = inStock
+    ? '<button type="button" class="pp-btn pp-btn-cart" id="ppAdd"><i class="fa-solid fa-bag-shopping"></i> Add to Cart</button>'
+    : '<button type="button" class="pp-btn pp-btn-cart" id="ppAdd" disabled>Sold Out</button>';
+
+  const waLabel = inStock ? 'Order on WhatsApp' : 'Ask on WhatsApp';
+  const desc = p.description ? esc(p.description) : 'Message us on WhatsApp for sizes, colours and more details about this item.';
+
+  root.innerHTML =
+    '<nav class="pp-breadcrumb" aria-label="Breadcrumb">' + crumb + '</nav>' +
+    '<div class="pp-layout">' +
+      '<div class="pp-image-box">' +
+        '<img src="' + esc(img) + '" alt="' + esc(p.title) + '">' +
+        (inStock ? '' : '<span class="pp-badge-out">Sold Out</span>') +
+      '</div>' +
+      '<div class="pp-info">' +
+        '<span class="pp-cat">' + esc(p.subcategory || p.category) + '</span>' +
+        '<h1 class="pp-title">' + esc(p.title) + '</h1>' +
+        '<p class="pp-price">' + naira(price) + '</p>' +
+        stockHtml +
+        '<p class="pp-desc">' + desc + '</p>' +
+        qtyHtml +
+        '<div class="pp-actions">' +
+          addHtml +
+          '<a class="pp-btn pp-btn-wa" id="ppWhatsApp" href="#" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> ' + waLabel + '</a>' +
+        '</div>' +
+        '<ul class="pp-notes">' +
+          '<li><i class="fa-solid fa-truck-fast"></i> Fast doorstep delivery in Abuja &amp; nationwide</li>' +
+          '<li><i class="fa-solid fa-hand-holding-dollar"></i> Pay on delivery available in Abuja</li>' +
+          '<li><i class="fa-solid fa-building-columns"></i> Secure bank transfer payment</li>' +
+        '</ul>' +
+      '</div>' +
+    '</div>' +
+    '<section class="pp-related" id="ppRelated"></section>';
+
+  document.title = p.title + ' | Betah Kids Beauty World LTD';
+  const meta = document.getElementById('metaDesc');
+  if (meta) {
+    const text = p.description ? String(p.description).replace(/\s+/g, ' ').trim().slice(0, 150) : (p.title + ' - ' + naira(price) + ' at Betah Kids Beauty World LTD, Wuse Market, Abuja.');
+    meta.setAttribute('content', text);
+  }
+
+  bindBuyControls();
+  updateWhatsApp();
+}
+
+function relatedCard(r) {
+  const inStock = isInStock(r);
+  const img = r.image_url || 'images/logo.png';
+  const price = Number(r.price) || 0;
+  const link = 'product.html?id=' + encodeURIComponent(r.id);
+  return '' +
+    '<article class="product-card">' +
+      '<a class="product-img-link" href="' + link + '">' +
+        '<div class="product-img"><img src="' + esc(img) + '" alt="' + esc(r.title) + '" loading="lazy">' +
+        (inStock ? '' : '<span class="sold-out-badge">Sold Out</span>') +
+        '</div>' +
+      '</a>' +
+      '<div class="product-body">' +
+        '<span class="product-cat">' + esc(r.subcategory || r.category) + '</span>' +
+        '<h3><a href="' + link + '">' + esc(r.title) + '</a></h3>' +
+        '<p class="price">&#8358;' + price.toLocaleString() + '</p>' +
+        '<button type="button" class="add-cart-btn" data-id="' + esc(r.id) + '" data-title="' + esc(r.title) + '" data-price="' + price + '" data-image="' + esc(img) + '"' + (inStock ? '' : ' disabled') + '>' +
+          (inStock ? 'Add to Cart' : 'Sold Out') +
+        '</button>' +
+      '</div>' +
+    '</article>';
+}
+
+async function loadRelated(p) {
+  if (!p.category) return;
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('category', p.category)
+      .neq('id', p.id)
+      .order('created_at', { ascending: false })
+      .limit(4);
+    if (error) throw error;
+    if (!data || data.length === 0) return;
+    const box = document.getElementById('ppRelated');
+    if (!box) return;
+    box.innerHTML = '<h2 class="pp-related-title">You may also like</h2>' +
+      '<div class="product-grid">' + data.map(relatedCard).join('') + '</div>';
+  } catch (err) {
+    console.error('[product page] Could not load related products:', err);
+  }
+}
+
+document.addEventListener('click', function (e) {
+  const btn = e.target.closest('#ppRelated .add-cart-btn');
+  if (!btn || btn.disabled) return;
+  if (typeof window.addToCart === 'function') {
+    window.addToCart(btn.dataset.id, btn.dataset.title, Number(btn.dataset.price), btn.dataset.image);
+  }
+});
+
+async function loadProduct() {
+  if (!productId) {
+    showMessage('No product selected', 'Please choose a product from our <a href="index.html#shop-by-category">shop</a>.');
+    return;
+  }
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('id', productId)
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) {
+      showMessage('Product not found', 'This item may have been removed. <a href="index.html#shop-by-category">Browse the shop</a> or <a href="index.html">go back home</a>.');
+      return;
+    }
+    product = data;
+    renderProduct(data);
+    loadRelated(data);
+  } catch (err) {
+    console.error('[product page] Could not load product:', err);
+    showMessage('Product not found', 'We could not load this item. <a href="index.html#shop-by-category">Browse the shop</a> or <a href="index.html">go back home</a>.');
+  }
+}
+
+loadProduct();
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -24,7 +24,7 @@
         </div>
         <div class="form-group">
           <label for="adminPassword">Password</label>
-          <input type="password" id="adminPassword" placeholder="••••••••" required>
+          <input type="password" id="adminPassword" placeholder="********" required>
         </div>
         <button type="submit" class="admin-btn btn-primary" id="loginBtn">Login to Control Panel</button>
       </form>
@@ -33,14 +33,14 @@
 
   <!-- MAIN ADMIN DASHBOARD WORKSPACE -->
   <div class="admin-wrapper" id="adminDashboard" style="display: none;">
-    
+
     <!-- Sidebar Navigation -->
     <aside class="admin-sidebar">
       <div class="admin-logo">
         <span class="betah">Betah</span> <span class="kids">Kids</span>
         <span class="sub">Beauty World LTD</span>
       </div>
-      
+
       <div class="admin-nav">
         <button class="admin-nav-item active" data-tab="tab-overview"><i class="fa-solid fa-chart-pie"></i> Overview</button>
         <button class="admin-nav-item" data-tab="tab-hero"><i class="fa-solid fa-sliders"></i> Hero Slider &amp; Video</button>
@@ -55,7 +55,7 @@
 
     <!-- Main Workspace Content -->
     <main class="admin-main">
-      
+
       <header class="admin-header">
         <div>
           <h1 id="pageTitle">Dashboard <em>Overview</em></h1>
@@ -99,7 +99,7 @@
         <div class="admin-card">
           <h2><i class="fa-solid fa-photo-film"></i> Upload New Hero Banner or Video</h2>
           <p>Add new background photos or short MP4 video clips to the homepage slider.</p>
-          
+
           <form id="heroUploadForm" class="admin-form">
             <div class="form-row">
               <div class="form-group">
@@ -129,6 +129,13 @@
                 <label>Media File (Photo or MP4 Video)</label>
                 <input type="file" id="slideFile" accept="image/*,video/mp4" required>
               </div>
+            </div>
+
+            <div class="form-group">
+              <label>Where should this slide go when clicked?</label>
+              <select id="slideLink">
+                <option value="">-- No link (slide shows no button) --</option>
+              </select>
             </div>
 
             <button type="submit" class="admin-btn btn-primary"><i class="fa-solid fa-cloud-arrow-up"></i> Publish to Hero Slider</button>
@@ -162,19 +169,46 @@
 
             <div class="form-row">
               <div class="form-group">
-                <label>Store Category</label>
+                <label>Main Category</label>
                 <select id="prodCategory" required>
-                  <option value="retail">Retail</option>
-                  <option value="wholesale">Wholesale</option>
-                  <option value="maternity">Maternity</option>
-                  <option value="back-to-school">Back to School</option>
-                  <option value="toys">Toys</option>
+                  <option value="">-- Select Main Category --</option>
+                  <option value="Accessories">Accessories</option>
+                  <option value="Baby Essentials">Baby Essentials</option>
+                  <option value="Clothing">Clothing</option>
+                  <option value="Maternity">Maternity</option>
+                  <option value="School">School</option>
+                  <option value="Shoes">Shoes</option>
+                  <option value="Toys">Toys</option>
                 </select>
+              </div>
+              <div class="form-group">
+                <label>Subcategory</label>
+                <select id="prodSubcategory" required>
+                  <option value="">-- Select Main Category First --</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Stock Quantity</label>
+                <input type="number" id="prodStock" min="0" placeholder="e.g. 10" value="1" required>
               </div>
               <div class="form-group">
                 <label>Product Photo</label>
                 <input type="file" id="prodImage" accept="image/*" required>
               </div>
+            </div>
+
+            <div class="form-row checkbox-row">
+              <label class="checkbox-pill">
+                <input type="checkbox" id="prodFeatured">
+                <span><i class="fa-solid fa-star"></i> Mark as Featured</span>
+              </label>
+              <label class="checkbox-pill">
+                <input type="checkbox" id="prodTrending">
+                <span><i class="fa-solid fa-fire"></i> Mark as Trending</span>
+              </label>
             </div>
 
             <div class="form-group">
@@ -196,12 +230,15 @@
                   <th>Photo</th>
                   <th>Title</th>
                   <th>Category</th>
+                  <th>Subcategory</th>
                   <th>Price</th>
+                  <th>Stock</th>
+                  <th>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="productsTableBody">
-                <tr><td colspan="5" class="text-center">Loading inventory...</td></tr>
+                <tr><td colspan="8" class="text-center">Loading inventory...</td></tr>
               </tbody>
             </table>
           </div>
@@ -233,6 +270,80 @@
       </section>
 
     </main>
+  </div>
+
+  <!-- EDIT PRODUCT MODAL -->
+  <div class="edit-product-overlay" id="editProductOverlay" style="display:none;">
+    <div class="edit-product-card">
+      <button class="close-modal-btn" id="closeEditModalBtn" type="button">&times;</button>
+      <h2>Edit <em>Product</em></h2>
+      <p>Update product details below and save changes.</p>
+
+      <form id="editProductForm" class="admin-form">
+        <input type="hidden" id="editProdId">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Product Title</label>
+            <input type="text" id="editProdTitle" required>
+          </div>
+          <div class="form-group">
+            <label>Price in NGN (₦)</label>
+            <input type="number" id="editProdPrice" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Main Category</label>
+            <select id="editProdCategory" required>
+              <option value="Accessories">Accessories</option>
+              <option value="Baby Essentials">Baby Essentials</option>
+              <option value="Clothing">Clothing</option>
+              <option value="Maternity">Maternity</option>
+              <option value="School">School</option>
+              <option value="Shoes">Shoes</option>
+              <option value="Toys">Toys</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Subcategory</label>
+            <select id="editProdSubcategory" required>
+              <option value="">-- Select Subcategory --</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Stock Quantity</label>
+            <input type="number" id="editProdStock" min="0" required>
+          </div>
+          <div class="form-group">
+            <label>Replace Photo (optional)</label>
+            <input type="file" id="editProdImage" accept="image/*">
+          </div>
+        </div>
+
+        <div class="form-row checkbox-row">
+          <label class="checkbox-pill">
+            <input type="checkbox" id="editProdFeatured">
+            <span><i class="fa-solid fa-star"></i> Mark as Featured</span>
+          </label>
+          <label class="checkbox-pill">
+            <input type="checkbox" id="editProdTrending">
+            <span><i class="fa-solid fa-fire"></i> Mark as Trending</span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label>Product Description</label>
+          <textarea id="editProdDesc" rows="2"></textarea>
+        </div>
+
+        <button type="submit" class="admin-btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+      </form>
+    </div>
   </div>
 
   <script type="module" src="admin.js"></script>

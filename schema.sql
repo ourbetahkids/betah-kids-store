@@ -1,12 +1,22 @@
-﻿-- 1. PRODUCTS TABLE
+﻿@'
+-- =========================================================
+-- BETAH KIDS BEAUTY WORLD LTD — DATABASE SCHEMA
+-- Last synced with live Supabase: see MIGRATION LOG at bottom
+-- =========================================================
+
+-- 1. PRODUCTS TABLE
 CREATE TABLE IF NOT EXISTS public.products (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     title TEXT NOT NULL,
     price NUMERIC NOT NULL,
     category TEXT NOT NULL,
     image_url TEXT NOT NULL,
+    subcategory TEXT DEFAULT '',
     description TEXT,
     in_stock BOOLEAN DEFAULT true,
+    stock_quantity INTEGER DEFAULT 1,
+    is_featured BOOLEAN DEFAULT false,
+    is_trending BOOLEAN DEFAULT false,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -23,6 +33,8 @@ CREATE TABLE IF NOT EXISTS public.hero_slides (
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+-- NOTE: button_link default still points to retail.html (legacy page, being retired).
+-- Flagged for update when hero slider content is rewritten during homepage rebuild.
 
 -- 3. ORDERS TABLE
 CREATE TABLE IF NOT EXISTS public.orders (
@@ -53,3 +65,19 @@ INSERT INTO storage.buckets (id, name, public) VALUES ('hero-media', 'hero-media
 
 CREATE POLICY "Public Storage Uploads" ON storage.objects FOR INSERT WITH CHECK (true);
 CREATE POLICY "Public Storage Reads" ON storage.objects FOR SELECT USING (true);
+
+-- =========================================================
+-- MIGRATION LOG — changes applied to LIVE database via
+-- Supabase SQL Editor (run outside this file, logged here
+-- for history/reference). Safe to re-run, all idempotent.
+-- =========================================================
+
+-- Migration: Add stock/featured/trending support to products,
+-- confirm items snapshot column on orders.
+-- Date applied: this build session ("THE REVOLUTION" rebuild)
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS stock_quantity INTEGER DEFAULT 1;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS is_featured BOOLEAN DEFAULT false;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS is_trending BOOLEAN DEFAULT false;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS items JSONB;
+-- (items already existed on orders from original schema — this line is a no-op safeguard)
+'@ | Set-Content schema.sql -Encoding utf8

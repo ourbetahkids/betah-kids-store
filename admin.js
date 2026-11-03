@@ -1,4 +1,30 @@
-﻿import { supabase } from './db.js';
+import { supabase } from './db.js';
+
+// CATEGORY TO SUBCATEGORY MAPPING (7 locked categories)
+const subcategoryMap = {
+  'Accessories': ['Baby Accessories', 'Boys Accessories', 'Girls Accessories', 'Socks', 'Hats & Sunglasses', 'Headbands & Hair Clips', 'Bibs & Muslins', 'Rain Gear', 'Ballet Attire'],
+  'Baby Essentials': ['Diapering & Bath', 'Feeding & Nursing', 'Bedding & Furniture', 'Travel, Health & Safety'],
+  'Clothing': ['Baby Boy Clothing', 'Baby Girl Clothing', 'Boys Clothing', 'Girls Clothing', 'Boys Underwear', 'Girls Underwear'],
+  'Maternity': ['Maternity Dresses', 'Maternity Trousers', 'Maternity Sleepwear'],
+  'School': ['Uniforms', 'Bags & Backpacks', 'Lunch Boxes & Bottles', 'Stationery & Supplies', 'Books'],
+  'Shoes': ['Baby Shoes', 'Boys Shoes', 'Girls Shoes', 'School Shoes'],
+  'Toys': ['Babies & Preschoolers (0-2)', 'Toddlers (2+)', 'Kids (4+)', 'Big Kids (7+)', 'Playmats & Activity', 'Costumes & Dress-Up', 'Bicycles, Scooters & Ride-Ons', 'Outdoor & Garden Play', 'Swimming & Beach', 'Party & Balloons']
+};
+
+function populateSubcategorySelect(selectEl, category, selectedValue) {
+  if (!selectEl) return;
+  const subs = subcategoryMap[category] || [];
+
+  if (subs.length === 0) {
+    selectEl.innerHTML = '<option value="">N/A — No Subcategories</option>';
+    selectEl.removeAttribute('required');
+    return;
+  }
+
+  selectEl.setAttribute('required', 'required');
+  selectEl.innerHTML = '<option value="">-- Select Subcategory --</option>' +
+    subs.map(sub => `<option value="${sub}" ${sub === selectedValue ? 'selected' : ''}>${sub}</option>`).join('');
+}
 
 // DOM ELEMENTS
 const loginOverlay = document.getElementById('loginOverlay');
@@ -8,12 +34,38 @@ const logoutBtn = document.getElementById('logoutBtn');
 const navItems = document.querySelectorAll('.admin-nav-item');
 const tabContents = document.querySelectorAll('.admin-tab-content');
 
+// ADD PRODUCT: subcategory dropdown wiring
+const prodCategorySelect = document.getElementById('prodCategory');
+const prodSubcategorySelect = document.getElementById('prodSubcategory');
+if (prodCategorySelect) {
+  prodCategorySelect.addEventListener('change', () => {
+    populateSubcategorySelect(prodSubcategorySelect, prodCategorySelect.value, '');
+  });
+}
+
+// EDIT PRODUCT: subcategory dropdown wiring
+const editProdCategorySelect = document.getElementById('editProdCategory');
+const editProdSubcategorySelect = document.getElementById('editProdSubcategory');
+if (editProdCategorySelect) {
+  editProdCategorySelect.addEventListener('change', () => {
+    populateSubcategorySelect(editProdSubcategorySelect, editProdCategorySelect.value, '');
+  });
+}
+
 // INITIALIZATION ON PAGE LOAD
-document.addEventListener('DOMContentLoaded', () => {
-  const savedSession = localStorage.getItem('betah_admin_session');
-  if (savedSession) {
-    showDashboard(savedSession);
+document.addEventListener('DOMContentLoaded', async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session && session.user) {
+    showDashboard(session.user.email);
     loadAllAdminData();
+  }
+});
+
+// LISTEN FOR AUTH STATE CHANGES (handles session expiry automatically)
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === 'SIGNED_OUT') {
+    if (loginOverlay) loginOverlay.style.display = 'flex';
+    if (adminDashboard) adminDashboard.style.display = 'none';
   }
 });
 
@@ -28,28 +80,42 @@ navItems.forEach(button => {
     button.classList.add('active');
     const targetSection = document.getElementById(targetTabId);
     if (targetSection) targetSection.classList.add('active');
+    if (targetTabId === 'tab-hero') loadHeroSlides();
   });
 });
 
-// LOGIN SUBMISSION LOGIC
-adminLoginForm.addEventListener('submit', (e) => {
+// LOGIN SUBMISSION LOGIC (Real Supabase Authentication)
+adminLoginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = document.getElementById('adminEmail').value.trim();
   const password = document.getElementById('adminPassword').value.trim();
+  const loginBtn = document.getElementById('loginBtn');
 
-  // Secure admin password check (betah2026 or admin123)
-  if (password === 'betah2026' || password === 'admin123') {
-    localStorage.setItem('betah_admin_session', email);
-    showDashboard(email);
+  loginBtn.disabled = true;
+  loginBtn.textContent = 'Logging in...';
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email,
+    password: password
+  });
+
+  loginBtn.disabled = false;
+  loginBtn.textContent = 'Login to Control Panel';
+
+  if (error) {
+    alert('Login Failed: ' + error.message);
+    return;
+  }
+
+  if (data && data.user) {
+    showDashboard(data.user.email);
     loadAllAdminData();
-  } else {
-    alert('Incorrect Admin Password! Please try again.');
   }
 });
 
-// LOGOUT LOGIC
-logoutBtn.addEventListener('click', () => {
-  localStorage.removeItem('betah_admin_session');
+// LOGOUT LOGIC (Real Supabase Sign Out)
+logoutBtn.addEventListener('click', async () => {
+  await supabase.auth.signOut();
   location.reload();
 });
 
@@ -100,12 +166,12 @@ if (heroUploadForm) {
     const subtitle = document.getElementById('slideSubtitle').value.trim();
     const buttonText = document.getElementById('slideButtonText').value.trim() || 'Shop Collection';
     const fileInput = document.getElementById('slideFile');
+    const slideLink = document.getElementById('slideLink') ? document.getElementById('slideLink').value : '';
     const file = fileInput.files[0];
 
     if (!file) return alert('Please select an image or video file.');
 
     try {
-      // Upload file to Supabase Storage Bucket 'hero-media'
       const fileExt = file.name.split('.').pop();
       const fileName = `hero_${Date.now()}.${fileExt}`;
 
@@ -115,21 +181,20 @@ if (heroUploadForm) {
 
       if (storageErr) throw storageErr;
 
-      // Get Public File URL
       const { data: urlData } = supabase.storage
         .from('hero-media')
         .getPublicUrl(fileName);
 
       const publicUrl = urlData.publicUrl;
 
-      // Insert metadata into 'hero_slides' database table
       const { error: dbErr } = await supabase.from('hero_slides').insert([
         {
           title,
           subtitle,
           media_url: publicUrl,
           media_type: mediaType,
-          button_text: buttonText
+          button_text: buttonText,
+          button_link: slideLink
         }
       ]);
 
@@ -144,10 +209,69 @@ if (heroUploadForm) {
   });
 }
 
-// FETCH & RENDER HERO SLIDES LIST
+// FETCH & RENDER HERO SLIDES LIST (with link picker per slide)
+const HERO_CATEGORY_LINKS = [
+  ['Accessories', 'accessories.html'],
+  ['Baby Essentials', 'baby-essentials.html'],
+  ['Clothing', 'clothing.html'],
+  ['Maternity', 'maternity.html'],
+  ['School', 'school.html'],
+  ['Shoes', 'shoes.html'],
+  ['Toys', 'toys.html']
+];
+
+function adminEsc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function buildLinkOptions(products, selectedValue, noneLabel) {
+  const sel = selectedValue || '';
+  let html = '<option value="">' + adminEsc(noneLabel) + '</option>';
+  html += '<optgroup label="Category pages">';
+  HERO_CATEGORY_LINKS.forEach(function (c) {
+    html += '<option value="' + c[1] + '"' + (c[1] === sel ? ' selected' : '') + '>' + adminEsc(c[0]) + ' (whole category)</option>';
+  });
+  html += '</optgroup>';
+  if (products.length > 0) {
+    html += '<optgroup label="Single products">';
+    products.forEach(function (p) {
+      const link = 'product.html?id=' + p.id;
+      html += '<option value="' + link + '"' + (link === sel ? ' selected' : '') + '>' + adminEsc(p.title) + ' (' + adminEsc(p.category) + ')</option>';
+    });
+    html += '</optgroup>';
+  }
+  return html;
+}
+
+function describeLink(link, products) {
+  if (!link) return 'No link (no button shown)';
+  const cat = HERO_CATEGORY_LINKS.find(function (c) { return c[1] === link; });
+  if (cat) return 'Opens: ' + cat[0] + ' page';
+  const m = link.match(/^product\.html\?id=(.+)$/);
+  if (m) {
+    const prod = products.find(function (p) { return String(p.id) === m[1]; });
+    return prod ? 'Opens product: ' + prod.title : 'Link points to a product that no longer exists';
+  }
+  return 'Old link (' + link + ') is not used. Pick a new link below.';
+}
+
 async function loadHeroSlides() {
   const container = document.getElementById('heroSlidesList');
   if (!container) return;
+
+  const { data: prodData } = await supabase
+    .from('products')
+    .select('id, title, category')
+    .order('title', { ascending: true });
+  const products = prodData || [];
+
+  const formLink = document.getElementById('slideLink');
+  if (formLink) {
+    const keep = formLink.value;
+    formLink.innerHTML = buildLinkOptions(products, keep, '-- No link (slide shows no button) --');
+  }
 
   const { data: slides, error } = await supabase
     .from('hero_slides')
@@ -160,19 +284,41 @@ async function loadHeroSlides() {
   }
 
   container.innerHTML = slides.map(slide => `
-    <div style="background:#f9f9f9; padding:16px; border-radius:12px; margin-bottom:12px; display:flex; gap:16px; align-items:center;">
-      ${slide.media_type === 'video' 
+    <div style="background:#f9f9f9; padding:16px; border-radius:12px; margin-bottom:12px; display:flex; gap:16px; align-items:flex-start;">
+      ${slide.media_type === 'video'
         ? `<video src="${slide.media_url}" style="width:100px; height:70px; object-fit:cover; border-radius:8px;" autoplay muted loop></video>`
-        : `<img src="${slide.media_url}" style="width:100px; height:70px; object-fit:cover; border-radius:8px;" alt="${slide.title}">`
+        : `<img src="${slide.media_url}" style="width:100px; height:70px; object-fit:cover; border-radius:8px;" alt="${adminEsc(slide.title)}">`
       }
       <div style="flex:1;">
         <h4 style="margin-bottom:4px;">${slide.title} <span style="font-size:0.7rem; background:#FF7A1A; color:white; padding:2px 8px; border-radius:50px;">${slide.media_type}</span></h4>
         <p style="font-size:0.82rem; color:#666;">${slide.subtitle}</p>
+        <p style="font-size:0.78rem; color:#2A6EBB; margin-top:6px;"><i class="fa-solid fa-link"></i> ${adminEsc(describeLink(slide.button_link, products))}</p>
+        <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+          <select id="heroLink_${slide.id}" style="flex:1; min-width:200px; padding:8px; border-radius:6px; border:1px solid #ddd;">${buildLinkOptions(products, slide.button_link, '-- No link --')}</select>
+          <button type="button" onclick="window.saveHeroLink('${slide.id}')" style="background:#2A6EBB; color:white; border:none; padding:8px 14px; border-radius:6px; cursor:pointer;">Save link</button>
+        </div>
       </div>
       <button onclick="window.deleteHeroSlide('${slide.id}')" style="background:#ff4d4d; color:white; border:none; padding:8px 14px; border-radius:6px; cursor:pointer;">Delete</button>
     </div>
   `).join('');
 }
+
+// SAVE THE LINK OF AN EXISTING HERO SLIDE
+window.saveHeroLink = async (id) => {
+  const select = document.getElementById('heroLink_' + id);
+  if (!select) return;
+  const { data, error } = await supabase
+    .from('hero_slides')
+    .update({ button_link: select.value })
+    .eq('id', id)
+    .select();
+  if (error) return alert('Could not save link: ' + error.message);
+  if (!data || data.length === 0) {
+    return alert('Link was NOT saved: the database refused the change (permission). Tell your assistant and it will give you the one-line fix.');
+  }
+  alert('Link saved. Refresh the homepage to see it.');
+  loadHeroSlides();
+};
 
 // GLOBAL HERO DELETE FUNCTION
 window.deleteHeroSlide = async (id) => {
@@ -191,6 +337,10 @@ if (productAddForm) {
     const title = document.getElementById('prodTitle').value.trim();
     const price = Number(document.getElementById('prodPrice').value);
     const category = document.getElementById('prodCategory').value;
+    const subcategory = document.getElementById('prodSubcategory').value;
+    const stockQuantity = Number(document.getElementById('prodStock').value) || 0;
+    const isFeatured = document.getElementById('prodFeatured').checked;
+    const isTrending = document.getElementById('prodTrending').checked;
     const description = document.getElementById('prodDesc').value.trim();
     const fileInput = document.getElementById('prodImage');
     const file = fileInput.files[0];
@@ -198,7 +348,6 @@ if (productAddForm) {
     if (!file) return alert('Please select a product photo.');
 
     try {
-      // Upload product image to Supabase Storage Bucket 'products'
       const fileExt = file.name.split('.').pop();
       const fileName = `prod_${Date.now()}.${fileExt}`;
 
@@ -208,22 +357,32 @@ if (productAddForm) {
 
       if (storageErr) throw storageErr;
 
-      // Get Public Image URL
       const { data: urlData } = supabase.storage
         .from('products')
         .getPublicUrl(fileName);
 
       const imageUrl = urlData.publicUrl;
 
-      // Insert record into 'products' table
       const { error: dbErr } = await supabase.from('products').insert([
-        { title, price, category, description, image_url: imageUrl }
+        {
+          title,
+          price,
+          category,
+          subcategory,
+          description,
+          image_url: imageUrl,
+          stock_quantity: stockQuantity,
+          in_stock: stockQuantity > 0,
+          is_featured: isFeatured,
+          is_trending: isTrending
+        }
       ]);
 
       if (dbErr) throw dbErr;
 
       alert('Product successfully added to store!');
       productAddForm.reset();
+      prodSubcategorySelect.innerHTML = '<option value="">-- Select Main Category First --</option>';
       loadProducts();
       loadOverviewStats();
     } catch (err) {
@@ -233,6 +392,8 @@ if (productAddForm) {
 }
 
 // FETCH & RENDER PRODUCTS TABLE
+let cachedProducts = [];
+
 async function loadProducts() {
   const tbody = document.getElementById('productsTableBody');
   if (!tbody) return;
@@ -243,23 +404,45 @@ async function loadProducts() {
     .order('created_at', { ascending: false });
 
   if (error || !products || products.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" class="text-center">No products found in inventory. Add one above!</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" class="text-center">No products found in inventory. Add one above!</td></tr>';
+    cachedProducts = [];
     return;
   }
 
-  tbody.innerHTML = products.map(p => `
+  cachedProducts = products;
+
+  tbody.innerHTML = products.map(p => {
+    const qty = Number(p.stock_quantity ?? 0);
+    const inStock = p.in_stock !== false && qty > 0;
+    let statusBadge;
+    if (!inStock) {
+      statusBadge = '<span style="background:#fdeaea; color:#E62E3B; padding:4px 10px; border-radius:50px; font-weight:700; font-size:0.72rem;">Sold Out</span>';
+    } else if (qty <= 3) {
+      statusBadge = '<span style="background:#fff6e5; color:#E56510; padding:4px 10px; border-radius:50px; font-weight:700; font-size:0.72rem;">Low Stock</span>';
+    } else {
+      statusBadge = '<span style="background:#e8f8ee; color:#27AE60; padding:4px 10px; border-radius:50px; font-weight:700; font-size:0.72rem;">In Stock</span>';
+    }
+
+    return `
     <tr>
       <td><img src="${p.image_url}" class="table-img" alt="${p.title}"></td>
-      <td><strong>${p.title}</strong></td>
+      <td><strong>${p.title}</strong>${p.is_featured ? ' <i class="fa-solid fa-star" style="color:#FFC107;" title="Featured"></i>' : ''}${p.is_trending ? ' <i class="fa-solid fa-fire" style="color:#E56510;" title="Trending"></i>' : ''}</td>
       <td><span class="brand-badge">${p.category}</span></td>
+      <td>${p.subcategory || '-'}</td>
       <td>₦${Number(p.price).toLocaleString()}</td>
+      <td>${qty}</td>
+      <td>${statusBadge}</td>
       <td>
+        <button onclick="window.editProduct('${p.id}')" style="color:#2A6EBB; cursor:pointer; background:none; border:none; font-size:1rem; margin-right:10px;">
+          <i class="fa-solid fa-pen"></i> Edit
+        </button>
         <button onclick="window.deleteProduct('${p.id}')" style="color:#ff4d4d; cursor:pointer; background:none; border:none; font-size:1rem;">
           <i class="fa-solid fa-trash"></i> Delete
         </button>
       </td>
     </tr>
-  `).join('');
+  `;
+  }).join('');
 }
 
 // GLOBAL PRODUCT DELETE FUNCTION
@@ -273,7 +456,119 @@ window.deleteProduct = async (id) => {
   }
 };
 
-// 4. ORDERS FETCHING LOGIC
+// 4. EDIT PRODUCT LOGIC
+const editProductOverlay = document.getElementById('editProductOverlay');
+const editProductForm = document.getElementById('editProductForm');
+const closeEditModalBtn = document.getElementById('closeEditModalBtn');
+let currentEditImageUrl = '';
+
+window.editProduct = (id) => {
+  const product = cachedProducts.find(p => p.id === id);
+  if (!product) return alert('Product not found. Please refresh and try again.');
+
+  document.getElementById('editProdId').value = product.id;
+  document.getElementById('editProdTitle').value = product.title;
+  document.getElementById('editProdPrice').value = product.price;
+  document.getElementById('editProdCategory').value = product.category;
+  populateSubcategorySelect(editProdSubcategorySelect, product.category, product.subcategory);
+  document.getElementById('editProdStock').value = product.stock_quantity ?? 0;
+  document.getElementById('editProdFeatured').checked = !!product.is_featured;
+  document.getElementById('editProdTrending').checked = !!product.is_trending;
+  document.getElementById('editProdDesc').value = product.description || '';
+  currentEditImageUrl = product.image_url;
+
+  if (editProductOverlay) editProductOverlay.style.display = 'flex';
+};
+
+if (closeEditModalBtn) {
+  closeEditModalBtn.addEventListener('click', () => {
+    if (editProductOverlay) editProductOverlay.style.display = 'none';
+    if (editProductForm) editProductForm.reset();
+  });
+}
+
+if (editProductOverlay) {
+  editProductOverlay.addEventListener('click', (e) => {
+    if (e.target === editProductOverlay) {
+      editProductOverlay.style.display = 'none';
+      if (editProductForm) editProductForm.reset();
+    }
+  });
+}
+
+if (editProductForm) {
+  editProductForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const id = document.getElementById('editProdId').value;
+    const title = document.getElementById('editProdTitle').value.trim();
+    const price = Number(document.getElementById('editProdPrice').value);
+    const category = document.getElementById('editProdCategory').value;
+    const subcategory = document.getElementById('editProdSubcategory').value;
+    const stockQuantity = Number(document.getElementById('editProdStock').value) || 0;
+    const isFeatured = document.getElementById('editProdFeatured').checked;
+    const isTrending = document.getElementById('editProdTrending').checked;
+    const description = document.getElementById('editProdDesc').value.trim();
+    const fileInput = document.getElementById('editProdImage');
+    const newFile = fileInput.files[0];
+
+    const submitBtn = editProductForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Saving...';
+
+    try {
+      let imageUrl = currentEditImageUrl;
+
+      if (newFile) {
+        const fileExt = newFile.name.split('.').pop();
+        const fileName = `prod_${Date.now()}.${fileExt}`;
+
+        const { error: storageErr } = await supabase.storage
+          .from('products')
+          .upload(fileName, newFile);
+
+        if (storageErr) throw storageErr;
+
+        const { data: urlData } = supabase.storage
+          .from('products')
+          .getPublicUrl(fileName);
+
+        imageUrl = urlData.publicUrl;
+      }
+
+      const { error: dbErr } = await supabase
+        .from('products')
+        .update({
+          title,
+          price,
+          category,
+          subcategory,
+          description,
+          image_url: imageUrl,
+          stock_quantity: stockQuantity,
+          in_stock: stockQuantity > 0,
+          is_featured: isFeatured,
+          is_trending: isTrending
+        })
+        .eq('id', id);
+
+      if (dbErr) throw dbErr;
+
+      alert('Product updated successfully!');
+      editProductOverlay.style.display = 'none';
+      editProductForm.reset();
+      loadProducts();
+      loadOverviewStats();
+    } catch (err) {
+      alert('Error updating product: ' + err.message);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Save Changes';
+    }
+  });
+}
+
+// 5. ORDERS FETCHING LOGIC
 async function loadOrders() {
   const tbody = document.getElementById('ordersTableBody');
   if (!tbody) return;
@@ -299,3 +594,4 @@ async function loadOrders() {
     </tr>
   `).join('');
 }
+

@@ -1,13 +1,32 @@
-﻿import { supabase } from './db.js';
+import { supabase } from './db.js';
 
 // LOCAL CART STATE
 let cart = JSON.parse(localStorage.getItem('betah_cart')) || [];
 
+// Page is ready: build the cart drawer + checkout modal, bind header icons (if header already exists)
 document.addEventListener('DOMContentLoaded', () => {
   initCartDOM();
   updateCartBadge();
   renderCartDrawer();
 });
+
+// Pages that load the header from header-partial.inc: the header only exists AFTER this event,
+// so cart icons must be bound and the badge refreshed at that point.
+document.addEventListener('partialsLoaded', () => {
+  bindCartTriggers();
+  updateCartBadge();
+});
+
+// Named handler: attaching the same function twice is ignored by the browser, so no double-open.
+function handleCartTriggerClick(e) {
+  e.preventDefault();
+  openCartDrawer();
+}
+
+function bindCartTriggers() {
+  const cartTriggers = document.querySelectorAll('#cartBtn, .cart-icon-link');
+  cartTriggers.forEach(btn => btn.addEventListener('click', handleCartTriggerClick));
+}
 
 // INITIALIZE CART DOM ELEMENTS & OVERLAYS
 function initCartDOM() {
@@ -26,7 +45,7 @@ function initCartDOM() {
         <div class="cart-drawer-footer">
           <div class="cart-subtotal-row">
             <span>Subtotal:</span>
-            <span class="cart-subtotal-amount" id="cartSubtotal">₦0</span>
+            <span class="cart-subtotal-amount" id="cartSubtotal">\u20A60</span>
           </div>
           <div class="delivery-note">
             <i class="fa-solid fa-truck-fast"></i> Fast doorstep delivery in Abuja &amp; nationwide
@@ -99,7 +118,7 @@ function initCartDOM() {
               </div>
               <div class="bank-detail-row">
                 <span class="bank-detail-label">Amount to Transfer</span>
-                <span class="bank-detail-value" id="bankTransferAmount">₦0</span>
+                <span class="bank-detail-value" id="bankTransferAmount">\u20A60</span>
               </div>
             </div>
 
@@ -114,7 +133,6 @@ function initCartDOM() {
   }
 
   // EVENT LISTENERS
-  const cartBtn = document.getElementById('cartBtn');
   const cartOverlay = document.getElementById('cartOverlay');
   const closeCartBtn = document.getElementById('closeCartBtn');
   const proceedCheckoutBtn = document.getElementById('proceedCheckoutBtn');
@@ -124,7 +142,9 @@ function initCartDOM() {
   const optPOD = document.getElementById('optPOD');
   const copyAccountBtn = document.getElementById('copyAccountBtn');
 
-  if (cartBtn) cartBtn.addEventListener('click', openCartDrawer);
+  // Header cart icons (works immediately on pages that still have the header written in the HTML)
+  bindCartTriggers();
+
   if (cartOverlay) cartOverlay.addEventListener('click', closeCartDrawer);
   if (closeCartBtn) closeCartBtn.addEventListener('click', closeCartDrawer);
   if (proceedCheckoutBtn) proceedCheckoutBtn.addEventListener('click', openCheckoutModal);
@@ -165,7 +185,7 @@ function initCartDOM() {
   if (checkoutForm) {
     checkoutForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+
       if (cart.length === 0) return alert('Your shopping cart is empty.');
 
       const customer_name = document.getElementById('custName').value.trim();
@@ -201,7 +221,7 @@ function openCheckoutModal() {
   const subtotal = calculateSubtotal();
   document.getElementById('checkoutTotalBtnAmount') && (document.getElementById('checkoutTotalBtnAmount').textContent = subtotal.toLocaleString());
   const bankAmountEl = document.getElementById('bankTransferAmount');
-  if (bankAmountEl) bankAmountEl.textContent = '₦' + subtotal.toLocaleString();
+  if (bankAmountEl) bankAmountEl.textContent = '\u20A6' + subtotal.toLocaleString();
   document.getElementById('bankTransferDetails').style.display = 'block';
   document.getElementById('checkoutModalOverlay')?.classList.add('active');
 }
@@ -211,12 +231,13 @@ function closeCheckoutModal() {
 }
 
 // GLOBAL ADD TO CART FUNCTION
-window.addToCart = (id, title, price, image) => {
+window.addToCart = (id, title, price, image, qty = 1) => {
+  const addQty = Math.max(1, parseInt(qty, 10) || 1);
   const existingIndex = cart.findIndex(item => item.id === id);
   if (existingIndex > -1) {
-    cart[existingIndex].qty += 1;
+    cart[existingIndex].qty += addQty;
   } else {
-    cart.push({ id, title, price: Number(price), image, qty: 1 });
+    cart.push({ id, title, price: Number(price), image, qty: addQty });
   }
 
   saveCart();
@@ -256,8 +277,8 @@ function calculateSubtotal() {
 
 function updateCartBadge() {
   const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
-  const badge = document.getElementById('cartCount');
-  if (badge) badge.textContent = totalQty;
+  const badges = document.querySelectorAll('#cartCount, .cart-badge');
+  badges.forEach(badge => { badge.textContent = totalQty; });
 }
 
 // RENDER CART ITEMS INSIDE DRAWER
@@ -273,7 +294,7 @@ function renderCartDrawer() {
         <p>Your shopping bag is empty.</p>
       </div>
     `;
-    if (subtotalEl) subtotalEl.textContent = '₦0';
+    if (subtotalEl) subtotalEl.textContent = '\u20A60';
     return;
   }
 
@@ -282,7 +303,7 @@ function renderCartDrawer() {
       <img src="${item.image}" class="cart-item-img" alt="${item.title}">
       <div class="cart-item-info">
         <div class="cart-item-title">${item.title}</div>
-        <div class="cart-item-price">₦${(item.price * item.qty).toLocaleString()}</div>
+        <div class="cart-item-price">\u20A6${(item.price * item.qty).toLocaleString()}</div>
         <div class="cart-qty-controls">
           <button class="qty-btn" onclick="window.updateCartQty('${item.id}', -1)">-</button>
           <span class="qty-num">${item.qty}</span>
@@ -293,7 +314,7 @@ function renderCartDrawer() {
     </div>
   `).join('');
 
-  if (subtotalEl) subtotalEl.textContent = `₦${calculateSubtotal().toLocaleString()}`;
+  if (subtotalEl) subtotalEl.textContent = `\u20A6${calculateSubtotal().toLocaleString()}`;
 }
 
 // SAVE ORDER TO SUPABASE DATABASE
@@ -327,5 +348,3 @@ async function processDirectOrder(orderData) {
     alert('Error submitting order: ' + err.message);
   }
 }
-
-

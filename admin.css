@@ -175,3 +175,128 @@ body.admin-body {
 .admin-table td { padding: 16px 14px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
 .table-img { width: 48px; height: 48px; border-radius: 8px; object-fit: cover; }
 .text-center { text-align: center; color: #888; padding: 30px !important; }
+
+/* =======================================
+   ADMIN PANEL UPGRADE ADDITIONS
+   Checkbox pills (Featured/Trending) + Edit Product Modal
+   ======================================= */
+
+.checkbox-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.checkbox-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fafafa;
+  border: 1.5px solid #e1e4e8;
+  border-radius: 50px;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  flex: 1;
+  min-width: 200px;
+  justify-content: center;
+}
+
+.checkbox-pill:hover {
+  border-color: #FF7A1A;
+  background: #FFF8F0;
+}
+
+.checkbox-pill input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #FF7A1A;
+  cursor: pointer;
+  width: auto;
+}
+
+.checkbox-pill:has(input:checked) {
+  background: #FFF8F0;
+  border-color: #FF7A1A;
+  color: #E56510;
+}
+
+.checkbox-pill i {
+  color: #FF7A1A;
+}
+
+/* EDIT PRODUCT MODAL */
+.edit-product-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(20,20,20,0.75);
+  backdrop-filter: blur(8px);
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.edit-product-card {
+  background: #ffffff;
+  border-radius: 20px;
+  max-width: 600px;
+  width: 100%;
+  padding: 40px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.edit-product-card h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 2rem;
+  color: #2A2A2A;
+  margin-bottom: 6px;
+}
+
+.edit-product-card h2 em {
+  color: #FF7A1A;
+  font-style: italic;
+}
+
+.edit-product-card p {
+  font-size: 0.88rem;
+  color: #666;
+  margin-bottom: 24px;
+}
+
+.edit-product-card .close-modal-btn {
+  position: absolute;
+  top: 20px; right: 24px;
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  line-height: 1;
+}
+
+.edit-product-card .close-modal-btn:hover {
+  color: #E62E3B;
+}
+
+/* Responsive: stack form rows on small screens (mobile-first safeguard) */
+@media (max-width: 640px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  .checkbox-row {
+    flex-direction: column;
+  }
+  .edit-product-card {
+    padding: 28px 20px;
+  }
+}
