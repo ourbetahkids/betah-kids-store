@@ -1651,3 +1651,82 @@ nav.cp-breadcrumb {
     line-height: 1.25;
   }
 }
+
+/* ============================================================
+   MOBILE HERO OVERLAY (phones <= 560px)
+   Full photo, text sits on the image over a soft dark fade.
+   Orange pill label, white serif headline, brand-colour bar.
+   Desktop/tablet unchanged.
+   ============================================================ */
+@media (max-width: 560px) {
+  .hero-slider-section {
+    height: clamp(340px, 100vw, 440px);
+  }
+  .hero-swiper {
+    height: 100%;
+  }
+  .hero-slide {
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 0 5vw 38px;
+  }
+  .slide-bg,
+  .slide-video {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    width: 100%;
+    height: 100%;
+    background-position: center;
+  }
+  .slide-overlay {
+    display: block;
+    background: linear-gradient(to top,
+      rgba(24, 14, 6, 0.86) 0%,
+      rgba(24, 14, 6, 0.55) 42%,
+      rgba(24, 14, 6, 0.0) 78%);
+  }
+  .hero-text-lux {
+    max-width: none;
+    width: 100%;
+    padding: 0;
+  }
+  .hero-text-lux .overline {
+    display: inline-block;
+    background: var(--primary-orange);
+    color: #fff;
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .hero-text-lux h1 {
+    color: #fff;
+    font-size: clamp(2rem, 9.5vw, 2.6rem);
+    line-height: 1.05;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
+  }
+  .hero-text-lux h1::after {
+    content: "";
+    display: block;
+    width: 72px;
+    height: 4px;
+    margin-top: 12px;
+    border-radius: 4px;
+    background: linear-gradient(90deg,
+      #2A6EBB 0 17%, #E62E3B 17% 34%, #3BB84D 34% 51%,
+      #F23D8C 51% 68%, #8A2BE2 68% 84%, #FFC107 84% 100%);
+  }
+  .hero-text-lux h1 em {
+    color: #FFB366;
+  }
+  .hero-text-lux p.subtitle {
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 14px;
+    -webkit-line-clamp: 2;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+  }
+}
