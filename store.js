@@ -21,7 +21,7 @@ const CATEGORIES = [
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
-  loadLiveHeroSlides();
+  loadLiveHeroSlides().finally(function () { var h = document.querySelector('.hero-slider-section'); if (h) h.classList.add('hero-ready'); });
   loadCategoryTiles();
   loadFeaturedProducts();
   loadTrendingProducts();

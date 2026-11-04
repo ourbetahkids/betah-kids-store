@@ -1730,3 +1730,19 @@ nav.cp-breadcrumb {
     text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
   }
 }
+/* ============================================================
+   HERO NO-FLASH
+   Hero stays invisible until the live slides have loaded
+   (store.js adds .hero-ready). If that never happens, a CSS
+   timer reveals it after 5 seconds so it can never stay hidden.
+   ============================================================ */
+.hero-slider-section .hero-swiper {
+  transition: opacity 0.4s ease;
+}
+.hero-slider-section:not(.hero-ready) .hero-swiper {
+  opacity: 0;
+  animation: heroReveal 0.3s ease 5s forwards;
+}
+@keyframes heroReveal {
+  to { opacity: 1; }
+}
