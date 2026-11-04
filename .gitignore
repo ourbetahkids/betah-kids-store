@@ -1,3 +1,5 @@
 
 # backup files from the rebuild
 *.bak
+
+flash-copy/
