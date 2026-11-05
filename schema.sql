@@ -1,7 +1,8 @@
-﻿@'
 -- =========================================================
--- BETAH KIDS BEAUTY WORLD LTD — DATABASE SCHEMA
--- Last synced with live Supabase: see MIGRATION LOG at bottom
+-- BETAH KIDS BEAUTY WORLD LTD - DATABASE SCHEMA
+-- Record of how the live Supabase database was set up.
+-- Editing this file does NOT change the live database.
+-- See MIGRATION LOG at bottom.
 -- =========================================================
 
 -- 1. PRODUCTS TABLE
@@ -28,13 +29,17 @@ CREATE TABLE IF NOT EXISTS public.hero_slides (
     media_url TEXT NOT NULL,
     media_type TEXT CHECK (media_type IN ('image', 'video')) NOT NULL DEFAULT 'image',
     button_text TEXT DEFAULT 'Shop Collection',
-    button_link TEXT DEFAULT 'retail.html',
+    button_link TEXT DEFAULT '',
     display_order INT DEFAULT 1,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
--- NOTE: button_link default still points to retail.html (legacy page, being retired).
--- Flagged for update when hero slider content is rewritten during homepage rebuild.
+-- NOTE: button_link holds product.html?id=<id> or one of the 7 category pages
+-- (accessories.html, baby-essentials.html, clothing.html, maternity.html,
+-- school.html, shoes.html, toys.html), chosen in the admin slide form.
+-- The default here is empty. The live database may still show the old
+-- default 'retail.html' (that page no longer exists) - harmless, because the
+-- admin form always sends a link.
 
 -- 3. ORDERS TABLE
 CREATE TABLE IF NOT EXISTS public.orders (
@@ -67,7 +72,7 @@ CREATE POLICY "Public Storage Uploads" ON storage.objects FOR INSERT WITH CHECK 
 CREATE POLICY "Public Storage Reads" ON storage.objects FOR SELECT USING (true);
 
 -- =========================================================
--- MIGRATION LOG — changes applied to LIVE database via
+-- MIGRATION LOG - changes applied to LIVE database via
 -- Supabase SQL Editor (run outside this file, logged here
 -- for history/reference). Safe to re-run, all idempotent.
 -- =========================================================
@@ -79,5 +84,4 @@ ALTER TABLE public.products ADD COLUMN IF NOT EXISTS stock_quantity INTEGER DEFA
 ALTER TABLE public.products ADD COLUMN IF NOT EXISTS is_featured BOOLEAN DEFAULT false;
 ALTER TABLE public.products ADD COLUMN IF NOT EXISTS is_trending BOOLEAN DEFAULT false;
 ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS items JSONB;
--- (items already existed on orders from original schema — this line is a no-op safeguard)
-'@ | Set-Content schema.sql -Encoding utf8
+-- (items already existed on orders from original schema - this line is a no-op safeguard)
