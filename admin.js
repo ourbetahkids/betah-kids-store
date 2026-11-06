@@ -187,6 +187,19 @@ if (heroUploadForm) {
 
       const publicUrl = urlData.publicUrl;
 
+      // Optional phone version of a banner
+      let mobileExtra = {};
+      const mobileInput = document.getElementById('slideFileMobile');
+      const mobileFile = mobileInput && mobileInput.files ? mobileInput.files[0] : null;
+      if (mobileFile) {
+        const mobileExt = mobileFile.name.split('.').pop();
+        const mobileName = `hero_${Date.now()}_phone.${mobileExt}`;
+        const { error: mobileErr } = await supabase.storage.from('hero-media').upload(mobileName, mobileFile);
+        if (mobileErr) throw mobileErr;
+        const { data: mobileUrlData } = supabase.storage.from('hero-media').getPublicUrl(mobileName);
+        mobileExtra = { mobile_media_url: mobileUrlData.publicUrl };
+      }
+
       const { error: dbErr } = await supabase.from('hero_slides').insert([
         {
           title,
@@ -194,7 +207,7 @@ if (heroUploadForm) {
           media_url: publicUrl,
           media_type: mediaType,
           button_text: buttonText,
-          button_link: slideLink
+          button_link: slideLink, ...mobileExtra
         }
       ]);
 
@@ -595,3 +608,33 @@ async function loadOrders() {
   `).join('');
 }
 
+// ---------- UPLOAD SPINNER ----------
+// Any admin form button shows a spinner and is locked until the page reports a result (alert).
+(function () {
+  var busyBtn = null, busyHtml = '', busyTimer = null;
+  function release() {
+    if (busyBtn) {
+      busyBtn.disabled = false;
+      busyBtn.innerHTML = busyHtml;
+      busyBtn.style.opacity = '';
+      busyBtn.style.cursor = '';
+      busyBtn = null;
+    }
+    if (busyTimer) { clearTimeout(busyTimer); busyTimer = null; }
+  }
+  document.addEventListener('submit', function (e) {
+    var form = e.target;
+    if (!form || !form.querySelector || form.id === 'adminLoginForm') return;
+    var btn = form.querySelector('button[type="submit"]');
+    if (!btn || busyBtn) return;
+    busyBtn = btn;
+    busyHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+    btn.style.cursor = 'wait';
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Working... please wait';
+    busyTimer = setTimeout(release, 120000);
+  }, true);
+  var nativeAlert = window.alert.bind(window);
+  window.alert = function (msg) { release(); return nativeAlert(msg); };
+})();

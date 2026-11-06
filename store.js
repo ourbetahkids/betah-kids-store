@@ -21,7 +21,7 @@ const CATEGORIES = [
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
-  loadLiveHeroSlides().finally(function () { var h = document.querySelector('.hero-slider-section'); if (h) h.classList.add('hero-ready'); });
+  loadLiveHeroSlides().finally(function () { var h = document.querySelector('.hero-slider-section'); if (!h) return; if (h.querySelector('.hero-swiper .swiper-slide')) { h.classList.add('hero-ready'); } else { h.classList.add('hero-empty'); } });
   loadCategoryTiles();
   loadFeaturedProducts();
   loadTrendingProducts();
@@ -65,7 +65,25 @@ async function loadLiveHeroSlides() {
     const swiperWrapper = document.querySelector('.hero-swiper .swiper-wrapper');
     if (!swiperWrapper) return;
 
+    // A slide with no title and no subtitle is a finished banner: picture only.
+    const isBannerSlide = (s) => !String(s.title || '').trim() && !String(s.subtitle || '').trim();
+    const allBanners = slides.every(s => isBannerSlide(s) && s.media_type !== 'video');
+
     swiperWrapper.innerHTML = slides.map(slide => {
+      if (isBannerSlide(slide)) {
+        const bannerMedia = slide.media_type === 'video'
+          ? `<video class="banner-media" autoplay muted loop playsinline>
+               <source src="${slide.media_url}" type="video/mp4">
+             </video>`
+          : `${slide.mobile_media_url ? '<picture><source media="(max-width: 560px)" srcset="' + slide.mobile_media_url + '"><img class="banner-media" src="' + slide.media_url + '" alt="Betah Kids banner"></picture>' : '<img class="banner-media" src="' + slide.media_url + '" alt="Betah Kids banner">'}`;
+        return `
+        <div class="swiper-slide hero-slide hero-banner">
+          ${bannerMedia}
+          ${heroSlideLinkHtml(slide)}
+        </div>
+      `;
+      }
+
       const mediaHtml = slide.media_type === 'video'
         ? `<video class="slide-video" autoplay muted loop playsinline poster="images/product-01.jpg">
              <source src="${slide.media_url}" type="video/mp4">
@@ -89,6 +107,10 @@ async function loadLiveHeroSlides() {
       `;
     }).join('');
 
+    const heroSection = document.querySelector('.hero-slider-section');
+    if (heroSection) heroSection.classList.toggle('hero-all-banners', allBanners);
+    if (heroSection) heroSection.classList.toggle('hero-banners-mobile', allBanners && slides.every(s => !!s.mobile_media_url));
+
     if (window.heroSwiper && typeof window.heroSwiper.destroy === 'function') {
       window.heroSwiper.destroy(true, true);
     }
@@ -109,41 +131,32 @@ async function loadLiveHeroSlides() {
 }
 
 // ---------- 2. SHOP BY CATEGORY TILES (live counts) ----------
+// Category cards: round picture from images/categories/<name>.png (or jpg / jpeg / webp).
+// If no picture exists yet, the card shows the category icon instead.
+window.bkCatImgFail = function (img) {
+  const exts = ['png', 'jpg', 'jpeg', 'webp'];
+  const i = exts.indexOf(img.dataset.ext);
+  if (i < exts.length - 1) {
+    img.dataset.ext = exts[i + 1];
+    img.src = 'images/categories/' + img.dataset.slug + '.' + exts[i + 1];
+    return;
+  }
+  img.outerHTML = '<span class="category-tile-fallback"><i class="fa-solid ' + img.dataset.icon + '"></i></span>';
+};
+
 async function loadCategoryTiles() {
   const container = document.getElementById('categoryTilesGrid');
   if (!container) return;
 
-  try {
-    const { data: products, error } = await supabase
-      .from('products')
-      .select('category');
-
-    if (error) throw error;
-
-    const counts = {};
-    (products || []).forEach(p => {
-      counts[p.category] = (counts[p.category] || 0) + 1;
-    });
-
-    container.innerHTML = CATEGORIES.map(cat => `
+  container.innerHTML = CATEGORIES.map(cat => {
+    const slug = String(cat.link).replace(/\?.*$/, '').replace(/^.*\//, '').replace(/\.html$/, '');
+    return `
       <a href="${cat.link}" class="category-tile">
-        <i class="fa-solid ${cat.icon}"></i>
+        <img class="category-tile-pic" src="images/categories/${slug}.png" alt="${cat.name}" loading="lazy" data-slug="${slug}" data-ext="png" data-icon="${cat.icon}" onerror="bkCatImgFail(this)">
         <span class="category-tile-name">${cat.name}</span>
-        <span class="category-tile-count">${counts[cat.name] || 0} Products</span>
-      </a>
-    `).join('');
-
-  } catch (err) {
-    console.error('Error loading category counts:', err);
-    container.innerHTML = CATEGORIES.map(cat => `
-      <a href="${cat.link}" class="category-tile">
-        <i class="fa-solid ${cat.icon}"></i>
-        <span class="category-tile-name">${cat.name}</span>
-      </a>
-    `).join('');
-  }
+      </a>`;
+  }).join('');
 }
-
 // ---------- 3. FEATURED PRODUCTS (is_featured = true) ----------
 async function loadFeaturedProducts() {
   const grid = document.getElementById('featuredGrid');

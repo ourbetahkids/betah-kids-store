@@ -2029,3 +2029,178 @@ nav.cp-breadcrumb {
   line-height: 1.1;
 }
 /* ===== END FOOTER LOGO TAGLINE ===== */
+
+/* ============================================================
+   HERO BANNER SLIDES
+   A slide with no title/subtitle is a finished banner: picture
+   only, whole slide clickable. If every slide is a banner the
+   hero takes the banner's own shape (1910 x 823) on tablet and
+   desktop. On phones the banner area is taller (62vw) and the
+   picture fills it, keeping the left/centre of the design.
+   ============================================================ */
+.hero-slide.hero-banner {
+  padding: 0;
+  background: var(--bg-cream);
+}
+.hero-slide.hero-banner .banner-media {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+.hero-slider-section.hero-all-banners {
+  height: auto;
+  aspect-ratio: 1910 / 823;
+}
+.hero-slider-section.hero-all-banners .hero-swiper {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+}
+.hero-slider-section.hero-all-banners .banner-media {
+  object-fit: cover;
+}
+/* Phone banners: with a phone image on every slide the hero is a full square */
+@media (max-width: 560px) {
+  .hero-slider-section.hero-all-banners.hero-banners-mobile {
+    height: 100vw;
+    aspect-ratio: auto;
+  }
+  .hero-slider-section.hero-all-banners.hero-banners-mobile .banner-media {
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+/* ============================================================
+   HERO BANNER ONE SIZE
+   Every banner is 1920 x 1080 (16:9). The picture always fills
+   its box and the middle 75% is always visible.
+   Phone: 4:3 box.  Tablet/desktop: wide 21:9 box.
+   ============================================================ */
+.hero-slide.hero-banner .banner-media {
+  object-fit: cover;
+  object-position: center;
+}
+.hero-slider-section.hero-all-banners {
+  height: auto;
+  aspect-ratio: 21 / 9;
+}
+.hero-slider-section.hero-all-banners .banner-media {
+  object-fit: cover;
+  object-position: center;
+}
+@media (max-width: 560px) {
+  .hero-slider-section.hero-all-banners,
+  .hero-slider-section.hero-all-banners.hero-banners-mobile {
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+  .hero-slider-section.hero-all-banners .banner-media,
+  .hero-slider-section.hero-all-banners.hero-banners-mobile .banner-media {
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+/* ============================================================
+   HERO BANNER PHONE WHOLE
+   On phones the whole banner picture is always visible (no
+   cropping). Box is 16:9 to match the 1920 x 1080 banner size.
+   Desktop and tablet are unchanged.
+   ============================================================ */
+@media (max-width: 560px) {
+  .hero-slider-section.hero-all-banners,
+  .hero-slider-section.hero-all-banners.hero-banners-mobile {
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+  .hero-slider-section .hero-slide.hero-banner .banner-media {
+    object-fit: contain;
+    object-position: center;
+  }
+  .hero-slider-section.hero-all-banners .swiper-button-next,
+  .hero-slider-section.hero-all-banners .swiper-button-prev {
+    display: none;
+  }
+}
+
+/* ============================================================
+   SHOP BY CATEGORY PHONE GAP
+   Phones only: closes the big space between the hero banner and
+   the "Shop by Category" heading (was 120px, desktop value).
+   ============================================================ */
+@media (max-width: 560px) {
+  #shop-by-category {
+    padding-top: 28px;
+  }
+}
+
+/* ============================================================
+   HERO BANNER DESKTOP WHOLE AND PHONE ARROWS
+   Tablet/desktop: banner box is 16:9 so the whole 1920x1080
+   picture shows (no trimming at the top).
+   Phone: small slide arrows come back on banner slides.
+   ============================================================ */
+@media (min-width: 561px) {
+  .hero-slider-section.hero-all-banners,
+  .hero-slider-section.hero-all-banners.hero-banners-mobile {
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+  .hero-slider-section .hero-slide.hero-banner .banner-media,
+  .hero-slider-section.hero-all-banners .banner-media {
+    object-fit: contain;
+    object-position: center;
+  }
+}
+@media (max-width: 560px) {
+  .hero-slider-section.hero-all-banners .swiper-button-next,
+  .hero-slider-section.hero-all-banners .swiper-button-prev {
+    display: flex;
+    width: 34px;
+    height: 34px;
+    margin-top: -17px;
+    background: rgba(255, 255, 255, 0.75);
+    border-radius: 50%;
+    z-index: 5;
+  }
+  .hero-slider-section.hero-all-banners .swiper-button-prev { left: 8px; }
+  .hero-slider-section.hero-all-banners .swiper-button-next { right: 8px; }
+  .hero-slider-section.hero-all-banners .swiper-button-next::after,
+  .hero-slider-section.hero-all-banners .swiper-button-prev::after {
+    font-size: 13px;
+  }
+}
+/* ===== SHOP BY CATEGORY CARDS ===== */
+#shop-by-category .section-header { position: relative; max-width: none; margin: 0 0 36px; text-align: center; }
+#shop-by-category .section-header::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: #d9d2c8; }
+#shop-by-category .section-header h2 { position: relative; display: inline-block; margin: 0; padding: 12px 28px; background: #fff; border: 2px solid var(--text-dark); font-size: 1.3rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+#shop-by-category .section-header h2 em { font-style: normal; color: var(--primary-orange); }
+#shop-by-category .section-header p,
+#shop-by-category .divider-gold { display: none; }
+
+#shop-by-category .category-tiles-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; overflow: visible; scroll-snap-type: none; padding: 0; margin: 0; }
+#shop-by-category .category-tile { width: auto; min-width: 0; padding: 22px 16px 18px; background: #fff; border: 0; border-radius: 14px; box-shadow: 0 4px 18px rgba(0,0,0,0.08); display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--text-dark); }
+#shop-by-category .category-tile:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.14); }
+#shop-by-category .category-tile-pic { width: 100%; max-width: 200px; aspect-ratio: 1 / 1; border-radius: 50%; object-fit: cover; display: block; margin: 0 auto 14px; background: #FFF1E3; }
+#shop-by-category .category-tile-fallback { width: 100%; max-width: 200px; aspect-ratio: 1 / 1; border-radius: 50%; background: #FFF1E3; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+#shop-by-category .category-tile-fallback i { font-size: 3rem; color: var(--primary-orange); margin: 0; }
+#shop-by-category .category-tile-name { font-size: 0.95rem; font-weight: 700; margin: 0; text-align: center; }
+
+@media (max-width: 900px) {
+  #shop-by-category .category-tiles-row { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+}
+@media (max-width: 560px) {
+  #shop-by-category .section-header { margin-bottom: 24px; }
+  #shop-by-category .section-header h2 { font-size: 1.05rem; padding: 10px 18px; }
+  #shop-by-category .category-tiles-row { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  #shop-by-category .category-tile { padding: 14px 10px 14px; }
+  #shop-by-category .category-tile-name { font-size: 0.85rem; }
+}
+/* ===== HERO NO DEFAULTS ===== */
+.hero-slider-section:not(.hero-ready) .hero-swiper { opacity: 0; animation: none; }
+.hero-slider-section.hero-empty { display: none; }
