@@ -148,11 +148,24 @@ async function loadCategoryTiles() {
   const container = document.getElementById('categoryTilesGrid');
   if (!container) return;
 
+  // Pictures uploaded in admin (table category_images). If it cannot be read, use the folder files.
+  const uploaded = {};
+  try {
+    const { data, error } = await supabase.from('category_images').select('category, image_url');
+    if (error) throw error;
+    (data || []).forEach(r => { uploaded[r.category] = r.image_url; });
+  } catch (err) {
+    console.error('Category pictures not loaded:', err);
+  }
+
   container.innerHTML = CATEGORIES.map(cat => {
     const slug = String(cat.link).replace(/\?.*$/, '').replace(/^.*\//, '').replace(/\.html$/, '');
+    const upUrl = uploaded[cat.name];
+    const src = upUrl ? upUrl : 'images/categories/' + slug + '.png';
+    const ext = upUrl ? '' : 'png';
     return `
       <a href="${cat.link}" class="category-tile">
-        <img class="category-tile-pic" src="images/categories/${slug}.png" alt="${cat.name}" loading="lazy" data-slug="${slug}" data-ext="png" data-icon="${cat.icon}" onerror="bkCatImgFail(this)">
+        <img class="category-tile-pic" src="${src}" alt="${cat.name}" loading="lazy" data-slug="${slug}" data-ext="${ext}" data-icon="${cat.icon}" onerror="bkCatImgFail(this)">
         <span class="category-tile-name">${cat.name}</span>
       </a>`;
   }).join('');

@@ -638,3 +638,108 @@ async function loadOrders() {
   var nativeAlert = window.alert.bind(window);
   window.alert = function (msg) { release(); return nativeAlert(msg); };
 })();
+// ---------- SHOP BY CATEGORY PICTURES ----------
+const CATEGORY_PIC_BUCKET = 'category-images';
+
+async function loadCategoryPictures() {
+  const box = document.getElementById('categoryPicsList');
+  if (!box) return;
+  const names = Object.keys(subcategoryMap);
+  const map = {};
+  try {
+    const { data, error } = await supabase.from('category_images').select('category, image_url');
+    if (error) throw error;
+    (data || []).forEach(r => { map[r.category] = r.image_url; });
+  } catch (err) {
+    console.error('Could not load category pictures:', err);
+  }
+  box.innerHTML = names.map(name => {
+    const url = map[name];
+    const thumb = url
+      ? '<img src="' + adminEsc(url) + '" alt="' + adminEsc(name) + '" style="width:64px;height:64px;border-radius:50%;object-fit:cover;display:block;">'
+      : '<span style="width:64px;height:64px;border-radius:50%;background:#FFF1E3;display:flex;align-items:center;justify-content:center;color:#999;font-size:0.65rem;text-align:center;">No picture</span>';
+    return '<div class="cat-pic-row" data-cat="' + adminEsc(name) + '" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #eee;">'
+      + '<div style="flex:0 0 64px;">' + thumb + '</div>'
+      + '<strong style="flex:1 1 120px;min-width:110px;">' + adminEsc(name) + '</strong>'
+      + '<input type="file" accept="image/*" style="flex:1 1 180px;max-width:100%;">'
+      + '<button type="button" class="admin-btn btn-primary" data-act="upload">Upload</button>'
+      + (url ? '<button type="button" class="admin-btn" data-act="remove" style="background:#E62E3B;color:#fff;">Remove</button>' : '')
+      + '<span class="cat-pic-msg" style="flex:1 1 100%;font-size:0.85rem;"></span>'
+      + '</div>';
+  }).join('');
+}
+
+async function handleCategoryPicClick(ev) {
+  const btn = ev.target.closest('button[data-act]');
+  if (!btn) return;
+  const row = btn.closest('.cat-pic-row');
+  const cat = row.getAttribute('data-cat');
+  const msg = row.querySelector('.cat-pic-msg');
+  const act = btn.getAttribute('data-act');
+  const setMsg = (text, bad) => { msg.textContent = text; msg.style.color = bad ? '#E62E3B' : '#3BB84D'; };
+
+  if (act === 'upload') {
+    const input = row.querySelector('input[type=file]');
+    const file = input.files[0];
+    if (!file) return setMsg('Please choose a picture first.', true);
+    if (!file.type.startsWith('image/')) return setMsg('That file is not a picture.', true);
+    if (file.size > 3 * 1024 * 1024) return setMsg('Picture is too heavy. Keep it under 3 MB (best under 80 KB).', true);
+    const oldHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+    try {
+      const slug = cat.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const ext = (file.name.split('.').pop() || 'png').toLowerCase();
+      const path = slug + '_' + Date.now() + '.' + ext;
+      const up = await supabase.storage.from(CATEGORY_PIC_BUCKET).upload(path, file);
+      if (up.error) throw up.error;
+      const pub = supabase.storage.from(CATEGORY_PIC_BUCKET).getPublicUrl(path);
+      const save = await supabase.from('category_images').upsert({ category: cat, image_url: pub.data.publicUrl, updated_at: new Date().toISOString() });
+      if (save.error) throw save.error;
+      await loadCategoryPictures();
+      const again = document.querySelector('.cat-pic-row[data-cat="' + cat + '"] .cat-pic-msg');
+      if (again) { again.textContent = 'Saved. The homepage now shows this picture.'; again.style.color = '#3BB84D'; }
+      return;
+    } catch (err) {
+      console.error(err);
+      setMsg('Upload failed: ' + (err.message || err), true);
+    }
+    btn.disabled = false;
+    btn.innerHTML = oldHtml;
+  }
+
+  if (act === 'remove') {
+    if (!confirm('Remove the ' + cat + ' picture? The homepage will show the icon instead.')) return;
+    btn.disabled = true;
+    try {
+      const cur = await supabase.from('category_images').select('image_url').eq('category', cat).maybeSingle();
+      const del = await supabase.from('category_images').delete().eq('category', cat);
+      if (del.error) throw del.error;
+      const u = cur.data && cur.data.image_url ? cur.data.image_url : '';
+      const k = u.indexOf('/' + CATEGORY_PIC_BUCKET + '/');
+      if (k >= 0) { await supabase.storage.from(CATEGORY_PIC_BUCKET).remove([decodeURIComponent(u.substring(k + CATEGORY_PIC_BUCKET.length + 2))]); }
+      await loadCategoryPictures();
+    } catch (err) {
+      console.error(err);
+      setMsg('Remove failed: ' + (err.message || err), true);
+      btn.disabled = false;
+    }
+  }
+}
+
+(function () {
+  const box = document.getElementById('categoryPicsList');
+  if (box) box.addEventListener('click', handleCategoryPicClick);
+  loadCategoryPictures();
+})();
+// ---------- CATEGORY PICTURES TAB: page heading ----------
+(function () {
+  const navBtn = document.querySelector('.admin-nav-item[data-tab="tab-categories"]');
+  if (!navBtn) return;
+  navBtn.addEventListener('click', function () {
+    setTimeout(function () {
+      const t = document.getElementById('pageTitle');
+      if (t) t.innerHTML = 'Category <em>Pictures</em>';
+    }, 0);
+  });
+})();
