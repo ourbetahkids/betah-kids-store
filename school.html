@@ -57,7 +57,7 @@
 
 <div id="footer-placeholder"></div>
 
-<script src="partials.js"></script>
+<script src="partials.js"></script><script src="trail.js"></script>
 <script type="module" src="cart.js"></script>
 <script type="module" src="nav.js"></script>
 <script type="module">
@@ -96,13 +96,24 @@ function filteredProducts() {
 }
 
 function renderBreadcrumb() {
+  var el = document.getElementById("cpBreadcrumb");
+  try {
+    if (window.bkTrail) {
+      window.bkTrail.visit(CATEGORY, PAGE, { level1: true });
+      if (activeSub) {
+        window.bkTrail.visit(activeSub, PAGE + "?subcategory=" + encodeURIComponent(activeSub), { fallback: [{ l: CATEGORY, u: PAGE }] });
+      }
+      window.bkTrail.render(el);
+      return;
+    }
+  } catch (te) { console.error("[trail]", te); }
   let html = '<a href="index.html">Home</a><span class="cp-sep">&rsaquo;</span>';
   if (activeSub) {
     html += '<a href="' + PAGE + '">' + esc(CATEGORY) + '</a><span class="cp-sep">&rsaquo;</span>' + esc(activeSub);
   } else {
     html += esc(CATEGORY);
   }
-  document.getElementById('cpBreadcrumb').innerHTML = html;
+  el.innerHTML = html;
 }
 
 function renderFilters() {

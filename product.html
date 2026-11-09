@@ -145,7 +145,7 @@
 
 <div id="footer-placeholder"></div>
 
-<script src="partials.js"></script>
+<script src="partials.js"></script><script src="trail.js"></script>
 <script type="module" src="cart.js"></script>
 <script type="module" src="nav.js"></script>
 <script type="module">
@@ -291,7 +291,7 @@ function renderProduct(p) {
   const desc = p.description ? esc(p.description) : 'Message us on WhatsApp for sizes, colours and more details about this item.';
 
   root.innerHTML =
-    '<div class="pp-breadcrumb" role="navigation" aria-label="Breadcrumb">' + crumb + '</div>' +
+    '<div class="pp-breadcrumb" id="ppCrumb" role="navigation" aria-label="Breadcrumb">' + crumb + '</div>' +
     '<div class="pp-layout">' +
       '<div class="pp-gallery"><div class="pp-image-box" id="ppImageBox">' +
         '<img id="ppMainImg" src="' + esc(img) + '" alt="' + esc(p.title) + '">' + (galleryList.length > 1 ? '<button type="button" class="pp-arrow pp-prev" aria-label="Previous photo">&lsaquo;</button><button type="button" class="pp-arrow pp-next" aria-label="Next photo">&rsaquo;</button>' : '') +
@@ -324,6 +324,7 @@ function renderProduct(p) {
     meta.setAttribute('content', text);
   }
 
+  try { if (window.bkTrail) { var tfb = []; if (catPage) { tfb.push({ l: p.category, u: catPage }); } if (p.subcategory && catPage) { tfb.push({ l: p.subcategory, u: catPage + '?subcategory=' + encodeURIComponent(p.subcategory) }); } window.bkTrail.visit(p.title, 'product.html?id=' + encodeURIComponent(p.id), { fallback: tfb }); window.bkTrail.render(document.getElementById('ppCrumb')); } } catch (te) { console.error('[trail]', te); }
   bindBuyControls(); bindGallery();
   updateWhatsApp();
 }
