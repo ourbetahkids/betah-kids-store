@@ -17,17 +17,29 @@
   <link rel="icon" type="image/png" sizes="48x48" href="images/favicon-48.png">
   <link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <style>
+    /* SEARCH PAGE TIGHT */
+    #searchResults.section{padding:16px 16px 40px;}
+    #searchResults #searchCrumb{margin:0 auto 10px !important;padding:0 !important;}
+    #searchResults .section-header{margin:0 auto 6px;padding:0;}
+    #searchResults .section-header h2{font-size:1.4rem;line-height:1.2;margin:0 0 2px;}
+    #searchResults .section-header p{font-size:.85rem;line-height:1.4;margin:0;}
+    #searchResults .divider-gold{margin:6px auto 12px;}
+    #searchResults .product-grid{gap:12px;}
+    #searchResults .empty-state-msg{padding:24px 0;}
+    @media (min-width:901px){
+      #searchResults.section{padding:24px 24px 56px;}
+      #searchResults .section-header h2{font-size:1.7rem;}
+      #searchResults .product-grid{gap:20px;}
+    }
+  </style>
 </head>
 <body class="has-site-header">
 
   <div id="header-placeholder"></div>
 
   <section class="section" id="searchResults">
-    <div class="breadcrumb" style="max-width:1200px; margin:0 auto 24px; padding:0 24px; font-size:0.85rem; color:var(--text-light);">
-      <a href="index.html" style="color:var(--text-light); text-decoration:none;">Home</a>
-      <span style="margin:0 8px;">/</span>
-      <span style="color:var(--text-dark);">Search</span>
-    </div>
+    <div id="searchCrumb" style="max-width:1200px; margin:0 auto 24px; padding:0 24px; font-size:0.85rem; color:var(--text-light);"><a href="index.html" style="color:var(--text-light); text-decoration:none;">Home</a> / <span style="color:var(--text-dark);">Search</span></div>
 
     <div class="section-header">
       <h2 id="searchTitle">Search</h2>
@@ -42,7 +54,7 @@
 
   <div id="footer-placeholder"></div>
 
-  <script src="partials.js"></script>
+  <script src="partials.js"></script><script src="trail.js"></script>
   <script type="module" src="cart.js"></script>
   <script type="module" src="nav.js"></script>
   <script type="module">
@@ -145,6 +157,7 @@
       }
     }
 
+    try { if (window.bkTrail) { window.bkTrail.visit(rawQuery ? 'Search: ' + rawQuery : 'Search', 'search-results.html?q=' + encodeURIComponent(rawQuery), { level1: true }); window.bkTrail.render(document.getElementById('searchCrumb')); } } catch (te) { console.error('[trail]', te); }
     runSearch();
   </script>
 </body>
