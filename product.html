@@ -74,10 +74,10 @@
     .pp-prev{left:8px;}
     .pp-next{right:8px;}
     main.pp-wrap{max-width:1100px;padding:14px 16px 40px;}
-    main.pp-wrap nav.pp-breadcrumb{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:4px;width:auto;margin:0 0 14px;padding:0;background:none;border:0;box-shadow:none;font-size:.78rem;line-height:1.4;}
-    main.pp-wrap nav.pp-breadcrumb a{display:inline;padding:0;margin:0;font-weight:600;}
-    main.pp-wrap nav.pp-breadcrumb .pp-sep{margin:0 2px;}
-    main.pp-wrap nav.pp-breadcrumb .pp-current{display:inline-block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    main.pp-wrap .pp-breadcrumb{position:static;top:auto;left:auto;right:auto;height:auto;z-index:auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:4px;width:auto;margin:0 0 14px;padding:0;background:none;border:0;box-shadow:none;font-size:.78rem;line-height:1.4;}
+    main.pp-wrap .pp-breadcrumb a{display:inline;padding:0;margin:0;font-weight:600;}
+    main.pp-wrap .pp-breadcrumb .pp-sep{margin:0 2px;}
+    main.pp-wrap .pp-breadcrumb .pp-current{display:inline-block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .pp-layout{gap:18px;}
     .pp-gallery{max-width:340px;width:100%;margin:0 auto;}
     .pp-image-box{border-radius:22px;border:1px solid rgba(255,122,26,.14);box-shadow:0 8px 24px rgba(0,0,0,.08);}
@@ -117,7 +117,7 @@
     .pp-related .add-cart-btn{border-radius:999px;min-height:40px;padding:9px 8px;}
     @media (min-width:900px){
       main.pp-wrap{padding:24px 24px 56px;}
-      main.pp-wrap nav.pp-breadcrumb{font-size:.85rem;margin-bottom:20px;}
+      main.pp-wrap .pp-breadcrumb{font-size:.85rem;margin-bottom:20px;}
       .pp-layout{grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:48px;justify-content:center;align-items:start;}
       .pp-gallery{max-width:440px;margin:0;}
       .pp-thumbs{justify-content:flex-start;}
@@ -291,7 +291,7 @@ function renderProduct(p) {
   const desc = p.description ? esc(p.description) : 'Message us on WhatsApp for sizes, colours and more details about this item.';
 
   root.innerHTML =
-    '<nav class="pp-breadcrumb" aria-label="Breadcrumb">' + crumb + '</nav>' +
+    '<div class="pp-breadcrumb" role="navigation" aria-label="Breadcrumb">' + crumb + '</div>' +
     '<div class="pp-layout">' +
       '<div class="pp-gallery"><div class="pp-image-box" id="ppImageBox">' +
         '<img id="ppMainImg" src="' + esc(img) + '" alt="' + esc(p.title) + '">' + (galleryList.length > 1 ? '<button type="button" class="pp-arrow pp-prev" aria-label="Previous photo">&lsaquo;</button><button type="button" class="pp-arrow pp-next" aria-label="Next photo">&rsaquo;</button>' : '') +
