@@ -356,7 +356,7 @@ if (productAddForm) {
     const isTrending = document.getElementById('prodTrending').checked;
     const description = document.getElementById('prodDesc').value.trim();
     const fileInput = document.getElementById('prodImage');
-    const file = fileInput.files[0];
+    const files = Array.from(fileInput.files).slice(0, 5); const file = files[0];
 
     if (!file) return alert('Please select a product photo.');
 
@@ -374,7 +374,7 @@ if (productAddForm) {
         .from('products')
         .getPublicUrl(fileName);
 
-      const imageUrl = urlData.publicUrl;
+      const imageUrl = urlData.publicUrl; const extraUrls = await window.bkUploadExtras(files.slice(1));
 
       const { error: dbErr } = await supabase.from('products').insert([
         {
@@ -383,7 +383,7 @@ if (productAddForm) {
           category,
           subcategory,
           description,
-          image_url: imageUrl,
+          image_url: imageUrl, gallery_images: extraUrls,
           stock_quantity: stockQuantity,
           in_stock: stockQuantity > 0,
           is_featured: isFeatured,
@@ -488,7 +488,7 @@ window.editProduct = (id) => {
   document.getElementById('editProdFeatured').checked = !!product.is_featured;
   document.getElementById('editProdTrending').checked = !!product.is_trending;
   document.getElementById('editProdDesc').value = product.description || '';
-  currentEditImageUrl = product.image_url;
+  currentEditImageUrl = product.image_url; window.bkEditOpen(product);
 
   if (editProductOverlay) editProductOverlay.style.display = 'flex';
 };
@@ -523,14 +523,14 @@ if (editProductForm) {
     const isTrending = document.getElementById('editProdTrending').checked;
     const description = document.getElementById('editProdDesc').value.trim();
     const fileInput = document.getElementById('editProdImage');
-    const newFile = fileInput.files[0];
+    const newFile = null;
 
     const submitBtn = editProductForm.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
     submitBtn.textContent = 'Saving...';
 
     try {
-      let imageUrl = currentEditImageUrl;
+      const bkList = await window.bkEditCollect(fileInput.files); let imageUrl = bkList[0]; let extraUrls = bkList.slice(1);
 
       if (newFile) {
         const fileExt = newFile.name.split('.').pop();
@@ -557,7 +557,7 @@ if (editProductForm) {
           category,
           subcategory,
           description,
-          image_url: imageUrl,
+          image_url: imageUrl, gallery_images: extraUrls,
           stock_quantity: stockQuantity,
           in_stock: stockQuantity > 0,
           is_featured: isFeatured,
@@ -742,4 +742,131 @@ async function handleCategoryPicClick(ev) {
       if (t) t.innerHTML = 'Category <em>Pictures</em>';
     }, 0);
   });
+})();
+/* ===== PRODUCT GALLERY HELPERS ===== */
+(function () {
+  var MAX_PHOTOS = 5;
+  var editUrls = [];
+
+  function uploadOne(file, tag) {
+    var ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+    var name = 'prod_' + Date.now() + '_' + tag + '.' + ext;
+    return supabase.storage.from('products').upload(name, file).then(function (res) {
+      if (res.error) throw res.error;
+      return supabase.storage.from('products').getPublicUrl(name).data.publicUrl;
+    });
+  }
+
+  async function uploadMany(files, tag) {
+    var urls = [];
+    for (var i = 0; i < files.length; i++) {
+      urls.push(await uploadOne(files[i], tag + i));
+    }
+    return urls;
+  }
+
+  window.bkUploadExtras = function (files) {
+    return uploadMany(files || [], 'x');
+  };
+
+  window.bkEditCollect = async function (fileList) {
+    var files = Array.from(fileList || []);
+    if (editUrls.length + files.length > MAX_PHOTOS) {
+      throw new Error('A product can have at most ' + MAX_PHOTOS + ' photos. Remove some first.');
+    }
+    var added = await uploadMany(files, 'e');
+    var all = editUrls.concat(added);
+    if (all.length === 0) throw new Error('A product needs at least one photo.');
+    return all;
+  };
+
+  function renderEdit() {
+    var box = document.getElementById('editProdGallery');
+    if (!box) return;
+    var html = '';
+    editUrls.forEach(function (u, i) {
+      html += '<div class="photo-thumb">' +
+        '<img src="' + u + '" alt="Photo ' + (i + 1) + '">' +
+        (i === 0
+          ? '<span class="photo-main-tag">Main</span>'
+          : '<button type="button" class="photo-btn" data-act="main" data-i="' + i + '">Make main</button>') +
+        '<button type="button" class="photo-x" data-act="remove" data-i="' + i + '" aria-label="Remove photo">&times;</button>' +
+        '</div>';
+    });
+    var input = document.getElementById('editProdImage');
+    var n = (input && input.files) ? input.files.length : 0;
+    if (n) html += '<p class="photo-note">' + n + ' new photo(s) will be added when you press Save.</p>';
+    box.innerHTML = html;
+  }
+
+  window.bkEditOpen = function (product) {
+    var extra = Array.isArray(product.gallery_images) ? product.gallery_images : [];
+    editUrls = [product.image_url].concat(extra).filter(Boolean);
+    var input = document.getElementById('editProdImage');
+    if (input) input.value = '';
+    renderEdit();
+  };
+
+  function init() {
+    var box = document.getElementById('editProdGallery');
+    if (box) {
+      box.addEventListener('click', function (e) {
+        var b = e.target.closest('button[data-act]');
+        if (!b) return;
+        var i = Number(b.dataset.i);
+        if (b.dataset.act === 'remove') {
+          editUrls.splice(i, 1);
+        } else if (b.dataset.act === 'main') {
+          var u = editUrls.splice(i, 1)[0];
+          editUrls.unshift(u);
+        }
+        renderEdit();
+      });
+    }
+
+    var editInput = document.getElementById('editProdImage');
+    if (editInput) {
+      editInput.addEventListener('change', function () {
+        if (editUrls.length + editInput.files.length > MAX_PHOTOS) {
+          alert('A product can have at most ' + MAX_PHOTOS + ' photos. Remove some current photos first, or pick fewer new ones.');
+          editInput.value = '';
+        }
+        renderEdit();
+      });
+    }
+
+    var addInput = document.getElementById('prodImage');
+    var addBox = document.getElementById('prodPreview');
+    if (addInput && addBox) {
+      addInput.addEventListener('change', function () {
+        var files = Array.from(addInput.files);
+        if (files.length > MAX_PHOTOS) alert('Only the first ' + MAX_PHOTOS + ' photos will be used.');
+        addBox.innerHTML = '';
+        files.slice(0, MAX_PHOTOS).forEach(function (f, i) {
+          var d = document.createElement('div');
+          d.className = 'photo-thumb';
+          var im = document.createElement('img');
+          im.src = URL.createObjectURL(f);
+          im.alt = 'Preview ' + (i + 1);
+          d.appendChild(im);
+          if (i === 0) {
+            var s = document.createElement('span');
+            s.className = 'photo-main-tag';
+            s.textContent = 'Main';
+            d.appendChild(s);
+          }
+          addBox.appendChild(d);
+        });
+      });
+      if (addInput.form) {
+        addInput.form.addEventListener('reset', function () { addBox.innerHTML = ''; });
+      }
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();

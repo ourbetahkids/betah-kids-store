@@ -211,8 +211,8 @@
                 <input type="number" id="prodStock" min="0" placeholder="e.g. 10" value="1" required>
               </div>
               <div class="form-group">
-                <label>Product Photo</label>
-                <input type="file" id="prodImage" accept="image/*" required>
+                <label>Product Photos (up to 5, first is the main photo)</label>
+                <input type="file" id="prodImage" accept="image/*" multiple required><div id="prodPreview" class="photo-preview"></div>
               </div>
             </div>
 
@@ -336,8 +336,8 @@
             <input type="number" id="editProdStock" min="0" required>
           </div>
           <div class="form-group">
-            <label>Replace Photo (optional)</label>
-            <input type="file" id="editProdImage" accept="image/*">
+            <label>Photos (up to 5, first is the main photo)</label>
+            <input type="file" id="editProdImage" accept="image/*" multiple><div id="editProdGallery" class="photo-preview"></div>
           </div>
         </div>
 
