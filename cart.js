@@ -141,6 +141,80 @@ function initCartDOM() {
   const optTransfer = document.getElementById('optTransfer');
   const optPOD = document.getElementById('optPOD');
   const copyAccountBtn = document.getElementById('copyAccountBtn');
+  /* ===== DELIVERY CHOICE ===== */
+  (function () {
+    const addr = document.getElementById('custAddress');
+    const cityEl = document.getElementById('custCity');
+    const podBtn = document.getElementById('optPOD');
+    const trBtn = document.getElementById('optTransfer');
+    if (!addr || !cityEl || !podBtn || !trBtn || document.getElementById('bkOptDelivery')) return;
+    const addrGroup = addr.closest('.form-group');
+    const cityGroup = cityEl.closest('.form-group');
+    if (!addrGroup || !cityGroup) return;
+    window.bkDelivery = 'delivery';
+
+    const wrap = document.createElement('div');
+    wrap.style.marginBottom = '14px';
+    wrap.innerHTML =
+      '<label style="display:block;font-size:0.72rem;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;color:#555;margin-bottom:8px;">Delivery or Pickup</label>' +
+      '<div class="payment-methods-grid">' +
+        '<div class="payment-option selected" id="bkOptDelivery"><i class="fa-solid fa-truck"></i><span>Delivery</span></div>' +
+        '<div class="payment-option" id="bkOptPickup"><i class="fa-solid fa-store"></i><span>Pickup</span></div>' +
+      '</div>' +
+      '<p id="bkRecvNote" style="margin:8px 0 0;font-size:.78rem;line-height:1.45;color:#6b5f52;"></p>' +
+      '<p id="bkRecvWarn" style="display:none;margin:6px 0 0;font-size:.78rem;line-height:1.45;color:#c0392b;font-weight:600;"></p>';
+    addrGroup.parentNode.insertBefore(wrap, addrGroup);
+
+    const dBtn = document.getElementById('bkOptDelivery');
+    const pBtn = document.getElementById('bkOptPickup');
+    const note = document.getElementById('bkRecvNote');
+    const warn = document.getElementById('bkRecvWarn');
+    const subBtn = document.getElementById('paySubmitBtn');
+
+    function outside() {
+      return window.bkDelivery !== 'pickup' && /^outside abuja/i.test(cityEl.value);
+    }
+    function syncPod() {
+      const pk = window.bkDelivery === 'pickup';
+      const span = podBtn.querySelector('span');
+      if (span) span.textContent = pk ? 'Pay on Pickup' : 'Pay on Delivery (Abuja)';
+      if (subBtn && podBtn.classList.contains('selected')) {
+        subBtn.innerHTML = pk
+          ? '<i class="fa-solid fa-store"></i> Confirm Pay on Pickup'
+          : '<i class="fa-solid fa-truck-ramp-box"></i> Confirm Pay on Delivery';
+      }
+    }
+    function guard() {
+      if (outside() && podBtn.classList.contains('selected')) {
+        trBtn.click();
+        warn.textContent = 'Pay on Delivery is for Abuja only, so we switched you to Bank Transfer.';
+        warn.style.display = 'block';
+      } else if (!outside()) {
+        warn.style.display = 'none';
+      }
+    }
+    function setMode(m) {
+      window.bkDelivery = m;
+      const pk = m === 'pickup';
+      dBtn.classList.toggle('selected', !pk);
+      pBtn.classList.toggle('selected', pk);
+      addrGroup.style.display = pk ? 'none' : '';
+      cityGroup.style.display = pk ? 'none' : '';
+      addr.required = !pk;
+      cityEl.required = !pk;
+      note.textContent = pk
+        ? 'No delivery fee. We will send you the pickup address and time on WhatsApp once your order is ready.'
+        : 'The delivery fee is not included in the amount to transfer. We confirm it with you on WhatsApp before dispatch.';
+      syncPod();
+      guard();
+    }
+
+    dBtn.addEventListener('click', function () { setMode('delivery'); });
+    pBtn.addEventListener('click', function () { setMode('pickup'); });
+    cityEl.addEventListener('change', guard);
+    podBtn.addEventListener('click', function () { setTimeout(function () { guard(); syncPod(); }, 0); });
+    setMode('delivery');
+  })();
 
   // Header cart icons (works immediately on pages that still have the header written in the HTML)
   bindCartTriggers();
@@ -318,24 +392,143 @@ function renderCartDrawer() {
 }
 
 // SAVE ORDER TO SUPABASE DATABASE
+/* ===== ORDER CONFIRMATION ===== */
+let bkOrderBusy = false;
+
+function bkOcEsc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function bkOcMoney(n) {
+  return '\u20A6' + Number(n || 0).toLocaleString('en-NG');
+}
+
+function bkOcStyle() {
+  if (document.getElementById('bkOcStyle')) return;
+  const css = [
+    '.bkoc-ov{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(20,15,10,.62);z-index:100000;display:flex;align-items:center;justify-content:center;padding:12px}',
+    '.bkoc-box{background:#fff;border-radius:18px;width:100%;max-width:480px;max-height:92vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.35)}',
+    '.bkoc-head{text-align:center;padding:20px 16px 14px;border-bottom:1px solid #f0e6da}',
+    '.bkoc-tick{width:46px;height:46px;border-radius:50%;background:#e7f7ec;color:#1a9b4b;font-size:24px;line-height:46px;margin:0 auto 8px;font-weight:700}',
+    '.bkoc-head h2{margin:0 0 4px;font-size:1.25rem;color:#2a2118}',
+    '.bkoc-head p{margin:0;font-size:.85rem;color:#6b5f52}',
+    '.bkoc-no{display:inline-block;margin-top:10px;padding:6px 16px;border-radius:999px;background:#fff3e8;color:#E56510;font-weight:800;font-size:1.1rem;letter-spacing:.5px;border:1px solid #ffd2ad}',
+    '.bkoc-body{padding:10px 16px 4px}',
+    '.bkoc-item{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;padding:9px 0;border-bottom:1px dashed #eadfd2;font-size:.9rem;color:#2a2118}',
+    '.bkoc-ititle{flex:1;min-width:0;line-height:1.35}',
+    '.bkoc-code{display:inline-block;margin-top:3px;font-family:monospace;font-size:.75rem;background:#fff3e8;color:#E56510;padding:2px 7px;border-radius:6px;font-weight:700}',
+    '.bkoc-qty{font-size:.8rem;color:#6b5f52;margin-left:4px}',
+    '.bkoc-iprice{font-weight:700;white-space:nowrap}',
+    '.bkoc-total{display:flex;justify-content:space-between;font-weight:800;font-size:1.05rem;padding:12px 0 6px;color:#2a2118}',
+    '.bkoc-fee{font-size:.78rem;color:#6b5f52;text-align:right;margin:0 0 8px}',
+    '.bkoc-recv{font-size:.86rem;color:#2a2118;line-height:1.5;margin:6px 0 8px}',
+    '.bkoc-next{background:#faf6f0;border-radius:10px;padding:10px 12px 8px;margin:4px 0 6px}',
+    '.bkoc-next h3{margin:0 0 6px;font-size:.78rem;text-transform:uppercase;letter-spacing:1.2px;color:#E56510}',
+    '.bkoc-next ol{margin:0;padding-left:18px;font-size:.85rem;line-height:1.55;color:#4a3f33}',
+    '.bkoc-next li{margin-bottom:4px}',
+    '.bkoc-foot{padding:8px 16px 18px;display:flex;flex-direction:column;gap:8px}',
+    '.bkoc-wa{display:block;text-align:center;background:#25D366;color:#fff;text-decoration:none;font-weight:700;padding:13px;border-radius:12px;font-size:.95rem}',
+    '.bkoc-close{background:#fff;border:1px solid #d9cfc2;border-radius:12px;padding:11px;font-weight:600;cursor:pointer;font-size:.9rem;color:#4a3f33}'
+  ].join('');
+  const st = document.createElement('style');
+  st.id = 'bkOcStyle';
+  st.textContent = css;
+  document.head.appendChild(st);
+}
+
+function bkOcShow(res, orderData, isTransfer, pickup) {
+  bkOcStyle();
+  const items = Array.isArray(res.items) ? res.items : [];
+  const total = Number(res.total || 0);
+  const no = res.order_no || '';
+  const where = orderData.address + (orderData.city ? ', ' + orderData.city : '');
+
+  const lines = items.map(function (it) {
+    return '- ' + (it.product_code ? it.product_code + ' ' : '') + it.title + ' x' + it.qty + ' (' + bkOcMoney(Number(it.price) * Number(it.qty)) + ')';
+  });
+  let msg = 'Hello Betah Kids Beauty World, I have placed order ' + no + '.\n\n' + lines.join('\n') +
+    '\n\nTotal: ' + bkOcMoney(total) + (pickup ? '' : ' (goods only, delivery fee to be confirmed)') +
+    '\nPayment: ' + (isTransfer ? 'Bank transfer' : (pickup ? 'Pay on Pickup' : 'Pay on Delivery')) +
+    '\nName: ' + orderData.customer_name +
+    '\nPhone: ' + orderData.phone +
+    (pickup ? '\nCollection: Pickup. Please send me the pickup address and time.' : '\nDeliver to: ' + where);
+  if (isTransfer) msg += '\n\nI have made the transfer and will send my proof of payment here.';
+  const waUrl = 'https://wa.me/2348033016335?text=' + encodeURIComponent(msg);
+
+  const itemHtml = items.map(function (it) {
+    return '<div class="bkoc-item"><div class="bkoc-ititle"><b>' + bkOcEsc(it.title) + '</b><br>' +
+      (it.product_code ? '<span class="bkoc-code">' + bkOcEsc(it.product_code) + '</span>' : '') +
+      '<span class="bkoc-qty">\u00D7 ' + bkOcEsc(it.qty) + '</span></div>' +
+      '<div class="bkoc-iprice">' + bkOcMoney(Number(it.price) * Number(it.qty)) + '</div></div>';
+  }).join('');
+
+  const steps = [];
+  if (isTransfer) {
+    steps.push('Send your proof of payment to us on WhatsApp (green button below), quoting <b>' + bkOcEsc(no) + '</b>.');
+    steps.push('We confirm the payment in our account.');
+  } else {
+    steps.push('We will call or message you on <b>' + bkOcEsc(orderData.phone) + '</b> to confirm your order.');
+  }
+  if (pickup) {
+    steps.push('We message you the pickup address and time when your order is ready.');
+    steps.push(isTransfer ? 'Collect your order. Please bring your order number.' : 'Collect your order and pay on pickup. Please bring your order number.');
+  } else {
+    steps.push('We confirm your delivery fee and delivery time with you on WhatsApp.');
+    steps.push(isTransfer ? 'Your order is delivered to you.' : 'Your order arrives and you pay on delivery.');
+  }
+  const stepsHtml = steps.map(function (t) { return '<li>' + t + '</li>'; }).join('');
+
+  const recvHtml = pickup
+    ? '<b>Pickup:</b> we will send you the pickup address and time on WhatsApp.'
+    : '<b>Deliver to:</b> ' + bkOcEsc(where);
+
+  const old = document.querySelector('.bkoc-ov');
+  if (old) old.remove();
+
+  const ov = document.createElement('div');
+  ov.className = 'bkoc-ov';
+  ov.innerHTML =
+    '<div class="bkoc-box" role="dialog" aria-modal="true">' +
+      '<div class="bkoc-head"><div class="bkoc-tick">&#10003;</div>' +
+        '<h2>Order placed</h2>' +
+        '<p>Thank you, ' + bkOcEsc(orderData.customer_name) + '. Your order number is:</p>' +
+        '<div class="bkoc-no">' + bkOcEsc(no) + '</div></div>' +
+      '<div class="bkoc-body">' + itemHtml +
+        '<div class="bkoc-total"><span>Total</span><span>' + bkOcMoney(total) + '</span></div>' +
+        (pickup ? '' : '<div class="bkoc-fee">Delivery fee not included. We confirm it with you on WhatsApp.</div>') +
+        '<div class="bkoc-recv">' + recvHtml + '</div>' +
+        '<div class="bkoc-next"><h3>What happens next</h3><ol>' + stepsHtml + '</ol></div></div>' +
+      '<div class="bkoc-foot">' +
+        '<a class="bkoc-wa" href="' + waUrl + '" target="_blank" rel="noopener">Send order on WhatsApp</a>' +
+        '<button type="button" class="bkoc-close">Close</button></div>' +
+    '</div>';
+  ov.addEventListener('click', function (e) {
+    if (e.target === ov || (e.target.classList && e.target.classList.contains('bkoc-close'))) ov.remove();
+  });
+  document.body.appendChild(ov);
+}
+
 async function processDirectOrder(orderData) {
+  if (bkOrderBusy) return;
+  bkOrderBusy = true;
   try {
-    const { error } = await supabase.from('orders').insert([
-      {
-        customer_name: orderData.customer_name,
-        customer_email: orderData.customer_email,
-        phone: orderData.phone,
-        address: orderData.address,
-        city: orderData.city,
-        items: cart,
-        total_amount: orderData.total_amount,
-        payment_status: orderData.payment_status
-      }
-    ]);
+    if (!cart || !cart.length) throw new Error('Your cart is empty.');
+    const isTransfer = /bank transfer/i.test(String(orderData.payment_status || ''));
+    const pickup = window.bkDelivery === 'pickup';
+
+    const { data, error } = await supabase.rpc('place_order', {
+      p_name: orderData.customer_name,
+      p_email: orderData.customer_email,
+      p_phone: orderData.phone,
+      p_address: pickup ? '' : orderData.address,
+      p_city: pickup ? '' : orderData.city,
+      p_payment: isTransfer ? 'transfer' : 'pod',
+      p_items: cart.map(function (i) { return { id: String(i.id), qty: Number(i.qty) || 1 }; }),
+      p_delivery: pickup ? 'pickup' : 'delivery'
+    });
 
     if (error) throw error;
-
-    alert(`Order Placed Successfully!\n\nThank you ${orderData.customer_name}, your order has been sent to Betah Kids Abuja. We will confirm your payment shortly.`);
+    if (!data || !data.order_no) throw new Error('The order could not be confirmed. Please try again or contact us on WhatsApp.');
 
     // Clear Cart
     cart = [];
@@ -344,7 +537,10 @@ async function processDirectOrder(orderData) {
     renderCartDrawer();
     closeCheckoutModal();
 
+    bkOcShow(data, orderData, isTransfer, pickup);
   } catch (err) {
-    alert('Error submitting order: ' + err.message);
+    alert('Error submitting order: ' + (err && err.message ? err.message : err));
+  } finally {
+    bkOrderBusy = false;
   }
 }

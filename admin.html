@@ -39,8 +39,13 @@
   <div class="admin-wrapper" id="adminDashboard" style="display: none;">
 
     <!-- Sidebar Navigation -->
-    <aside class="admin-sidebar">
-      <div class="admin-logo">
+    <div class="admin-burger-bar">
+      <button type="button" class="admin-burger" id="adminBurger" aria-label="Open menu" aria-expanded="false" aria-controls="adminSidebar"><i class="fa-solid fa-bars"></i></button>
+      <span class="admin-burger-title" id="adminBurgerTitle">Admin</span>
+    </div>
+    <div class="admin-overlay" id="adminOverlay"></div>
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="admin-logo"><img class="admin-logo-img" src="images/logo.png" alt="Betah Kids Beauty World"><span class="admin-logo-tag">Admin Panel</span>
         <span class="betah">Betah</span> <span class="kids">Kids</span>
         <span class="sub">Beauty World LTD</span>
       </div>
@@ -52,9 +57,11 @@
           <button class="admin-nav-item" data-tab="tab-categories"><i class="fa-solid fa-images"></i> Category Pictures</button>
         <button class="admin-nav-item" data-tab="tab-products"><i class="fa-solid fa-boxes-stacked"></i> Product Catalog</button>
         <button class="admin-nav-item" data-tab="tab-orders"><i class="fa-solid fa-receipt"></i> Orders &amp; Sales</button>
+        <button class="admin-nav-item" data-tab="tab-enquiries"><i class="fa-solid fa-envelope-open-text"></i> Enquiries <span class="enq-badge" id="enqBadge" style="display:none;">0</span></button>
       </div>
 
       <div class="admin-sidebar-footer">
+<a class="admin-store-link" href="index.html" target="_blank" rel="noopener"><i class="fa-solid fa-store"></i> View Store</a>
         <button class="admin-logout-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
       </div>
     </aside>
@@ -169,6 +176,18 @@
     </section>
 
       <!-- TAB: ABOUT PAGE VIDEO -->
+      <section class="admin-tab-content" id="tab-enquiries">
+        <div class="admin-card">
+          <h2><i class="fa-solid fa-envelope-open-text"></i> Enquiries</h2>
+          <p style="margin:0 0 14px;color:#555;font-size:0.9rem;">Messages sent from the Contact page. Newest first. Tap a phone number to call, or an email to write back.</p>
+          <div style="margin-bottom:12px;">
+            <button type="button" class="admin-btn" id="enqRefresh"><i class="fa-solid fa-rotate"></i> Refresh</button>
+          </div>
+          <p id="enqMsg" style="margin:0 0 10px;font-size:0.9rem;"></p>
+          <div id="enqList"><p class="empty-text">Loading...</p></div>
+        </div>
+      </section>
+
       <section class="admin-tab-content" id="tab-about">
         <div class="admin-card">
           <h2><i class="fa-solid fa-circle-play"></i> About Page Video</h2>
@@ -263,7 +282,7 @@
             <table class="admin-table">
               <thead>
                 <tr>
-                  <th>Photo</th>
+                  <th>Photo</th><th>Code</th>
                   <th>Title</th>
                   <th>Category</th>
                   <th>Subcategory</th>
@@ -285,23 +304,12 @@
       <section class="admin-tab-content" id="tab-orders">
         <div class="admin-card">
           <h2><i class="fa-solid fa-cart-flatbed"></i> Customer Orders</h2>
-          <div class="table-wrap">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Customer</th>
-                  <th>Phone</th>
-                  <th>Address</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="ordersTableBody">
-                <tr><td colspan="6" class="text-center">No orders recorded yet.</td></tr>
-              </tbody>
-            </table>
-          </div>
+          <div class="ord-bar">
+<p class="ord-count" id="ordCount"></p>
+<button type="button" class="ord-btn" id="ordRefresh"><i class="fa-solid fa-rotate"></i> Refresh</button>
+</div>
+<div class="ord-msg" id="ordMsg"></div>
+<div id="ordList"></div>
         </div>
       </section>
 

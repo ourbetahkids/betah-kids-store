@@ -297,23 +297,22 @@ async function loadHeroSlides() {
   }
 
   container.innerHTML = slides.map(slide => `
-    <div style="background:#f9f9f9; padding:16px; border-radius:12px; margin-bottom:12px; display:flex; gap:16px; align-items:flex-start;">
-      ${slide.media_type === 'video'
-        ? `<video src="${slide.media_url}" style="width:100px; height:70px; object-fit:cover; border-radius:8px;" autoplay muted loop></video>`
-        : `<img src="${slide.media_url}" style="width:100px; height:70px; object-fit:cover; border-radius:8px;" alt="${adminEsc(slide.title)}">`
-      }
-      <div style="flex:1;">
-        <h4 style="margin-bottom:4px;">${slide.title} <span style="font-size:0.7rem; background:#FF7A1A; color:white; padding:2px 8px; border-radius:50px;">${slide.media_type}</span></h4>
-        <p style="font-size:0.82rem; color:#666;">${slide.subtitle}</p>
-        <p style="font-size:0.78rem; color:#2A6EBB; margin-top:6px;"><i class="fa-solid fa-link"></i> ${adminEsc(describeLink(slide.button_link, products))}</p>
-        <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
-          <select id="heroLink_${slide.id}" style="flex:1; min-width:200px; padding:8px; border-radius:6px; border:1px solid #ddd;">${buildLinkOptions(products, slide.button_link, '-- No link --')}</select>
-          <button type="button" onclick="window.saveHeroLink('${slide.id}')" style="background:#2A6EBB; color:white; border:none; padding:8px 14px; border-radius:6px; cursor:pointer;">Save link</button>
-        </div>
-      </div>
-      <button onclick="window.deleteHeroSlide('${slide.id}')" style="background:#ff4d4d; color:white; border:none; padding:8px 14px; border-radius:6px; cursor:pointer;">Delete</button>
+<div class="hs-row">
+  <div class="hs-thumb">${slide.media_type === 'video'
+    ? `<video src="${adminEsc(slide.media_url)}" autoplay muted loop playsinline></video>`
+    : `<img src="${adminEsc(slide.media_url)}" alt="${adminEsc(slide.title)}">`}</div>
+  <div class="hs-body">
+    <div class="hs-head"><span class="hs-type">${adminEsc(slide.media_type)}</span>${slide.title ? `<strong class="hs-title">${adminEsc(slide.title)}</strong>` : ''}</div>
+    ${slide.subtitle ? `<p class="hs-sub">${adminEsc(slide.subtitle)}</p>` : ''}
+    <p class="hs-link"><i class="fa-solid fa-link"></i> ${adminEsc(describeLink(slide.button_link, products))}</p>
+    <div class="hs-edit">
+      <select id="heroLink_${slide.id}" class="hs-select">${buildLinkOptions(products, slide.button_link, '-- No link --')}</select>
+      <button type="button" class="hs-save" onclick="window.saveHeroLink('${slide.id}')">Save link</button>
     </div>
-  `).join('');
+  </div>
+  <button type="button" class="hs-del" onclick="window.deleteHeroSlide('${slide.id}')"><i class="fa-solid fa-trash"></i> Delete</button>
+</div>
+`).join('');
 }
 
 // SAVE THE LINK OF AN EXISTING HERO SLIDE
@@ -417,7 +416,7 @@ async function loadProducts() {
     .order('created_at', { ascending: false });
 
   if (error || !products || products.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" class="text-center">No products found in inventory. Add one above!</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" class="text-center">No products found in inventory. Add one above!</td></tr>';
     cachedProducts = [];
     return;
   }
@@ -438,7 +437,7 @@ async function loadProducts() {
 
     return `
     <tr>
-      <td><img src="${p.image_url}" class="table-img" alt="${p.title}"></td>
+      <td><img src="${p.image_url}" class="table-img" alt="${p.title}"></td><td><span class="code-pill">${adminEsc(p.product_code || '-')}</span></td>
       <td><strong>${p.title}</strong>${p.is_featured ? ' <i class="fa-solid fa-star" style="color:#FFC107;" title="Featured"></i>' : ''}${p.is_trending ? ' <i class="fa-solid fa-fire" style="color:#E56510;" title="Trending"></i>' : ''}</td>
       <td><span class="brand-badge">${p.category}</span></td>
       <td>${p.subcategory || '-'}</td>
@@ -979,4 +978,389 @@ async function handleCategoryPicClick(ev) {
   var navBtn = document.querySelector('.admin-nav-item[data-tab="tab-about"]');
   if (navBtn) navBtn.addEventListener('click', function () { show(); });
   show();
+})();
+
+/* ===== ENQUIRIES ===== */
+(function () {
+  var list = document.getElementById('enqList');
+  var badge = document.getElementById('enqBadge');
+  var msg = document.getElementById('enqMsg');
+  var refreshBtn = document.getElementById('enqRefresh');
+  var navBtn = document.querySelector('.admin-nav-item[data-tab="tab-enquiries"]');
+  if (!list || !badge || !msg || !refreshBtn || !navBtn) return;
+
+  var rows = [];
+
+  function addStyles() {
+    if (document.getElementById('bk-enq-style')) return;
+    var css = [
+      '.enq-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;margin-left:6px;border-radius:999px;background:#FF6A00;color:#fff;font-size:0.72rem;font-weight:700;line-height:1;}',
+      '.enq-card{background:#fff;border:1px solid #e6e1d8;border-left:4px solid #cfc8bb;border-radius:12px;padding:14px 14px 12px;margin-bottom:12px;}',
+      '.enq-card.enq-new{border-left-color:#FF6A00;background:#FFFAF5;}',
+      '.enq-top{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px;}',
+      '.enq-name{font-size:1rem;color:#2A2A2A;}',
+      '.enq-pill{background:#FF6A00;color:#fff;border-radius:999px;padding:2px 9px;font-size:0.68rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;}',
+      '.enq-date{margin-left:auto;font-size:0.78rem;color:#777;}',
+      '.enq-meta{display:flex;flex-wrap:wrap;gap:6px 16px;margin-bottom:10px;font-size:0.88rem;color:#555;}',
+      '.enq-meta a{color:#2A6EBB;text-decoration:none;word-break:break-word;}',
+      '.enq-meta i{margin-right:5px;color:#E56510;}',
+      '.enq-text{margin:0 0 12px;padding:10px 12px;background:#f7f4ee;border-radius:8px;font-size:0.92rem;line-height:1.6;color:#2A2A2A;white-space:pre-wrap;word-break:break-word;}',
+      '.enq-actions{display:flex;flex-wrap:wrap;gap:8px;}'
+    ].join('\n');
+    var st = document.createElement('style');
+    st.id = 'bk-enq-style';
+    st.textContent = css;
+    document.head.appendChild(st);
+  }
+  addStyles();
+
+  function e(v) { return adminEsc(v == null ? '' : String(v)); }
+
+  function setMsg(text, bad) {
+    msg.textContent = text || '';
+    msg.style.color = bad ? '#E62E3B' : '#3BB84D';
+  }
+
+  function fmtDate(v) {
+    try {
+      return new Date(v).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    } catch (err) { return String(v || ''); }
+  }
+
+  function setBadge() {
+    var n = rows.filter(function (r) { return !r.is_read; }).length;
+    badge.textContent = n > 99 ? '99+' : String(n);
+    badge.style.display = n > 0 ? 'inline-flex' : 'none';
+  }
+
+  function render() {
+    setBadge();
+    if (!rows.length) {
+      list.innerHTML = '<p class="empty-text">No enquiries yet.</p>';
+      return;
+    }
+    var html = '';
+    rows.forEach(function (r) {
+      var phone = String(r.phone || '');
+      var tel = phone.replace(/[^0-9+]/g, '');
+      html += '<div class="enq-card' + (r.is_read ? '' : ' enq-new') + '" data-id="' + e(r.id) + '">'
+        + '<div class="enq-top"><strong class="enq-name">' + e(r.name) + '</strong>'
+        + (r.is_read ? '' : '<span class="enq-pill">New</span>')
+        + '<span class="enq-date">' + e(fmtDate(r.created_at)) + '</span></div>'
+        + '<div class="enq-meta">'
+        + '<a href="tel:' + e(tel) + '"><i class="fa-solid fa-phone"></i>' + e(phone) + '</a>'
+        + '<a href="mailto:' + e(r.email) + '"><i class="fa-solid fa-envelope"></i>' + e(r.email) + '</a>'
+        + (r.interest ? '<span><i class="fa-solid fa-tag"></i>' + e(r.interest) + '</span>' : '')
+        + '</div>'
+        + '<p class="enq-text">' + e(r.message) + '</p>'
+        + '<div class="enq-actions">'
+        + '<button type="button" class="admin-btn" data-act="read">' + (r.is_read ? 'Mark as unread' : 'Mark as read') + '</button>'
+        + '<button type="button" class="admin-btn" data-act="del" style="background:#E62E3B;color:#fff;">Delete</button>'
+        + '</div></div>';
+    });
+    list.innerHTML = html;
+  }
+
+  async function load() {
+    try {
+      var res = await supabase.from('enquiries')
+        .select('id,created_at,name,email,phone,interest,message,is_read')
+        .order('created_at', { ascending: false })
+        .limit(200);
+      if (res.error) throw res.error;
+      rows = res.data || [];
+      render();
+    } catch (err) {
+      console.error(err);
+      list.innerHTML = '<p class="empty-text">Could not load enquiries: ' + e(err.message || err) + '</p>';
+    }
+  }
+
+  list.addEventListener('click', async function (ev) {
+    var btn = ev.target.closest('button[data-act]');
+    if (!btn) return;
+    var card = btn.closest('.enq-card');
+    var id = card ? card.getAttribute('data-id') : '';
+    var row = rows.find(function (r) { return String(r.id) === id; });
+    if (!row) return;
+    var act = btn.getAttribute('data-act');
+
+    if (act === 'del' && !confirm('Delete the enquiry from ' + row.name + '? This cannot be undone.')) return;
+
+    btn.disabled = true;
+    try {
+      var res;
+      if (act === 'read') {
+        res = await supabase.from('enquiries').update({ is_read: !row.is_read }).eq('id', id).select('id');
+      } else {
+        res = await supabase.from('enquiries').delete().eq('id', id).select('id');
+      }
+      if (res.error) throw res.error;
+      if (!res.data || !res.data.length) throw new Error('The change was not saved. Please log in again and retry.');
+      setMsg(act === 'del' ? 'Enquiry deleted.' : 'Updated.', false);
+      await load();
+    } catch (err) {
+      console.error(err);
+      btn.disabled = false;
+      setMsg('Action failed: ' + (err.message || err), true);
+    }
+  });
+
+  refreshBtn.addEventListener('click', function () { setMsg('', false); load(); });
+  navBtn.addEventListener('click', function () { setMsg('', false); load(); });
+
+  // Fill the unread count as soon as the admin is logged in.
+  supabase.auth.onAuthStateChange(function (event, session) {
+    if (session) setTimeout(load, 0);
+  });
+  supabase.auth.getSession().then(function (r) {
+    if (r && r.data && r.data.session) load();
+  });
+})();
+/* ===== ADMIN HAMBURGER ===== */
+(function () {
+  var burger = document.getElementById('adminBurger');
+  var overlay = document.getElementById('adminOverlay');
+  var side = document.getElementById('adminSidebar');
+  var title = document.getElementById('adminBurgerTitle');
+  if (!burger || !overlay || !side) return;
+
+  function labelOf(btn) {
+    var t = '';
+    btn.childNodes.forEach(function (n) { if (n.nodeType === 3) t += n.nodeValue; });
+    return t.replace(/\s+/g, ' ').trim();
+  }
+
+  function setOpen(on) {
+    side.classList.toggle('open', on);
+    overlay.classList.toggle('show', on);
+    document.body.classList.toggle('admin-lock', on);
+    burger.setAttribute('aria-expanded', on ? 'true' : 'false');
+    burger.setAttribute('aria-label', on ? 'Close menu' : 'Open menu');
+  }
+
+  burger.addEventListener('click', function () { setOpen(!side.classList.contains('open')); });
+  overlay.addEventListener('click', function () { setOpen(false); });
+  document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') setOpen(false); });
+  window.addEventListener('resize', function () { if (window.innerWidth > 900) setOpen(false); });
+
+  var items = document.querySelectorAll('.admin-nav-item');
+  items.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      if (title) title.textContent = labelOf(btn);
+      setOpen(false);
+    });
+  });
+
+  var act = document.querySelector('.admin-nav-item.active');
+  if (title && act) title.textContent = labelOf(act);
+})();
+
+/* ===== ORDERS PANEL ===== */
+(function () {
+  var list = document.getElementById('ordList');
+  if (!list) return;
+  var msg = document.getElementById('ordMsg');
+  var count = document.getElementById('ordCount');
+  var refresh = document.getElementById('ordRefresh');
+  var STATUSES = ['Pending Payment Confirmation - Bank Transfer', 'Pay on Delivery', 'Paid', 'Delivered', 'Cancelled'];
+  var loading = false;
+
+  var css = document.createElement('style');
+  css.id = 'bk-ord-style';
+  css.textContent = [
+    '.ord-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:6px 0 18px}',
+    '.ord-count{font-size:.85rem;color:#666;font-weight:600;margin:0}',
+    '.ord-btn{background:#fff;border:1.5px solid #e1e4e8;border-radius:50px;padding:10px 18px;font-size:.82rem;font-weight:700;cursor:pointer;color:#333;font-family:inherit}',
+    '.ord-btn:hover{border-color:#FF7A1A;color:#FF7A1A}',
+    '.ord-msg{font-size:.85rem;margin-bottom:12px}',
+    '.ord-msg.err{color:#c0392b;background:#fdecea;padding:10px 14px;border-radius:10px;line-height:1.5}',
+    '.ord-msg.ok{color:#1e8449;font-weight:600}',
+    '.ord-card{border:1px solid #eceff3;border-radius:14px;padding:18px 20px;margin-bottom:14px;background:#fff}',
+    '.ord-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}',
+    '.ord-id{font-family:Consolas,monospace;font-weight:700;background:#f4f5f8;padding:4px 10px;border-radius:8px;font-size:.8rem}',
+    '.ord-date{font-size:.78rem;color:#888;margin-left:10px}',
+    '.ord-pill{display:inline-block;padding:5px 12px;border-radius:50px;font-size:.72rem;font-weight:800;line-height:1.3}',
+    '.st-pending{background:#FFF1E3;color:#C25400}',
+    '.st-pod{background:#F1EAFE;color:#6D28D9}',
+    '.st-paid{background:#E8F8EE;color:#1E8449}',
+    '.st-delivered{background:#E6F0FF;color:#1D4ED8}',
+    '.st-cancelled{background:#EEEEEE;color:#666666}',
+    '.st-other{background:#F4F5F8;color:#555555}',
+    '.ord-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px}',
+    '.ord-lab{font-size:.68rem;text-transform:uppercase;letter-spacing:.14em;color:#999;font-weight:700;margin-bottom:4px}',
+    '.ord-val{font-size:.9rem;color:#222;line-height:1.55;word-break:break-word}',
+    '.ord-val a{color:#222;text-decoration:none;border-bottom:1px dotted #aaa}',
+    '.ord-items{margin:0;padding:0;list-style:none}',
+    '.ord-items li{display:flex;justify-content:space-between;gap:12px;padding:3px 0;font-size:.88rem}',
+    '.ord-items li span:last-child{color:#666;white-space:nowrap}',
+    '.ord-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid #f0f0f0}',
+    '.ord-total{font-size:1.25rem;font-weight:800;color:#2A2A2A}',
+    '.ord-sel{padding:10px 12px;border:1.5px solid #e1e4e8;border-radius:10px;font-size:.85rem;font-family:inherit;max-width:100%;background:#fff}',
+    '.ord-note{font-size:.78rem;margin-left:8px;font-weight:600}',
+    '.ord-act{display:flex;align-items:center;gap:10px;flex-wrap:wrap}',
+    '.ord-wa{display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#ffffff;text-decoration:none;font-weight:700;font-size:.82rem;padding:10px 16px;border-radius:50px;box-shadow:0 6px 14px rgba(37,211,102,.28)}',
+    '.ord-wa:hover{background:#1DA851}',
+    '@media (max-width:640px){.ord-act{flex-direction:column;align-items:stretch}.ord-wa{justify-content:center}.ord-grid{grid-template-columns:1fr}.ord-card{padding:16px}.ord-sel{width:100%;font-size:16px}.ord-bottom{flex-direction:column;align-items:stretch}.ord-btn{width:100%}}'
+  ].join('\n');
+  document.head.appendChild(css);
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function money(n) { return '\u20A6' + Number(n || 0).toLocaleString(); }
+  function stClass(s) {
+    var t = String(s || '').toLowerCase();
+    if (t.indexOf('cancel') > -1) return 'st-cancelled';
+    if (t.indexOf('pay on delivery') > -1) return 'st-pod';
+    if (t.indexOf('pending') > -1) return 'st-pending';
+    if (t.indexOf('delivered') > -1) return 'st-delivered';
+    if (t.indexOf('paid') > -1) return 'st-paid';
+    return 'st-other';
+  }
+  function waiting(s) {
+    var c = stClass(s);
+    return c === 'st-pending' || c === 'st-pod';
+  }
+  function show(text, cls) {
+    msg.className = 'ord-msg' + (cls ? ' ' + cls : '');
+    msg.textContent = text || '';
+  }
+  function itemsOf(o) {
+    var it = o.items;
+    if (typeof it === 'string') {
+      try { it = JSON.parse(it); } catch (e) { it = null; }
+    }
+    return Array.isArray(it) ? it : [];
+  }
+  function when(v) {
+    if (!v) return '';
+    var d = new Date(v);
+    if (isNaN(d.getTime())) return '';
+    return d.toLocaleString('en-NG', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+  }
+    function waNum(p) {
+    var d = String(p || '').replace(/\D/g, '');
+    if (d.indexOf('234') === 0 && d.length === 13) return d;
+    if (d.length === 11 && d.charAt(0) === '0') return '234' + d.substring(1);
+    if (d.length === 10 && /^[789]/.test(d)) return '234' + d;
+    return '';
+  }
+  function waHref(phone, name, id, total, status) {
+    var n = waNum(phone);
+    if (!n) return '';
+    var first = String(name || '').trim().split(/\s+/)[0] || 'there';
+    var c = stClass(status);
+    var line = 'Your order status is now: ' + status + '.';
+    if (c === 'st-paid') line = 'We have confirmed your payment. Thank you!';
+    else if (c === 'st-delivered') line = 'Your order has been delivered. Thank you for shopping with us!';
+    else if (c === 'st-pod') line = 'You chose Pay on Delivery. We will call you to arrange delivery.';
+    else if (c === 'st-pending') line = 'We are waiting to confirm your payment.';
+    else if (c === 'st-cancelled') line = 'Your order has been cancelled.';
+    var msgText = 'Hello ' + first + ', this is Betah Kids Beauty World. Order ' + String(id).substring(0, 8) + ' (' + money(total) + '): ' + line;
+    return 'https://wa.me/' + n + '?text=' + encodeURIComponent(msgText);
+  }
+  function waBtn(o, id, st) {
+    var h = waHref(o.phone, o.customer_name, id, o.total_amount, st);
+    if (!h) return '';
+    return '<a class="ord-wa" target="_blank" rel="noopener" href="' + esc(h) + '" data-phone="' + esc(o.phone || '') + '" data-name="' + esc(o.customer_name || '') + '" data-oid="' + esc(id) + '" data-total="' + esc(o.total_amount || 0) + '"><i class="fa-brands fa-whatsapp"></i> WhatsApp customer</a>';
+  }
+  function card(o) {
+    var id = String(o.id || '');
+    var st = o.payment_status || '';
+    var opts = STATUSES.slice();
+    if (st && opts.indexOf(st) === -1) opts.unshift(st);
+    var optHtml = opts.map(function (v) {
+      return '<option value="' + esc(v) + '"' + (v === st ? ' selected' : '') + '>' + esc(v) + '</option>';
+    }).join('');
+    var its = itemsOf(o);
+    var itemHtml = its.length ? '<ul class="ord-items">' + its.map(function (x) {
+      var nm = x.name || x.title || x.product_name || 'Item';
+      var q = Number(x.quantity || x.qty || 1);
+      var p = Number(x.price);
+      return '<li><span>' + esc(nm) + ' &times; ' + esc(q) + '</span><span>' + (isFinite(p) && p > 0 ? money(p * q) : '') + '</span></li>';
+    }).join('') + '</ul>' : '<span style="color:#999">No item list saved</span>';
+    var ph = esc(o.phone || '');
+    var em = esc(o.customer_email || '');
+    return '<div class="ord-card" data-id="' + esc(id) + '">' +
+      '<div class="ord-top"><div><span class="ord-id">' + esc(id.substring(0, 8)) + '</span><span class="ord-date">' + esc(when(o.created_at)) + '</span></div>' +
+      '<span class="ord-pill ' + stClass(st) + '">' + esc(st || 'No status') + '</span></div>' +
+      '<div class="ord-grid">' +
+      '<div><div class="ord-lab">Customer</div><div class="ord-val"><strong>' + esc(o.customer_name || '') + '</strong><br>' +
+      (ph ? '<a href="tel:' + ph + '">' + ph + '</a><br>' : '') + (em ? '<a href="mailto:' + em + '">' + em + '</a>' : '') + '</div></div>' +
+      '<div><div class="ord-lab">Deliver to</div><div class="ord-val">' + esc(o.address || '') + (o.city ? ', ' + esc(o.city) : '') + '</div></div>' +
+      '<div style="grid-column:1/-1"><div class="ord-lab">Items</div><div class="ord-val">' + itemHtml + '</div></div>' +
+      '</div>' +
+      '<div class="ord-bottom"><div class="ord-total">' + money(o.total_amount) + '</div>' +
+      '<div class="ord-act"><select class="ord-sel" data-prev="' + esc(st) + '">' + optHtml + '</select><span class="ord-note"></span>' + waBtn(o, id, st) + '</div></div>' +
+      '</div>';
+  }
+  async function load() {
+    if (loading) return;
+    loading = true;
+    count.textContent = 'Loading orders...';
+    try {
+      var res = await supabase.from('orders').select('*').order('created_at', { ascending: false }).limit(300);
+      if (res.error) {
+        list.innerHTML = '';
+        count.textContent = '';
+        show('Could not load orders: ' + res.error.message, 'err');
+      } else {
+        var rows = res.data || [];
+        show('');
+        if (!rows.length) {
+          list.innerHTML = '<p class="text-center">No orders recorded yet.</p>';
+          count.textContent = '0 orders';
+        } else {
+          list.innerHTML = rows.map(card).join('');
+          var w = rows.filter(function (r) { return waiting(r.payment_status); }).length;
+          count.textContent = rows.length + ' order' + (rows.length === 1 ? '' : 's') + ' \u00B7 ' + w + ' waiting';
+        }
+      }
+    } catch (e) {
+      show('Could not load orders: ' + (e && e.message ? e.message : e), 'err');
+      count.textContent = '';
+    }
+    loading = false;
+  }
+  list.addEventListener('change', async function (e) {
+    var sel = e.target;
+    if (!sel || !sel.classList || !sel.classList.contains('ord-sel')) return;
+    var cardEl = sel.closest('.ord-card');
+    var note = cardEl.querySelector('.ord-note');
+    var pill = cardEl.querySelector('.ord-pill');
+    var prev = sel.getAttribute('data-prev');
+    var next = sel.value;
+    sel.disabled = true;
+    note.style.color = '#888';
+    note.textContent = 'Saving...';
+    try {
+      var r = await supabase.from('orders').update({ payment_status: next }).eq('id', cardEl.getAttribute('data-id')).select('id');
+      if (r.error) throw new Error(r.error.message);
+      if (!r.data || !r.data.length) throw new Error('Supabase did not allow this change (no row was updated). Send this message to your developer.');
+      sel.setAttribute('data-prev', next);
+      pill.className = 'ord-pill ' + stClass(next);
+      pill.textContent = next;
+      note.style.color = '#1e8449';
+      note.textContent = 'Saved';
+      var waEl = cardEl.querySelector('.ord-wa');
+      if (waEl) { var waH = waHref(waEl.getAttribute('data-phone'), waEl.getAttribute('data-name'), waEl.getAttribute('data-oid'), waEl.getAttribute('data-total'), next); if (waH) waEl.setAttribute('href', waH); }
+      var all = list.querySelectorAll('.ord-sel');
+      var w = 0;
+      for (var i = 0; i < all.length; i++) { if (waiting(all[i].value)) w++; }
+      count.textContent = all.length + ' order' + (all.length === 1 ? '' : 's') + ' \u00B7 ' + w + ' waiting';
+    } catch (err) {
+      sel.value = prev;
+      note.style.color = '#c0392b';
+      note.textContent = 'Not saved';
+      show('Status not saved: ' + err.message, 'err');
+    }
+    sel.disabled = false;
+  });
+  if (refresh) refresh.addEventListener('click', load);
+  document.querySelectorAll('[data-tab="tab-orders"]').forEach(function (b) { b.addEventListener('click', load); });
+  try { supabase.auth.getSession().then(function (r) { if (r && r.data && r.data.session) load(); }); } catch (e1) {}
+  try { supabase.auth.onAuthStateChange(function (ev) { if (ev === 'SIGNED_IN') load(); }); } catch (e2) {}
 })();

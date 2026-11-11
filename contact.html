@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact — Betah Kids Beauty World LTD</title>
-  <meta name="description" content="Contact Betah Kids Beauty World LTD — luxury children's fashion boutique in Wuse Market, Abuja. Retail, wholesale, and business enquiries welcome.">
+  <title>Contact &mdash; Betah Kids Beauty World LTD</title>
+  <meta name="description" content="Contact Betah Kids Beauty World LTD &mdash; luxury children's fashion boutique in Wuse Market, Abuja. Retail, wholesale, and business enquiries welcome.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -14,94 +14,215 @@
   <link rel="icon" type="image/png" sizes="48x48" href="images/favicon-48.png">
   <link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <style>
+  /* CONTACT PAGE LAYOUT: contact.html only. Phone first; desktop rules start at 901px. */
+  .ct-hero { background: var(--bg-cream); padding: 28px 0 28px; }
+  .ct-crumb { max-width: 1100px; margin: 0 auto 14px; padding: 0 6vw; }
+  .ct-hero-inner { max-width: 720px; margin: 0 auto; padding: 0 6vw; text-align: center; }
+  .ct-label, .ct-title h2 { display: inline-block; margin: 0; padding: 10px 18px; background: #fff; border: 2px solid var(--text-dark); font-family: inherit; font-size: 1.05rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.1; color: var(--text-dark); }
+  .ct-label em, .ct-title h2 em { font-style: normal; color: #FF6A00; font-weight: 800; }
+  .ct-label { margin-bottom: 16px; }
+  .ct-hero h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 2.1rem; font-weight: 300; line-height: 1.1; letter-spacing: -1px; margin: 0 0 12px; color: var(--text-dark); }
+  .ct-hero h1 em { font-style: italic; color: var(--primary-orange); font-weight: 400; }
+  .ct-hero p { font-family: 'Inter', sans-serif; font-size: 0.98rem; line-height: 1.65; color: var(--text-light); margin: 0 auto; max-width: 560px; }
+  .ct-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 20px; }
+  .ct-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 999px; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; }
+  .ct-btn-primary { background: #FF6A00; color: #fff; border: 2px solid #FF6A00; }
+  .ct-btn-primary:hover { background: #E56510; border-color: #E56510; }
+  .ct-btn-ghost { background: #fff; color: var(--text-dark); border: 2px solid var(--text-dark); }
+  .ct-btn-ghost:hover { background: var(--text-dark); color: #fff; }
+
+  .ct-wrap { max-width: 1100px; margin: 0 auto; padding: 24px 6vw 8px; }
+  .ct-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .ct-card { background: #fff; border-radius: var(--radius-soft); box-shadow: var(--shadow-subtle); border-top: 3px solid var(--primary-orange); padding: 20px 18px; }
+  .ct-h { margin: 0 0 8px; font-family: inherit; font-size: 1.05rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.2; color: var(--text-dark); }
+  .ct-h em { font-style: normal; color: #FF6A00; font-weight: 800; }
+
+  .ct-info { display: flex; flex-direction: column; }
+  .ct-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f0e9df; }
+  .ct-item:last-child { border-bottom: 0; padding-bottom: 0; }
+  .ct-ico { flex: 0 0 auto; width: 42px; height: 42px; border-radius: 50%; background: #FFF1E3; color: var(--primary-orange-deep); display: flex; align-items: center; justify-content: center; font-size: 1.05rem; }
+  .ct-item h4 { margin: 0 0 4px; font-family: 'Inter', sans-serif; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary-orange-deep); }
+  .ct-item p { margin: 0; color: var(--text-light); font-size: 0.95rem; line-height: 1.6; }
+  .ct-item p + p { margin-top: 2px; }
+  .ct-item a { display: inline-block; padding: 2px 0; color: var(--text-dark); text-decoration: none; transition: color 0.2s ease; word-break: break-word; }
+  .ct-item a:hover { color: var(--primary-orange); }
+
+  .ct-form .ct-fields { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 12px; }
+  .ct-form .ct-pair { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .ct-form label { display: block; margin: 0 0 6px; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dark); }
+  .ct-form input, .ct-form select, .ct-form textarea { width: 100%; box-sizing: border-box; border: 1.5px solid #e1e4e8; border-radius: 10px; padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 16px; color: var(--text-dark); background: #fff; }
+  .ct-form textarea { min-height: 110px; resize: vertical; }
+  .ct-form input:focus, .ct-form select:focus, .ct-form textarea:focus { outline: none; border-color: #FF6A00; box-shadow: 0 0 0 3px rgba(255,106,0,0.15); }
+  .ct-submit { width: 100%; margin-top: 4px; padding: 14px 28px; border: 0; border-radius: 999px; background: #FF6A00; color: #fff; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: background 0.2s ease; }
+  .ct-submit:hover { background: #E56510; }
+  .ct-sent { padding: 30px 0; text-align: center; }
+  .ct-sent h3 { margin: 0 0 10px; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 2rem; font-weight: 300; letter-spacing: -1px; color: var(--text-dark); }
+  .ct-sent h3 em { color: var(--primary-orange-deep); }
+  .ct-sent p { margin: 0; color: var(--text-light); font-weight: 300; }
+  /* CONTACT FORM SAVE: spam trap, error line, disabled button */
+  .ct-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .ct-status { margin: 0; padding: 10px 12px; border-radius: 10px; background: #FFF1E3; color: #B54500; font-size: 0.9rem; line-height: 1.5; }
+  .ct-status a { color: #B54500; font-weight: 700; }
+  .ct-submit[disabled] { opacity: 0.6; cursor: wait; }
+
+  .ct-mapwrap { max-width: 1100px; margin: 0 auto; padding: 28px 6vw 36px; }
+  .ct-title { position: relative; text-align: center; margin: 0 0 18px; }
+  .ct-title::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: #d9d2c8; }
+  .ct-title h2 { position: relative; }
+  .ct-map { border-radius: var(--radius-soft); overflow: hidden; box-shadow: var(--shadow-subtle); background: #eee; }
+  .ct-map iframe { display: block; width: 100%; height: 260px; border: 0; }
+  .ct-map-actions { display: flex; justify-content: center; margin-top: 16px; }
+
+  @media (min-width: 901px) {
+    .ct-hero { padding: 56px 0 48px; }
+    .ct-label, .ct-title h2 { padding: 12px 28px; font-size: 1.3rem; }
+    .ct-label { margin-bottom: 22px; }
+    .ct-hero h1 { font-size: clamp(2.4rem, 4vw, 3.4rem); margin-bottom: 18px; }
+    .ct-hero p { font-size: 1.1rem; line-height: 1.75; }
+    .ct-actions { margin-top: 26px; }
+    .ct-wrap { padding: 40px 6vw 16px; }
+    .ct-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 32px; }
+    .ct-card { padding: 34px; }
+    .ct-h { font-size: 1.2rem; margin-bottom: 12px; }
+    .ct-info { justify-content: space-between; }
+    .ct-item { padding: 16px 0; }
+    .ct-form .ct-pair { grid-template-columns: 1fr 1fr; }
+    .ct-mapwrap { padding: 48px 6vw 64px; }
+    .ct-title { margin-bottom: 26px; }
+    .ct-map iframe { height: 400px; }
+  }
+  </style>
 </head>
 <body class="has-site-header">
 
 <div id="header-placeholder"></div>
 
-  <header class="hero" style="min-height: 45vh; padding-top: 140px;">
-    <div style="text-align:center; max-width:720px; margin:0 auto; position:relative; z-index:1;">
-      <span class="overline">Get in Touch</span>
+  <header class="ct-hero">
+    <div class="ct-crumb"><div id="contactCrumb"></div></div>
+    <div class="ct-hero-inner">
+      <span class="ct-label">Get in <em>Touch</em></span>
       <h1>Begin Your <em>Experience</em></h1>
-      <p class="subtitle">Whether you are shopping for your child, exploring wholesale partnerships, or simply want to visit — we are here to assist with personal attention.</p>
+      <p>Whether you are shopping for your child, exploring wholesale partnerships, or simply want to visit &mdash; we are here to assist with personal attention.</p>
+      <div class="ct-actions">
+        <a class="ct-btn ct-btn-primary" href="tel:+2348053016355"><i class="fa-solid fa-phone"></i> Call Us</a>
+        <a class="ct-btn ct-btn-ghost" href="mailto:betahkids@gmail.com"><i class="fa-solid fa-envelope"></i> Email Us</a>
+      </div>
     </div>
   </header>
 
-  <section class="map-embed-section">
-    <iframe
-      src="https://www.google.com/maps?q=Wuse+Market,+Abuja,+Nigeria&output=embed"
-      allowfullscreen=""
-      loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade"
-      title="Betah Kids Beauty World LTD location — Wuse Market, Abuja">
-    </iframe>
-  </section>
+  <section class="ct-wrap">
+    <div class="ct-grid">
+      <div class="ct-card ct-info">
+        <h3 class="ct-h">Contact <em>Information</em></h3>
 
-  <section class="section" style="padding-top: 60px;">
-    <div class="contact-grid-lux">
-      <div class="contact-info">
-        <h3>Contact Information</h3>
-        <div class="divider-gold" style="margin: 0 0 36px 0;"></div>
-
-        <div class="contact-block-lux">
-          <h4>Location</h4>
-          <p>NO. 41T IS, SHOP 457<br>WUSE MARKET, ABUJA<br>NIGERIA</p>
+        <div class="ct-item">
+          <span class="ct-ico"><i class="fa-solid fa-location-dot"></i></span>
+          <div>
+            <h4>Location</h4>
+            <p>NO. 41T IS, SHOP 457<br>WUSE MARKET, ABUJA<br>NIGERIA</p>
+          </div>
         </div>
 
-        <div class="contact-block-lux">
-          <h4>Phone</h4>
-          <p><a href="tel:+2348053016355">+234 805 301 6355</a><br><a href="tel:+2348127710425">+234 812 771 0425</a></p>
+        <div class="ct-item">
+          <span class="ct-ico"><i class="fa-solid fa-phone"></i></span>
+          <div>
+            <h4>Phone</h4>
+            <p><a href="tel:+2348053016355">+234 805 301 6355</a></p>
+            <p><a href="tel:+2348127710425">+234 812 771 0425</a></p>
+          </div>
         </div>
 
-        <div class="contact-block-lux">
-          <h4>Email</h4>
-          <p><a href="mailto:betahkids@gmail.com">betahkids@gmail.com</a><br><a href="mailto:ourbetahkids@gmail.com">ourbetahkids@gmail.com</a></p>
+        <div class="ct-item">
+          <span class="ct-ico"><i class="fa-solid fa-envelope"></i></span>
+          <div>
+            <h4>Email</h4>
+            <p><a href="mailto:betahkids@gmail.com">betahkids@gmail.com</a></p>
+            <p><a href="mailto:ourbetahkids@gmail.com">ourbetahkids@gmail.com</a></p>
+          </div>
         </div>
 
-        <div class="contact-block-lux">
-          <h4>Social Media</h4>
-          <p><a href="#">Instagram — @betahkids</a></p>
-          <p><a href="#">Twitter / X — @betahkids</a></p>
+        <div class="ct-item">
+          <span class="ct-ico"><i class="fa-solid fa-share-nodes"></i></span>
+          <div>
+            <h4>Social Media</h4>
+            <p><a href="#">Instagram &mdash; @betahkids</a></p>
+            <p><a href="#">Twitter / X &mdash; @betahkids</a></p>
+          </div>
         </div>
 
-        <div class="contact-block-lux">
-          <h4>Hours</h4>
-          <p>Monday — Saturday: 9:00 AM — 6:00 PM<br>Sunday: By appointment only</p>
+        <div class="ct-item">
+          <span class="ct-ico"><i class="fa-solid fa-clock"></i></span>
+          <div>
+            <h4>Hours</h4>
+            <p>Monday &mdash; Saturday: 9:00 AM &mdash; 6:00 PM<br>Sunday: By appointment only</p>
+          </div>
         </div>
       </div>
 
-      <form class="form-lux" onsubmit="event.preventDefault(); this.innerHTML='<div style=\'padding:30px 0;\'><h3 style=\'font-family:Cormorant Garamond, serif; font-size:2rem; font-weight:300; color:var(--text-dark); letter-spacing:-1px; text-align:center;\'>Message <em style=\'color:var(--primary-orange-deep);\'>Sent</em></h3><p style=\'text-align:center; color:var(--text-light); font-weight:300;\'>We will respond within 24 hours.</p></div>';">
-        <h3>Send an Enquiry</h3>
-        <label for="c-name">Your Name</label>
-        <input type="text" id="c-name" placeholder="Enter your full name" required>
-
-        <label for="c-email">Email Address</label>
-        <input type="email" id="c-email" placeholder="you@example.com" required>
-
-        <label for="c-phone">Phone Number</label>
-        <input type="tel" id="c-phone" placeholder="+234 ..." required>
-
-        <label for="c-interest">I'm Interested In</label>
-        <select id="c-interest">
-          <option>Retail Purchase</option>
-          <option>Wholesale / Bulk Order</option>
-          <option>Business Partnership</option>
-          <option>General Enquiry</option>
-        </select>
-
-        <label for="c-message">Your Message</label>
-        <textarea id="c-message" rows="4" placeholder="Tell us about your needs..." required></textarea>
-
-        <button type="submit">Send Enquiry</button>
+      <form class="ct-card ct-form" id="contactForm">
+        <h3 class="ct-h">Send an <em>Enquiry</em></h3>
+        <div class="ct-fields">
+          <div class="ct-pair">
+            <div>
+              <label for="c-name">Your Name</label>
+              <input type="text" id="c-name" placeholder="Enter your full name" required>
+            </div>
+            <div>
+              <label for="c-email">Email Address</label>
+              <input type="email" id="c-email" placeholder="you@example.com" required>
+            </div>
+          </div>
+          <div class="ct-pair">
+            <div>
+              <label for="c-phone">Phone Number</label>
+              <input type="tel" id="c-phone" placeholder="+234 ..." required>
+            </div>
+            <div>
+              <label for="c-interest">I'm Interested In</label>
+              <select id="c-interest">
+                <option>Retail Purchase</option>
+                <option>Wholesale / Bulk Order</option>
+                <option>Business Partnership</option>
+                <option>General Enquiry</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label for="c-message">Your Message</label>
+            <textarea id="c-message" rows="4" placeholder="Tell us about your needs..." required></textarea>
+          </div>
+          <div class="ct-hp" aria-hidden="true"><label for="c-website">Website</label><input type="text" id="c-website" name="website" tabindex="-1" autocomplete="off"></div>
+          <p class="ct-status" id="contactStatus" role="alert" hidden></p>
+          <button type="submit" class="ct-submit">Send Enquiry</button>
+        </div>
       </form>
+    </div>
+  </section>
+
+  <section class="ct-mapwrap">
+    <div class="ct-title"><h2>Find <em>Us</em></h2></div>
+    <div class="ct-map">
+      <iframe
+        src="https://www.google.com/maps?q=Wuse+Market,+Abuja,+Nigeria&output=embed"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="Betah Kids Beauty World LTD location &mdash; Wuse Market, Abuja">
+      </iframe>
+    </div>
+    <div class="ct-map-actions">
+      <a class="ct-btn ct-btn-ghost" href="https://www.google.com/maps/search/?api=1&query=Wuse+Market,+Abuja,+Nigeria" target="_blank" rel="noopener"><i class="fa-solid fa-location-arrow"></i> Open in Google Maps</a>
     </div>
   </section>
 
   <div id="footer-placeholder"></div>
 
-
   <script src="partials.js"></script>
+  <script src="trail.js"></script>
+  <script>try{if(window.bkTrail){window.bkTrail.visit('Contact','contact.html',{level1:true});window.bkTrail.render(document.getElementById('contactCrumb'));}}catch(e){console.error('[trail]',e);}</script>
   <script type="module" src="cart.js"></script>
   <script type="module" src="nav.js"></script>
+  <script type="module" src="contact-form.js"></script>
 </body>
 </html>

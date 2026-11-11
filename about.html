@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About — Betah Kids Beauty World LTD</title>
-  <meta name="description" content="Learn the story behind Betah Kids Beauty World LTD — luxury children's fashion boutique in Wuse Market, Abuja.">
+  <title>About &mdash; Betah Kids Beauty World LTD</title>
+  <meta name="description" content="Learn the story behind Betah Kids Beauty World LTD &mdash; luxury children's fashion boutique in Wuse Market, Abuja.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -15,30 +15,77 @@
   <link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
   <style>
-  /* ABOUT PAGE PHONE: phone and tablet layout for about.html only. Desktop (901px and up) is unchanged. */
-  @media (max-width: 900px) {
-    body .about-hero { min-height: 0 !important; padding: 28px 0 32px !important; }
-    body .about-hero .hero-inner { gap: 22px; }
-    body .about-hero .hero-image img { max-height: 280px; }
-    body .about-hero .overline { margin-bottom: 10px; letter-spacing: 4px; }
-    body .about-hero h1 { font-size: 2.1rem; margin-bottom: 12px; }
-    body .about-hero p.subtitle { font-size: 0.98rem; line-height: 1.65; }
-    body .ab-section { padding: 28px 6vw 36px; }
-    body .ab-section .section-header { margin: 0 auto 8px; }
-    body .ab-section .section-header h2 { font-size: 1.9rem; margin-bottom: 8px; }
-    body .ab-section .section-header p { font-size: 0.95rem; line-height: 1.55; }
-    body .ab-section .divider-gold { margin: 8px auto 18px; }
-  }
-  @media (max-width: 600px) {
-    body .ab-stack { gap: 14px !important; }
-    body .ab-grid { grid-template-columns: 1fr !important; gap: 14px !important; }
-    body .ab-card-lg { padding: 22px 18px !important; }
-    body .ab-card-sm { padding: 20px 18px !important; }
-    body .ab-card h3 { margin-bottom: 10px !important; }
-    body .ab-card p { line-height: 1.65 !important; }
-    body .ab-visit { margin-top: 18px !important; padding: 28px 18px !important; }
-    body .ab-visit h3 { font-size: 1.6rem !important; margin-bottom: 12px !important; }
-    body .ab-visit p { font-size: 0.95rem !important; line-height: 1.65 !important; }
+  /* ABOUT PAGE LAYOUT: about.html only. Phone first; desktop rules start at 901px. */
+  .ab-hero { background: var(--bg-cream); padding: 28px 0 32px; }
+  .ab-hero-inner { max-width: 1100px; margin: 0 auto; padding: 0 6vw; display: flex; flex-direction: column; align-items: center; gap: 22px; text-align: center; }
+  .ab-hero-text { width: 100%; }
+  .ab-label, .ab-title h2 { display: inline-block; margin: 0; padding: 10px 18px; background: #fff; border: 2px solid var(--text-dark); font-family: inherit; font-size: 1.05rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.1; color: var(--text-dark); }
+  .ab-label em, .ab-title h2 em { font-style: normal; color: #FF6A00; font-weight: 800; }
+  .ab-label { margin-bottom: 16px; }
+  .ab-hero h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 2.1rem; font-weight: 300; line-height: 1.1; letter-spacing: -1px; margin: 0 0 12px; color: var(--text-dark); }
+  .ab-hero h1 em { font-style: italic; color: var(--primary-orange); font-weight: 400; }
+  .ab-hero p { font-family: 'Inter', sans-serif; font-size: 0.98rem; line-height: 1.65; color: var(--text-light); margin: 0 auto; max-width: 560px; }
+  .ab-chips { display: none; }
+  /* ABOUT PAGE TRAIL: crumb row above the banner */
+  .ab-crumb { max-width: 1100px; margin: 0 auto 14px; padding: 0 6vw; }
+  .ab-hero-media { width: min(420px, 100%); }
+  .ab-hero-media img { display: block; width: 100%; max-height: 280px; object-fit: cover; border-radius: var(--radius-soft); box-shadow: var(--shadow-luxury); }
+
+  .ab-section { max-width: 1200px; margin: 0 auto; padding: 28px 6vw 36px; }
+  .ab-title { position: relative; text-align: center; margin: 0 0 14px; }
+  .ab-title::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: #d9d2c8; }
+  .ab-title h2 { position: relative; }
+  .ab-intro { text-align: center; max-width: 640px; margin: 0 auto 22px; color: var(--text-light); font-size: 0.95rem; line-height: 1.6; }
+
+  .ab-stack { display: grid; gap: 14px; }
+  .ab-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .ab-card { background: #fff; border-radius: var(--radius-soft); box-shadow: var(--shadow-subtle); border-top: 3px solid var(--primary-orange); padding: 22px 18px; }
+  .ab-card.ab-yellow { border-top-color: var(--color-yellow); }
+  .ab-card.ab-deep { border-top-color: var(--primary-orange-deep); }
+  .ab-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .ab-ico { flex: 0 0 auto; width: 42px; height: 42px; border-radius: 50%; background: #FFF1E3; color: var(--primary-orange-deep); display: flex; align-items: center; justify-content: center; font-size: 1.05rem; }
+  .ab-card h3 { margin: 0; font-family: inherit; font-size: 1rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.2; color: var(--text-dark); }
+  .ab-card h3 em { font-style: normal; color: #FF6A00; font-weight: 800; }
+  .ab-card p { margin: 0; color: var(--text-light); font-weight: 300; line-height: 1.7; font-size: 0.95rem; }
+
+  .ab-visit { position: relative; overflow: hidden; margin-top: 18px; padding: 28px 18px; border-radius: var(--radius-soft); background: linear-gradient(135deg, var(--text-dark) 0%, #3d3d3d 100%); color: var(--bg-cream); text-align: center; }
+  .ab-visit::before { content: ""; position: absolute; top: -30px; right: -30px; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(229,101,16,0.18) 0%, transparent 70%); }
+  .ab-visit > * { position: relative; }
+  .ab-visit .ab-ico { margin: 0 auto 12px; background: rgba(255,255,255,0.1); color: #FF6A00; }
+  .ab-visit h3 { margin: 0 0 12px; font-family: inherit; font-size: 1.2rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--bg-cream); }
+  .ab-visit h3 em { font-style: normal; color: #FF6A00; font-weight: 800; }
+  .ab-visit p { max-width: 620px; margin: 0 auto; font-size: 0.95rem; line-height: 1.65; font-weight: 300; opacity: 0.92; }
+  .ab-visit .ab-address { margin-top: 14px; font-weight: 600; font-size: 0.9rem; opacity: 1; }
+  .ab-visit .ab-address i { color: #FF6A00; margin-right: 6px; }
+  .ab-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 20px; }
+  .ab-btn { display: inline-block; padding: 12px 26px; border-radius: 999px; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; }
+  .ab-btn-primary { background: #FF6A00; color: #fff; border: 2px solid #FF6A00; }
+  .ab-btn-ghost { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.6); }
+
+  @media (min-width: 901px) {
+    .ab-hero { padding: 56px 0 60px; }
+    .ab-hero-inner { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 64px; align-items: center; text-align: left; }
+    .ab-label, .ab-title h2 { padding: 12px 28px; font-size: 1.3rem; }
+    .ab-label { margin-bottom: 22px; }
+    .ab-hero h1 { font-size: clamp(2.4rem, 4vw, 3.4rem); margin-bottom: 18px; }
+    .ab-hero p { font-size: 1.1rem; line-height: 1.75; margin: 0; max-width: 520px; }
+    .ab-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .ab-chips span { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; background: #fff; border: 1px solid #e6dfd4; border-radius: 999px; font-size: 0.85rem; font-weight: 600; color: var(--text-dark); }
+    .ab-chips i { color: #FF6A00; }
+    .ab-hero-media { width: min(460px, 42vw); }
+    .ab-hero-media img { max-height: 360px; }
+
+    .ab-section { padding: 56px 6vw 72px; }
+    .ab-title { margin-bottom: 18px; }
+    .ab-intro { font-size: 1rem; margin-bottom: 34px; }
+    .ab-stack { gap: 28px; }
+    .ab-grid { grid-template-columns: repeat(3, 1fr); gap: 28px; }
+    .ab-card { padding: 36px; }
+    .ab-card h3 { font-size: 1.1rem; }
+    .ab-card p { font-size: 1rem; }
+    .ab-visit { margin-top: 56px; padding: 52px 40px; }
+    .ab-visit h3 { font-size: 1.5rem; }
+    .ab-visit p { font-size: 1.05rem; }
   }
   </style>
 </head>
@@ -46,58 +93,80 @@
 
 <div id="header-placeholder"></div>
 
-  <header class="hero about-hero" style="min-height: 55vh; padding-top: 140px;">
-    <div class="hero-inner">
-      <div class="hero-text">
-        <span class="overline">Our Story</span>
+  <header class="ab-hero">
+    <div class="ab-crumb"><div id="aboutCrumb"></div></div>
+    <div class="ab-hero-inner">
+      <div class="ab-hero-text">
+        <span class="ab-label">Our <em>Story</em></span>
         <h1>A Legacy of <em>Refinement</em> &amp; Care</h1>
-        <p class="subtitle">Betah Kids Beauty World LTD is more than a boutique — it is a commitment to bringing luxury children's fashion to families who believe quality matters.</p>
+        <p>Betah Kids Beauty World LTD is more than a boutique &mdash; it is a commitment to bringing luxury children's fashion to families who believe quality matters.</p>
+        <div class="ab-chips">
+          <span><i class="fa-solid fa-location-dot"></i> Wuse Market, Abuja</span>
+          <span><i class="fa-solid fa-medal"></i> Imported quality</span>
+          <span><i class="fa-solid fa-handshake"></i> Personal service</span>
+        </div>
       </div>
-      <div class="hero-image" id="aboutVideoBlock">
+      <div class="ab-hero-media" id="aboutVideoBlock">
         <img src="images/product-04.jpg" alt="Luxury boutique interior">
       </div>
     </div>
   </header>
 
-  <section class="section ab-section">
-    <div class="section-header">
-      <h2>About <em>Betah</em></h2>
-      <p>Rooted in Wuse Market, Abuja — reaching families who value elegance, quality, and trust.</p>
-    </div>
-    <div class="divider-gold"></div>
+  <section class="ab-section">
+    <div class="ab-title"><h2>About <em>Betah</em></h2></div>
+    <p class="ab-intro">Rooted in Wuse Market, Abuja &mdash; reaching families who value elegance, quality, and trust.</p>
 
-    <div class="ab-stack" style="display:grid; gap:40px;">
-      <div class="ab-card ab-card-lg" style="background:white; padding:48px; border-radius: var(--radius-soft); box-shadow: var(--shadow-subtle); border-top: 3px solid var(--primary-orange); position: relative; overflow: hidden;">
-        <h3 style="font-family:'Cormorant Garamond', Georgia, serif; font-size: 1.7rem; font-weight: 300; margin-bottom: 20px; color: var(--text-dark); letter-spacing: -1px;">Who <em>We</em> Are</h3>
-        <p style="color: var(--text-light); font-weight: 300; line-height: 1.8; font-size: 1.05rem;">Betah Kids Beauty World LTD operates from Shop 457, No. 41T IS, Wuse Market, Abuja — Nigeria. We specialize in imported children's fashion: luxury children's wears, elegant shoes, refined underwear, baby essentials, and school uniforms. Every item reflects our belief that children's fashion should feel special, comfortable, and built to last.</p>
+    <div class="ab-stack">
+      <div class="ab-card">
+        <div class="ab-card-head">
+          <span class="ab-ico"><i class="fa-solid fa-store"></i></span>
+          <h3>Who We <em>Are</em></h3>
+        </div>
+        <p>Betah Kids Beauty World LTD operates from Shop 457, No. 41T IS, Wuse Market, Abuja &mdash; Nigeria. We specialize in imported children's fashion: luxury children's wears, elegant shoes, refined underwear, baby essentials, and school uniforms. Every item reflects our belief that children's fashion should feel special, comfortable, and built to last.</p>
       </div>
 
-      <div class="ab-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 32px;">
-        <div class="ab-card ab-card-sm" style="background:white; padding: 40px; border-radius: var(--radius-soft); box-shadow: var(--shadow-subtle); border-top: 3px solid var(--color-yellow);">
-          <h3 style="font-family:'Cormorant Garamond', Georgia, serif; font-size: 1.3rem; font-weight: 400; margin-bottom: 14px; color: var(--text-dark);">Our Mission</h3>
-          <p style="color: var(--text-light); font-weight: 300; line-height: 1.75; font-size: 0.95rem;">To make luxury children's fashion accessible — providing families and retailers with imported quality, refined design, and personal service at fair prices.</p>
+      <div class="ab-grid">
+        <div class="ab-card ab-yellow">
+          <div class="ab-card-head">
+            <span class="ab-ico"><i class="fa-solid fa-bullseye"></i></span>
+            <h3>Our <em>Mission</em></h3>
+          </div>
+          <p>To make luxury children's fashion accessible &mdash; providing families and retailers with imported quality, refined design, and personal service at fair prices.</p>
         </div>
-        <div class="ab-card ab-card-sm" style="background:white; padding: 40px; border-radius: var(--radius-soft); box-shadow: var(--shadow-subtle); border-top: 3px solid var(--primary-orange-deep);">
-          <h3 style="font-family:'Cormorant Garamond', Georgia, serif; font-size: 1.3rem; font-weight: 400; margin-bottom: 14px; color: var(--text-dark);">Our Values</h3>
-          <p style="color: var(--text-light); font-weight: 300; line-height: 1.75; font-size: 0.95rem;">Quality over quantity. Elegance without excess. Honesty in every transaction. We treat every customer as a valued partner — whether buying one item or building an inventory.</p>
+        <div class="ab-card ab-deep">
+          <div class="ab-card-head">
+            <span class="ab-ico"><i class="fa-solid fa-heart"></i></span>
+            <h3>Our <em>Values</em></h3>
+          </div>
+          <p>Quality over quantity. Elegance without excess. Honesty in every transaction. We treat every customer as a valued partner &mdash; whether buying one item or building an inventory.</p>
         </div>
-        <div class="ab-card ab-card-sm" style="background:white; padding: 40px; border-radius: var(--radius-soft); box-shadow: var(--shadow-subtle); border-top: 3px solid var(--primary-orange);">
-          <h3 style="font-family:'Cormorant Garamond', Georgia, serif; font-size: 1.3rem; font-weight: 400; margin-bottom: 14px; color: var(--text-dark);">Our Vision</h3>
-          <p style="color: var(--text-light); font-weight: 300; line-height: 1.75; font-size: 0.95rem;">To become Nigeria's most trusted source for luxury children's fashion — serving families, schools, and retailers with consistent excellence and a personal touch.</p>
+        <div class="ab-card">
+          <div class="ab-card-head">
+            <span class="ab-ico"><i class="fa-solid fa-eye"></i></span>
+            <h3>Our <em>Vision</em></h3>
+          </div>
+          <p>To become Nigeria's most trusted source for luxury children's fashion &mdash; serving families, schools, and retailers with consistent excellence and a personal touch.</p>
         </div>
       </div>
     </div>
 
-    <div class="ab-visit" style="margin-top: 80px; padding: 60px; border-radius: var(--radius-soft); background: linear-gradient(135deg, var(--text-dark) 0%, #3d3d3d 100%); color: var(--bg-cream); text-align: center; position: relative; overflow: hidden;">
-      <div style="position: absolute; top: -20px; right: -20px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(229,101,16,0.15) 0%, transparent 70%); border-radius: 50%;"></div>
-      <h3 style="font-family:'Cormorant Garamond', Georgia, serif; font-size: 2rem; font-weight: 300; margin-bottom: 20px; letter-spacing: -1px; color: var(--bg-cream);">Visit <em style="color: var(--primary-orange-deep);">Our</em> Store</h3>
-      <p style="font-size: 1.05rem; opacity: 0.9; max-width: 620px; margin: 0 auto; line-height: 1.75; font-weight: 300;">We welcome you to our boutique at Wuse Market, Abuja. See our full collection, experience our personal service, and find the perfect pieces for the children you love.</p>
+    <div class="ab-visit">
+      <span class="ab-ico"><i class="fa-solid fa-location-dot"></i></span>
+      <h3>Visit Our <em>Store</em></h3>
+      <p>We welcome you to our boutique at Wuse Market, Abuja. See our full collection, experience our personal service, and find the perfect pieces for the children you love.</p>
+      <p class="ab-address"><i class="fa-solid fa-location-dot"></i>Shop 457, No. 41T IS, Wuse Market, Abuja, Nigeria</p>
+      <div class="ab-actions">
+        <a class="ab-btn ab-btn-primary" href="index.html">Shop Now</a>
+        <a class="ab-btn ab-btn-ghost" href="contact.html">Contact Us</a>
+      </div>
     </div>
   </section>
 
   <div id="footer-placeholder"></div>
 
   <script src="partials.js"></script>
+  <script src="trail.js"></script>
+  <script>try{if(window.bkTrail){window.bkTrail.visit('About','about.html',{level1:true});window.bkTrail.render(document.getElementById('aboutCrumb'));}}catch(e){console.error('[trail]',e);}</script>
   <script type="module" src="cart.js"></script>
   <script type="module" src="nav.js"></script>
   <script type="module" src="about-video.js"></script>
