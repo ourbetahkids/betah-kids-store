@@ -14,54 +14,81 @@
   <link rel="icon" type="image/png" sizes="48x48" href="images/favicon-48.png">
   <link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <style>
+  /* ABOUT PAGE PHONE: phone and tablet layout for about.html only. Desktop (901px and up) is unchanged. */
+  @media (max-width: 900px) {
+    body .about-hero { min-height: 0 !important; padding: 28px 0 32px !important; }
+    body .about-hero .hero-inner { gap: 22px; }
+    body .about-hero .hero-image img { max-height: 280px; }
+    body .about-hero .overline { margin-bottom: 10px; letter-spacing: 4px; }
+    body .about-hero h1 { font-size: 2.1rem; margin-bottom: 12px; }
+    body .about-hero p.subtitle { font-size: 0.98rem; line-height: 1.65; }
+    body .ab-section { padding: 28px 6vw 36px; }
+    body .ab-section .section-header { margin: 0 auto 8px; }
+    body .ab-section .section-header h2 { font-size: 1.9rem; margin-bottom: 8px; }
+    body .ab-section .section-header p { font-size: 0.95rem; line-height: 1.55; }
+    body .ab-section .divider-gold { margin: 8px auto 18px; }
+  }
+  @media (max-width: 600px) {
+    body .ab-stack { gap: 14px !important; }
+    body .ab-grid { grid-template-columns: 1fr !important; gap: 14px !important; }
+    body .ab-card-lg { padding: 22px 18px !important; }
+    body .ab-card-sm { padding: 20px 18px !important; }
+    body .ab-card h3 { margin-bottom: 10px !important; }
+    body .ab-card p { line-height: 1.65 !important; }
+    body .ab-visit { margin-top: 18px !important; padding: 28px 18px !important; }
+    body .ab-visit h3 { font-size: 1.6rem !important; margin-bottom: 12px !important; }
+    body .ab-visit p { font-size: 0.95rem !important; line-height: 1.65 !important; }
+  }
+  </style>
 </head>
 <body class="has-site-header">
 
 <div id="header-placeholder"></div>
 
-  <header class="hero" style="min-height: 55vh; padding-top: 140px;">
+  <header class="hero about-hero" style="min-height: 55vh; padding-top: 140px;">
     <div class="hero-inner">
       <div class="hero-text">
         <span class="overline">Our Story</span>
         <h1>A Legacy of <em>Refinement</em> &amp; Care</h1>
         <p class="subtitle">Betah Kids Beauty World LTD is more than a boutique — it is a commitment to bringing luxury children's fashion to families who believe quality matters.</p>
       </div>
-      <div class="hero-image">
+      <div class="hero-image" id="aboutVideoBlock">
         <img src="images/product-04.jpg" alt="Luxury boutique interior">
       </div>
     </div>
   </header>
 
-  <section class="section">
+  <section class="section ab-section">
     <div class="section-header">
       <h2>About <em>Betah</em></h2>
       <p>Rooted in Wuse Market, Abuja — reaching families who value elegance, quality, and trust.</p>
     </div>
     <div class="divider-gold"></div>
 
-    <div style="display:grid; gap:40px;">
-      <div style="background:white; padding:48px; border-radius: var(--radius-soft); box-shadow: var(--shadow-subtle); border-top: 3px solid var(--primary-orange); position: relative; overflow: hidden;">
+    <div class="ab-stack" style="display:grid; gap:40px;">
+      <div class="ab-card ab-card-lg" style="background:white; padding:48px; border-radius: var(--radius-soft); box-shadow: var(--shadow-subtle); border-top: 3px solid var(--primary-orange); position: relative; overflow: hidden;">
         <h3 style="font-family:'Cormorant Garamond', Georgia, serif; font-size: 1.7rem; font-weight: 300; margin-bottom: 20px; color: var(--text-dark); letter-spacing: -1px;">Who <em>We</em> Are</h3>
         <p style="color: var(--text-light); font-weight: 300; line-height: 1.8; font-size: 1.05rem;">Betah Kids Beauty World LTD operates from Shop 457, No. 41T IS, Wuse Market, Abuja — Nigeria. We specialize in imported children's fashion: luxury children's wears, elegant shoes, refined underwear, baby essentials, and school uniforms. Every item reflects our belief that children's fashion should feel special, comfortable, and built to last.</p>
       </div>
 
-      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 32px;">
-        <div style="background:white; padding: 40px; border-radius: var(--radius-soft); box-shadow: var(--shadow-subtle); border-top: 3px solid var(--color-yellow);">
+      <div class="ab-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 32px;">
+        <div class="ab-card ab-card-sm" style="background:white; padding: 40px; border-radius: var(--radius-soft); box-shadow: var(--shadow-subtle); border-top: 3px solid var(--color-yellow);">
           <h3 style="font-family:'Cormorant Garamond', Georgia, serif; font-size: 1.3rem; font-weight: 400; margin-bottom: 14px; color: var(--text-dark);">Our Mission</h3>
           <p style="color: var(--text-light); font-weight: 300; line-height: 1.75; font-size: 0.95rem;">To make luxury children's fashion accessible — providing families and retailers with imported quality, refined design, and personal service at fair prices.</p>
         </div>
-        <div style="background:white; padding: 40px; border-radius: var(--radius-soft); box-shadow: var(--shadow-subtle); border-top: 3px solid var(--primary-orange-deep);">
+        <div class="ab-card ab-card-sm" style="background:white; padding: 40px; border-radius: var(--radius-soft); box-shadow: var(--shadow-subtle); border-top: 3px solid var(--primary-orange-deep);">
           <h3 style="font-family:'Cormorant Garamond', Georgia, serif; font-size: 1.3rem; font-weight: 400; margin-bottom: 14px; color: var(--text-dark);">Our Values</h3>
           <p style="color: var(--text-light); font-weight: 300; line-height: 1.75; font-size: 0.95rem;">Quality over quantity. Elegance without excess. Honesty in every transaction. We treat every customer as a valued partner — whether buying one item or building an inventory.</p>
         </div>
-        <div style="background:white; padding: 40px; border-radius: var(--radius-soft); box-shadow: var(--shadow-subtle); border-top: 3px solid var(--primary-orange);">
+        <div class="ab-card ab-card-sm" style="background:white; padding: 40px; border-radius: var(--radius-soft); box-shadow: var(--shadow-subtle); border-top: 3px solid var(--primary-orange);">
           <h3 style="font-family:'Cormorant Garamond', Georgia, serif; font-size: 1.3rem; font-weight: 400; margin-bottom: 14px; color: var(--text-dark);">Our Vision</h3>
           <p style="color: var(--text-light); font-weight: 300; line-height: 1.75; font-size: 0.95rem;">To become Nigeria's most trusted source for luxury children's fashion — serving families, schools, and retailers with consistent excellence and a personal touch.</p>
         </div>
       </div>
     </div>
 
-    <div style="margin-top: 80px; padding: 60px; border-radius: var(--radius-soft); background: linear-gradient(135deg, var(--text-dark) 0%, #3d3d3d 100%); color: var(--bg-cream); text-align: center; position: relative; overflow: hidden;">
+    <div class="ab-visit" style="margin-top: 80px; padding: 60px; border-radius: var(--radius-soft); background: linear-gradient(135deg, var(--text-dark) 0%, #3d3d3d 100%); color: var(--bg-cream); text-align: center; position: relative; overflow: hidden;">
       <div style="position: absolute; top: -20px; right: -20px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(229,101,16,0.15) 0%, transparent 70%); border-radius: 50%;"></div>
       <h3 style="font-family:'Cormorant Garamond', Georgia, serif; font-size: 2rem; font-weight: 300; margin-bottom: 20px; letter-spacing: -1px; color: var(--bg-cream);">Visit <em style="color: var(--primary-orange-deep);">Our</em> Store</h3>
       <p style="font-size: 1.05rem; opacity: 0.9; max-width: 620px; margin: 0 auto; line-height: 1.75; font-weight: 300;">We welcome you to our boutique at Wuse Market, Abuja. See our full collection, experience our personal service, and find the perfect pieces for the children you love.</p>
@@ -73,5 +100,6 @@
   <script src="partials.js"></script>
   <script type="module" src="cart.js"></script>
   <script type="module" src="nav.js"></script>
+  <script type="module" src="about-video.js"></script>
 </body>
 </html>

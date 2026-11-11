@@ -48,6 +48,7 @@
       <div class="admin-nav">
         <button class="admin-nav-item active" data-tab="tab-overview"><i class="fa-solid fa-chart-pie"></i> Overview</button>
         <button class="admin-nav-item" data-tab="tab-hero"><i class="fa-solid fa-sliders"></i> Hero Slider &amp; Video</button>
+          <button class="admin-nav-item" data-tab="tab-about"><i class="fa-solid fa-circle-play"></i> About Page Video</button>
           <button class="admin-nav-item" data-tab="tab-categories"><i class="fa-solid fa-images"></i> Category Pictures</button>
         <button class="admin-nav-item" data-tab="tab-products"><i class="fa-solid fa-boxes-stacked"></i> Product Catalog</button>
         <button class="admin-nav-item" data-tab="tab-orders"><i class="fa-solid fa-receipt"></i> Orders &amp; Sales</button>
@@ -166,6 +167,25 @@
         <div id="categoryPicsList"><p class="empty-text">Loading categories...</p></div>
       </div>
     </section>
+
+      <!-- TAB: ABOUT PAGE VIDEO -->
+      <section class="admin-tab-content" id="tab-about">
+        <div class="admin-card">
+          <h2><i class="fa-solid fa-circle-play"></i> About Page Video</h2>
+          <p style="margin:0 0 6px;color:#555;font-size:0.9rem;">The tall video shown on the About page. Visitors tap play to watch it with sound.</p>
+          <small style="color:#B45309;display:block;margin-bottom:16px;">Use a tall phone-style MP4 (9:16, for example 720 x 1280), best under 9 MB. Only one video is kept: uploading a new one replaces the old one.</small>
+          <div id="aboutVideoPreview" style="margin-bottom:16px;"><p class="empty-text">Loading...</p></div>
+          <div class="form-group">
+            <label>Choose MP4 video</label>
+            <input type="file" id="aboutVideoFile" accept="video/mp4">
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+            <button type="button" class="admin-btn btn-primary" id="aboutVideoUpload"><i class="fa-solid fa-cloud-arrow-up"></i> Upload / Replace Video</button>
+            <button type="button" class="admin-btn" id="aboutVideoRemove" style="background:#E62E3B;color:#fff;display:none;"><i class="fa-solid fa-trash"></i> Remove Video</button>
+          </div>
+          <p id="aboutVideoMsg" style="margin-top:12px;font-size:0.9rem;"></p>
+        </div>
+      </section>
 
       <!-- TAB 3: PRODUCT CATALOG MANAGER -->
       <section class="admin-tab-content" id="tab-products">

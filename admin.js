@@ -870,3 +870,113 @@ async function handleCategoryPicClick(ev) {
     init();
   }
 })();
+
+/* ===== ABOUT PAGE VIDEO ===== */
+(function () {
+  var BUCKET = 'hero-media';
+  var SLOT = 'about_video';
+  var MAX_BYTES = 20 * 1024 * 1024;
+  var SPIN = '<i class="fa-solid fa-spinner fa-spin"></i> Working... please wait';
+  var preview = document.getElementById('aboutVideoPreview');
+  var fileInput = document.getElementById('aboutVideoFile');
+  var upBtn = document.getElementById('aboutVideoUpload');
+  var rmBtn = document.getElementById('aboutVideoRemove');
+  var msg = document.getElementById('aboutVideoMsg');
+  if (!preview || !fileInput || !upBtn || !rmBtn || !msg) return;
+
+  function setMsg(text, bad) {
+    msg.textContent = text || '';
+    msg.style.color = bad ? '#E62E3B' : '#3BB84D';
+  }
+
+  function pathFromUrl(u) {
+    var s = String(u || '');
+    var k = s.indexOf('/' + BUCKET + '/');
+    if (k < 0) return '';
+    return decodeURIComponent(s.substring(k + BUCKET.length + 2));
+  }
+
+  async function currentRow() {
+    var res = await supabase.from('site_media').select('media_url, updated_at').eq('slot', SLOT).maybeSingle();
+    if (res.error) throw res.error;
+    return res.data;
+  }
+
+  async function dropOldFile(url) {
+    var p = pathFromUrl(url);
+    if (p && p.indexOf('about_') === 0) {
+      try { await supabase.storage.from(BUCKET).remove([p]); } catch (e) { console.warn('Old About video file not removed:', e); }
+    }
+  }
+
+  async function show() {
+    try {
+      var row = await currentRow();
+      if (row && row.media_url) {
+        preview.innerHTML = '<video src="' + adminEsc(row.media_url) + '" controls playsinline preload="metadata" style="width:200px;max-width:100%;aspect-ratio:9/16;background:#000;border-radius:16px;object-fit:cover;display:block;"></video>'
+          + '<p style="font-size:0.82rem;color:#666;margin-top:8px;">This is the video saved for the About page.</p>';
+        rmBtn.style.display = '';
+      } else {
+        preview.innerHTML = '<p class="empty-text">No video uploaded yet. The About page shows no video block.</p>';
+        rmBtn.style.display = 'none';
+      }
+    } catch (err) {
+      console.error(err);
+      preview.innerHTML = '<p class="empty-text">Could not load the video: ' + adminEsc(err.message || err) + '</p>';
+    }
+  }
+
+  upBtn.addEventListener('click', async function () {
+    var file = fileInput.files[0];
+    if (!file) return setMsg('Please choose an MP4 video first.', true);
+    var isMp4 = file.type === 'video/mp4' || /\.mp4$/i.test(file.name);
+    if (!isMp4) return setMsg('That file is not an MP4 video.', true);
+    if (file.size > MAX_BYTES) return setMsg('Video is too heavy (' + (file.size / 1048576).toFixed(1) + ' MB). Keep it under 20 MB, best under 9 MB.', true);
+    var oldHtml = upBtn.innerHTML;
+    upBtn.disabled = true;
+    upBtn.innerHTML = SPIN;
+    setMsg('Uploading... please wait and do not close this page.', false);
+    try {
+      var old = await currentRow();
+      var path = 'about_' + Date.now() + '.mp4';
+      var up = await supabase.storage.from(BUCKET).upload(path, file, { contentType: 'video/mp4' });
+      if (up.error) throw up.error;
+      var pub = supabase.storage.from(BUCKET).getPublicUrl(path);
+      var save = await supabase.from('site_media').upsert({ slot: SLOT, media_url: pub.data.publicUrl, media_type: 'video', updated_at: new Date().toISOString() });
+      if (save.error) throw save.error;
+      if (old && old.media_url) await dropOldFile(old.media_url);
+      fileInput.value = '';
+      await show();
+      setMsg('Saved. The About page will show this video.', false);
+    } catch (err) {
+      console.error(err);
+      setMsg('Upload failed: ' + (err.message || err), true);
+    }
+    upBtn.disabled = false;
+    upBtn.innerHTML = oldHtml;
+  });
+
+  rmBtn.addEventListener('click', async function () {
+    if (!confirm('Remove the About page video? The About page will show no video block.')) return;
+    var oldHtml = rmBtn.innerHTML;
+    rmBtn.disabled = true;
+    rmBtn.innerHTML = SPIN;
+    try {
+      var old = await currentRow();
+      var del = await supabase.from('site_media').delete().eq('slot', SLOT);
+      if (del.error) throw del.error;
+      if (old && old.media_url) await dropOldFile(old.media_url);
+      await show();
+      setMsg('Video removed.', false);
+    } catch (err) {
+      console.error(err);
+      setMsg('Remove failed: ' + (err.message || err), true);
+    }
+    rmBtn.disabled = false;
+    rmBtn.innerHTML = oldHtml;
+  });
+
+  var navBtn = document.querySelector('.admin-nav-item[data-tab="tab-about"]');
+  if (navBtn) navBtn.addEventListener('click', function () { show(); });
+  show();
+})();
