@@ -299,7 +299,7 @@ function renderProduct(p) {
       '</div>' +
       galleryThumbs + '</div>' + '<div class="pp-info">' +
         '<span class="pp-cat">' + esc(p.subcategory || p.category) + '</span>' +
-        '<h1 class="pp-title">' + esc(p.title) + '</h1>' +
+        '<h1 class="pp-title">' + esc(p.title) + '</h1>' + (p.product_code ? '<span class="pp-code" style="display:inline-block;background:#FFF1E6;color:#E56510;border:1px solid #FFD2B0;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;letter-spacing:.5px;margin:2px 0 8px;">' + esc(p.product_code) + '</span>' : '') +
         '<p class="pp-price">' + naira(price) + '</p>' +
         stockHtml +
         '<p class="pp-desc">' + desc + '</p>' +
