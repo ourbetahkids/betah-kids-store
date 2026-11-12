@@ -568,7 +568,7 @@ function bkOcStyle() {
     '.bkoc-next ol{margin:0;padding-left:18px;font-size:.85rem;line-height:1.55;color:#4a3f33}',
     '.bkoc-next li{margin-bottom:4px}',
     '.bkoc-foot{padding:8px 16px 18px;display:flex;flex-direction:column;gap:8px}',
-    '.bkoc-wa{display:block;text-align:center;background:#25D366;color:#fff;text-decoration:none;font-weight:700;padding:13px;border-radius:12px;font-size:.95rem}',
+    '.bkoc-inv{display:block;text-align:center;background:#fff7ef;border:1.5px solid #FF7A1A;color:#E56510;text-decoration:none;font-weight:700;padding:12px;border-radius:12px;font-size:.95rem}', '.bkoc-wa{display:block;text-align:center;background:#25D366;color:#fff;text-decoration:none;font-weight:700;padding:13px;border-radius:12px;font-size:.95rem}',
     '.bkoc-close{background:#fff;border:1px solid #d9cfc2;border-radius:12px;padding:11px;font-weight:600;cursor:pointer;font-size:.9rem;color:#4a3f33}'
   ].join('');
   const st = document.createElement('style');
@@ -640,7 +640,8 @@ function bkOcShow(res, orderData, isTransfer, pickup) {
         '<div class="bkoc-recv">' + recvHtml + '</div>' +
         '<div class="bkoc-next"><h3>What happens next</h3><ol>' + stepsHtml + '</ol></div></div>' +
       '<div class="bkoc-foot">' +
-        '<a class="bkoc-wa" href="' + waUrl + '" target="_blank" rel="noopener">Send order on WhatsApp</a>' +
+        '<a class="bkoc-inv" href="invoice.html?o=' + encodeURIComponent(res.order_no) + '&amp;k=' + encodeURIComponent(res.invoice_token) + '" target="_blank" rel="noopener">View invoice</a>' +
+      '<a class="bkoc-wa" href="' + waUrl + '" target="_blank" rel="noopener">Send order on WhatsApp</a>' +
         '<button type="button" class="bkoc-close">Close</button></div>' +
     '</div>';
   ov.addEventListener('click', function (e) {

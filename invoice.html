@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Invoice | Betah Kids Beauty World</title>
+<link rel="icon" href="images/logo.png">
+<style>
+/* ===== INVOICE PAGE ===== */
+* { box-sizing: border-box; }
+body { margin: 0; background: #f7f4ef; color: #2a2118; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; font-size: 15px; line-height: 1.5; }
+.inv-wrap { padding: 14px; } @media (min-width: 901px) { .inv-wrap { padding-top: 32px; } }
+.inv-card { max-width: 460px; margin: 0 auto 14px; background: #fff; border-radius: 16px; padding: 20px 18px; box-shadow: 0 6px 24px rgba(60, 40, 20, 0.10); }
+.inv-top { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; padding-bottom: 14px; border-bottom: 3px solid #FF6A00; }
+.inv-logo { height: 62px; width: auto; display: block; }
+.inv-title { text-align: right; }
+.inv-title h1 { margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: 1.9rem; letter-spacing: 2px; color: #2a2118; }
+.inv-no { display: inline-block; margin-top: 4px; font-weight: 800; color: #E56510; background: #fff3e8; border: 1px solid #ffd2ad; border-radius: 999px; padding: 3px 14px; }
+.inv-stamp { display: inline-block; margin: 14px 0 4px; padding: 6px 16px; border-radius: 8px; font-weight: 800; letter-spacing: 1.5px; font-size: 0.85rem; border: 2px solid; }
+.inv-stamp.ok { color: #1a9b4b; border-color: #1a9b4b; background: #e7f7ec; }
+.inv-stamp.wait { color: #E56510; border-color: #E56510; background: #fff3e8; }
+.inv-stamp.pod { color: #7a3fb0; border-color: #7a3fb0; background: #f3eafb; }
+.inv-stamp.x { color: #777; border-color: #999; background: #eee; }
+.inv-meta { display: grid; grid-template-columns: 1fr; gap: 14px; margin: 10px 0 16px; }
+.inv-meta h3 { margin: 0 0 4px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.4px; color: #E56510; }
+.inv-meta p { margin: 0; color: #4a3f33; }
+.inv-head { display: none; }
+.inv-row { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "name name" "q amt"; gap: 2px 10px; padding: 10px 0; border-bottom: 1px dashed #eadfd2; }
+.inv-name { grid-area: name; }
+.inv-q { grid-area: q; color: #6b5f52; font-size: 0.88rem; }
+.inv-amt { grid-area: amt; font-weight: 700; text-align: right; }
+.inv-code { display: inline-block; margin-left: 8px; font-family: monospace; font-size: 0.75rem; background: #fff3e8; color: #E56510; padding: 2px 7px; border-radius: 6px; font-weight: 700; }
+.inv-total { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 800; padding: 14px 0 4px; }
+.inv-note { font-size: 0.82rem; color: #6b5f52; margin: 2px 0 0; }
+.inv-box { background: #faf6f0; border-radius: 10px; padding: 12px 14px; margin-top: 14px; font-size: 0.9rem; color: #4a3f33; }
+.inv-box b { color: #2a2118; }
+.inv-thanks { text-align: center; margin: 18px 0 2px; font-size: 0.88rem; color: #6b5f52; }
+.inv-actions { max-width: 460px; margin: 0 auto 14px; display: flex; flex-direction: column; gap: 8px; }
+.inv-btn { display: block; text-align: center; padding: 13px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; text-decoration: none; cursor: pointer; border: 0; font-family: inherit; }
+.inv-btn-main { background: #FF6A00; color: #fff; }
+.inv-btn-wa { background: #25D366; color: #fff; }
+.inv-btn-line { background: #fff; color: #4a3f33; border: 1px solid #d9cfc2; }
+.inv-fail { text-align: center; padding: 34px 18px; }
+.inv-fail h1 { font-family: Georgia, serif; margin: 0 0 8px; }
+.inv-fail p { color: #6b5f52; margin: 0 0 18px; }
+.inv-loading { text-align: center; color: #6b5f52; padding: 40px 0; }
+@media (min-width: 640px) {
+  .inv-wrap { padding: 28px 14px; }
+  .inv-card { padding: 30px 34px; }
+  .inv-meta { grid-template-columns: 1fr 1fr; }
+  .inv-head, .inv-row { grid-template-columns: 1fr 150px 130px; grid-template-areas: "name q amt"; }
+  .inv-head { display: grid; gap: 10px; padding: 8px 0; border-bottom: 2px solid #2a2118; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.2px; color: #6b5f52; }
+  .inv-head span:nth-child(2) { text-align: left; }
+  .inv-head span:nth-child(3) { text-align: right; }
+  .inv-actions { flex-direction: row; }
+  .inv-actions .inv-btn { flex: 1; }
+}
+@media print {
+  body { background: #fff; }
+  .inv-wrap { padding: 0; }
+  .inv-card { box-shadow: none; border-radius: 0; max-width: none; padding: 0; }
+  .inv-actions { display: none; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+<div class="inv-wrap" id="invRoot">
+  <div class="inv-loading">Loading your invoice...</div>
+</div>
+<script type="module" src="invoice.js"></script>
+</body>
+</html>

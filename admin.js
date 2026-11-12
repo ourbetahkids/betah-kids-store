@@ -1178,7 +1178,7 @@ async function handleCategoryPicClick(ev) {
     '.ord-msg.ok{color:#1e8449;font-weight:600}',
     '.ord-card{border:1px solid #eceff3;border-radius:14px;padding:18px 20px;margin-bottom:14px;background:#fff}',
     '.ord-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}',
-    '.ord-id{font-family:Consolas,monospace;font-weight:700;background:#f4f5f8;padding:4px 10px;border-radius:8px;font-size:.8rem}',
+    '.ord-code{font-family:Consolas,monospace;font-weight:700;font-size:.72rem;background:#fff1e4;color:#E56510;border:1px solid #ffd2ad;padding:1px 7px;border-radius:999px;margin:0 4px;white-space:nowrap}', '.ord-inv{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#fff7ef;border:1.5px solid #FF7A1A;color:#E56510;font-weight:700;padding:8px 14px;border-radius:10px;font-size:.85rem;text-decoration:none}', '.ord-id{font-family:Consolas,monospace;font-weight:700;background:#f4f5f8;padding:4px 10px;border-radius:8px;font-size:.8rem}',
     '.ord-date{font-size:.78rem;color:#888;margin-left:10px}',
     '.ord-pill{display:inline-block;padding:5px 12px;border-radius:50px;font-size:.72rem;font-weight:800;line-height:1.3}',
     '.st-pending{background:#FFF1E3;color:#C25400}',
@@ -1267,6 +1267,10 @@ async function handleCategoryPicClick(ev) {
     if (!h) return '';
     return '<a class="ord-wa" target="_blank" rel="noopener" href="' + esc(h) + '" data-phone="' + esc(o.phone || '') + '" data-name="' + esc(o.customer_name || '') + '" data-oid="' + esc(id) + '" data-total="' + esc(o.total_amount || 0) + '"><i class="fa-brands fa-whatsapp"></i> WhatsApp customer</a>';
   }
+  function invBtn(o) {
+    if (!o.order_no || !o.invoice_token) return '';
+    return '<a class="ord-inv" target="_blank" rel="noopener" href="invoice.html?o=' + encodeURIComponent(o.order_no) + '&amp;k=' + encodeURIComponent(o.invoice_token) + '"><i class="fa-solid fa-file-invoice"></i> View invoice</a>';
+  }
   function card(o) {
     var id = String(o.id || '');
     var st = o.payment_status || '';
@@ -1280,12 +1284,12 @@ async function handleCategoryPicClick(ev) {
       var nm = x.name || x.title || x.product_name || 'Item';
       var q = Number(x.quantity || x.qty || 1);
       var p = Number(x.price);
-      return '<li><span>' + esc(nm) + ' &times; ' + esc(q) + '</span><span>' + (isFinite(p) && p > 0 ? money(p * q) : '') + '</span></li>';
+      return '<li><span>' + esc(nm) + (x.product_code ? ' <span class="ord-code">' + esc(x.product_code) + '</span>' : '') + ' &times; ' + esc(q) + '</span><span>' + (isFinite(p) && p > 0 ? money(p * q) : '') + '</span></li>';
     }).join('') + '</ul>' : '<span style="color:#999">No item list saved</span>';
     var ph = esc(o.phone || '');
     var em = esc(o.customer_email || '');
     return '<div class="ord-card" data-id="' + esc(id) + '">' +
-      '<div class="ord-top"><div><span class="ord-id">' + esc(id.substring(0, 8)) + '</span><span class="ord-date">' + esc(when(o.created_at)) + '</span></div>' +
+      '<div class="ord-top"><div><span class="ord-id">' + esc(o.order_no || id.substring(0, 8)) + '</span><span class="ord-date">' + esc(when(o.created_at)) + '</span></div>' +
       '<span class="ord-pill ' + stClass(st) + '">' + esc(st || 'No status') + '</span></div>' +
       '<div class="ord-grid">' +
       '<div><div class="ord-lab">Customer</div><div class="ord-val"><strong>' + esc(o.customer_name || '') + '</strong><br>' +
@@ -1294,7 +1298,7 @@ async function handleCategoryPicClick(ev) {
       '<div style="grid-column:1/-1"><div class="ord-lab">Items</div><div class="ord-val">' + itemHtml + '</div></div>' +
       '</div>' +
       '<div class="ord-bottom"><div class="ord-total">' + money(o.total_amount) + '</div>' +
-      '<div class="ord-act"><select class="ord-sel" data-prev="' + esc(st) + '">' + optHtml + '</select><span class="ord-note"></span>' + waBtn(o, id, st) + '</div></div>' +
+      '<div class="ord-act"><select class="ord-sel" data-prev="' + esc(st) + '">' + optHtml + '</select><span class="ord-note"></span>' + invBtn(o) + waBtn(o, id, st) + '</div></div>' +
       '</div>';
   }
   async function load() {
