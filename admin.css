@@ -483,3 +483,30 @@ html::-webkit-scrollbar-thumb { background: #FFB066; border-radius: 10px; }
 /* ===== ADMIN PRODUCT CODE ===== */
 .code-pill { display: inline-block; font-family: Consolas, 'Courier New', monospace; font-weight: 700; font-size: 0.78rem; background: #FFF1E3; color: #A85A1C; padding: 4px 10px; border-radius: 8px; white-space: nowrap; }
 /* ===== END ADMIN PRODUCT CODE ===== */
+
+/* ===== ADMIN SIDE CLOSE ===== */
+.admin-side-close { display: none; }
+@media (max-width: 900px) {
+  #adminSidebar .admin-side-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 8px;
+    left: 6px;
+    z-index: 5;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    color: #ffffff;
+    font-size: 2rem;
+    line-height: 1;
+    font-weight: 400;
+    cursor: pointer;
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+  }
+}

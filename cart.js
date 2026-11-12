@@ -78,15 +78,49 @@ function initCartDOM() {
             </div>
             <div class="form-group">
               <label>Delivery Address</label>
-              <textarea id="custAddress" rows="2" placeholder="House number, street name, district..." required></textarea>
+              <textarea id="custAddress" rows="2" placeholder="House number, street, area, town..." required></textarea>
             </div>
             <div class="form-group">
-              <label>City / Location</label>
+              <label>State</label>
               <select id="custCity" required>
-                <option value="Abuja - Central / Wuse / Maitama / Garki">Abuja - Central (Wuse, Maitama, Garki, Jabi)</option>
-                <option value="Abuja - Gwarinpa / Utako / Lokogoma / Lugbe">Abuja - Suburbs (Gwarinpa, Lokogoma, Lugbe, Kubwa)</option>
-                <option value="Outside Abuja - Nationwide Delivery">Outside Abuja - Nationwide Delivery</option>
-              </select>
+<option value="Abuja (FCT)">Abuja (FCT)</option>
+<option value="Abia">Abia</option>
+<option value="Adamawa">Adamawa</option>
+<option value="Akwa Ibom">Akwa Ibom</option>
+<option value="Anambra">Anambra</option>
+<option value="Bauchi">Bauchi</option>
+<option value="Bayelsa">Bayelsa</option>
+<option value="Benue">Benue</option>
+<option value="Borno">Borno</option>
+<option value="Cross River">Cross River</option>
+<option value="Delta">Delta</option>
+<option value="Ebonyi">Ebonyi</option>
+<option value="Edo">Edo</option>
+<option value="Ekiti">Ekiti</option>
+<option value="Enugu">Enugu</option>
+<option value="Gombe">Gombe</option>
+<option value="Imo">Imo</option>
+<option value="Jigawa">Jigawa</option>
+<option value="Kaduna">Kaduna</option>
+<option value="Kano">Kano</option>
+<option value="Katsina">Katsina</option>
+<option value="Kebbi">Kebbi</option>
+<option value="Kogi">Kogi</option>
+<option value="Kwara">Kwara</option>
+<option value="Lagos">Lagos</option>
+<option value="Nasarawa">Nasarawa</option>
+<option value="Niger">Niger</option>
+<option value="Ogun">Ogun</option>
+<option value="Ondo">Ondo</option>
+<option value="Osun">Osun</option>
+<option value="Oyo">Oyo</option>
+<option value="Plateau">Plateau</option>
+<option value="Rivers">Rivers</option>
+<option value="Sokoto">Sokoto</option>
+<option value="Taraba">Taraba</option>
+<option value="Yobe">Yobe</option>
+<option value="Zamfara">Zamfara</option>
+</select>
             </div>
 
             <label style="display:block; font-size:0.72rem; text-transform:uppercase; letter-spacing:1.5px; font-weight:700; color:#555; margin-bottom:8px;">Select Payment Method</label>
@@ -172,7 +206,7 @@ function initCartDOM() {
     const subBtn = document.getElementById('paySubmitBtn');
 
     function outside() {
-      return window.bkDelivery !== 'pickup' && /^outside abuja/i.test(cityEl.value);
+      return window.bkDelivery !== 'pickup' && !/^abuja/i.test(cityEl.value);
     }
     function syncPod() {
       const pk = window.bkDelivery === 'pickup';
@@ -204,7 +238,7 @@ function initCartDOM() {
       cityEl.required = !pk;
       note.textContent = pk
         ? 'No delivery fee. We will send you the pickup address and time on WhatsApp once your order is ready.'
-        : 'The delivery fee is not included in the amount to transfer. We confirm it with you on WhatsApp before dispatch.';
+        : 'We deliver nationwide. The delivery fee is not included in the amount to transfer. We confirm it with you on WhatsApp before dispatch.';
       syncPod();
       guard();
     }
@@ -214,6 +248,113 @@ function initCartDOM() {
     cityEl.addEventListener('change', guard);
     podBtn.addEventListener('click', function () { setTimeout(function () { guard(); syncPod(); }, 0); });
     setMode('delivery');
+  })();
+  /* ===== STATE PICKER ===== */
+  (function () {
+    const sel = document.getElementById('custCity');
+    if (!sel || document.getElementById('bkStateBtn')) return;
+
+    if (!document.getElementById('bkSpStyle')) {
+      const css = [
+        '.bksp-ov{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(20,15,10,.55);z-index:100002;display:flex;align-items:flex-end;justify-content:center}',
+        '.bksp-box{background:#fff;width:100%;max-width:440px;max-height:70vh;max-height:70dvh;border-radius:18px 18px 0 0;display:flex;flex-direction:column;box-shadow:0 -10px 40px rgba(0,0,0,.3)}',
+        '.bksp-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 10px 18px;border-bottom:1px solid #f0e6da;font-weight:700;color:#2a2118;font-size:1rem;flex:0 0 auto}',
+        '.bksp-x{border:1px solid #d9cfc2;background:#fff;color:#4a3f33;border-radius:999px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer}',
+        '.bksp-list{overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1 1 auto}',
+        '.bksp-opt{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;background:#fff;border:0;border-bottom:1px solid #f4ede4;padding:13px 18px;font-size:.95rem;color:#2a2118;cursor:pointer;font-family:inherit}',
+        '.bksp-opt.on{background:#fff3e8;color:#E56510;font-weight:700}'
+      ].join('');
+      const st = document.createElement('style');
+      st.id = 'bkSpStyle';
+      st.textContent = css;
+      document.head.appendChild(st);
+    }
+
+    const cs = window.getComputedStyle(sel);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.id = 'bkStateBtn';
+    btn.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;box-sizing:border-box;text-align:left;cursor:pointer;background:#fff;color:#2a2118;';
+    btn.style.padding = cs.padding || '12px 14px';
+    btn.style.border = cs.border || '1px solid #ddd';
+    if (!btn.style.border) btn.style.border = '1px solid #ddd';
+    if (!btn.style.padding) btn.style.padding = '12px 14px';
+    btn.style.borderRadius = cs.borderRadius || '8px';
+    btn.style.fontSize = cs.fontSize || '1rem';
+    btn.style.fontFamily = cs.fontFamily || 'inherit';
+    sel.style.display = 'none';
+    sel.parentNode.insertBefore(btn, sel.nextSibling);
+
+    function label() {
+      btn.innerHTML = '<span></span><i class="fa-solid fa-chevron-down" style="font-size:.75rem;color:#888"></i>';
+      btn.firstChild.textContent = sel.value;
+    }
+    label();
+
+    function openPicker() {
+      const ov = document.createElement('div');
+      ov.className = 'bksp-ov';
+      const box = document.createElement('div');
+      box.className = 'bksp-box';
+      box.setAttribute('role', 'dialog');
+      box.setAttribute('aria-modal', 'true');
+
+      const head = document.createElement('div');
+      head.className = 'bksp-head';
+      const h = document.createElement('span');
+      h.textContent = 'Select your state';
+      const x = document.createElement('button');
+      x.type = 'button';
+      x.className = 'bksp-x';
+      x.innerHTML = 'Close &times;';
+      head.appendChild(h);
+      head.appendChild(x);
+
+      const list = document.createElement('div');
+      list.className = 'bksp-list';
+      let current = null;
+
+      function closePicker() {
+        document.removeEventListener('keydown', onKey);
+        document.body.style.overflow = prevOverflow;
+        ov.remove();
+      }
+      function onKey(e) { if (e.key === 'Escape') closePicker(); }
+
+      Array.prototype.forEach.call(sel.options, function (o) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'bksp-opt' + (o.value === sel.value ? ' on' : '');
+        const name = document.createElement('span');
+        name.textContent = o.value;
+        b.appendChild(name);
+        if (o.value === sel.value) {
+          const tick = document.createElement('span');
+          tick.textContent = '\u2713';
+          b.appendChild(tick);
+          current = b;
+        }
+        b.addEventListener('click', function () {
+          sel.value = o.value;
+          sel.dispatchEvent(new Event('change', { bubbles: true }));
+          label();
+          closePicker();
+        });
+        list.appendChild(b);
+      });
+
+      box.appendChild(head);
+      box.appendChild(list);
+      ov.appendChild(box);
+      ov.addEventListener('click', function (e) { if (e.target === ov) closePicker(); });
+      x.addEventListener('click', closePicker);
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', onKey);
+      document.body.appendChild(ov);
+      if (current) list.scrollTop = Math.max(0, current.offsetTop - 60);
+    }
+    btn.addEventListener('click', openPicker);
   })();
 
   // Header cart icons (works immediately on pages that still have the header written in the HTML)

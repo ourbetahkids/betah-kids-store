@@ -1364,3 +1364,38 @@ async function handleCategoryPicClick(ev) {
   try { supabase.auth.getSession().then(function (r) { if (r && r.data && r.data.session) load(); }); } catch (e1) {}
   try { supabase.auth.onAuthStateChange(function (ev) { if (ev === 'SIGNED_IN') load(); }); } catch (e2) {}
 })();
+
+/* ===== ADMIN TAB BANNERS ===== */
+(function () {
+  var BANNERS = {
+    'tab-overview': ['Dashboard <em>Overview</em>', 'Your store at a glance: sales, orders and products.'],
+    'tab-hero': ['Hero Slider &amp; <em>Video</em>', 'Upload, link and delete the big banners and videos at the top of your home page.'],
+    'tab-about': ['About Page <em>Video</em>', 'Upload or replace the video shown on your About page.'],
+    'tab-categories': ['Category <em>Pictures</em>', 'Change the pictures on the Shop by Category cards.'],
+    'tab-products': ['Product <em>Catalog</em>', 'Add products, edit prices and stock, and see each product BK- code.'],
+    'tab-orders': ['Orders &amp; <em>Sales</em>', 'See every order, confirm payment, update its status and message the customer on WhatsApp.'],
+    'tab-enquiries': ['Customer <em>Enquiries</em>', 'Messages sent from your Contact page, with unread ones marked.']
+  };
+  var titleEl = document.getElementById('pageTitle');
+  var subEl = document.querySelector('.admin-header .admin-subhead');
+  if (!titleEl || !subEl) return;
+  function apply(id) {
+    var b = BANNERS[id];
+    if (!b) return;
+    titleEl.innerHTML = b[0];
+    subEl.textContent = b[1];
+  }
+  document.querySelectorAll('.admin-nav-item[data-tab]').forEach(function (btn) {
+    btn.addEventListener('click', function () { apply(btn.getAttribute('data-tab')); });
+  });
+  var active = document.querySelector('.admin-nav-item.active[data-tab]');
+  if (active) apply(active.getAttribute('data-tab'));
+})();
+
+/* ===== ADMIN SIDE CLOSE ===== */
+(function () {
+  var closeBtn = document.getElementById('adminSideClose');
+  var overlay = document.getElementById('adminOverlay');
+  if (!closeBtn || !overlay) return;
+  closeBtn.addEventListener('click', function () { overlay.click(); });
+})();
