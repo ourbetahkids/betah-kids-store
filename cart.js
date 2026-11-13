@@ -256,12 +256,12 @@ function initCartDOM() {
 
     if (!document.getElementById('bkSpStyle')) {
       const css = [
-        '.bksp-ov{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(20,15,10,.55);z-index:100002;display:flex;align-items:flex-end;justify-content:center}',
-        '.bksp-box{background:#fff;width:100%;max-width:440px;max-height:70vh;max-height:70dvh;border-radius:18px 18px 0 0;display:flex;flex-direction:column;box-shadow:0 -10px 40px rgba(0,0,0,.3)}',
+        '.bksp-ov{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(20,15,10,.55);z-index:100002;display:flex;align-items:center;justify-content:center}',
+        '.bksp-box{background:#fff;width:86%;max-width:320px;max-height:50vh;max-height:50dvh;border-radius:16px;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.35)}',
         '.bksp-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 10px 18px;border-bottom:1px solid #f0e6da;font-weight:700;color:#2a2118;font-size:1rem;flex:0 0 auto}',
         '.bksp-x{border:1px solid #d9cfc2;background:#fff;color:#4a3f33;border-radius:999px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer}',
         '.bksp-list{overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1 1 auto}',
-        '.bksp-opt{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;background:#fff;border:0;border-bottom:1px solid #f4ede4;padding:13px 18px;font-size:.95rem;color:#2a2118;cursor:pointer;font-family:inherit}',
+        '.bksp-opt{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;background:#fff;border:0;border-bottom:1px solid #f4ede4;padding:7px 14px;font-size:.86rem;color:#2a2118;cursor:pointer;font-family:inherit}',
         '.bksp-opt.on{background:#fff3e8;color:#E56510;font-weight:700}'
       ].join('');
       const st = document.createElement('style');

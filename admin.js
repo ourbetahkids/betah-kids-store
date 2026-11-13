@@ -354,6 +354,8 @@ if (productAddForm) {
     const isFeatured = document.getElementById('prodFeatured').checked;
     const isTrending = document.getElementById('prodTrending').checked;
     const description = document.getElementById('prodDesc').value.trim();
+  const brand = document.getElementById('prodBrand').value.trim() || null;
+  const tags = document.getElementById('prodTags').value.trim() || null;
     const fileInput = document.getElementById('prodImage');
     const files = Array.from(fileInput.files).slice(0, 5); const file = files[0];
 
@@ -381,7 +383,7 @@ if (productAddForm) {
           price,
           category,
           subcategory,
-          description,
+          description, brand, tags,
           image_url: imageUrl, gallery_images: extraUrls,
           stock_quantity: stockQuantity,
           in_stock: stockQuantity > 0,
@@ -487,6 +489,8 @@ window.editProduct = (id) => {
   document.getElementById('editProdFeatured').checked = !!product.is_featured;
   document.getElementById('editProdTrending').checked = !!product.is_trending;
   document.getElementById('editProdDesc').value = product.description || '';
+  document.getElementById('editProdBrand').value = product.brand || '';
+  document.getElementById('editProdTags').value = product.tags || '';
   currentEditImageUrl = product.image_url; window.bkEditOpen(product);
 
   if (editProductOverlay) editProductOverlay.style.display = 'flex';
@@ -521,6 +525,8 @@ if (editProductForm) {
     const isFeatured = document.getElementById('editProdFeatured').checked;
     const isTrending = document.getElementById('editProdTrending').checked;
     const description = document.getElementById('editProdDesc').value.trim();
+  const brand = document.getElementById('editProdBrand').value.trim() || null;
+  const tags = document.getElementById('editProdTags').value.trim() || null;
     const fileInput = document.getElementById('editProdImage');
     const newFile = null;
 
@@ -555,7 +561,7 @@ if (editProductForm) {
           price,
           category,
           subcategory,
-          description,
+          description, brand, tags,
           image_url: imageUrl, gallery_images: extraUrls,
           stock_quantity: stockQuantity,
           in_stock: stockQuantity > 0,

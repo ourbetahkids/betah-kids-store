@@ -26,7 +26,7 @@ function render(d) {
   let stamp = 'AWAITING PAYMENT';
   let cls = 'wait';
   if (/cancel/i.test(st)) { stamp = 'CANCELLED'; cls = 'x'; }
-  else if (/^(paid|delivered)$/i.test(st)) { kind = 'RECEIPT'; stamp = 'PAID'; cls = 'ok'; }
+  else if (/^(paid|processing|out for delivery|ready for pickup|delivered)$/i.test(st)) { kind = 'RECEIPT'; stamp = 'PAID'; cls = 'ok'; }
   else if (/pay on delivery/i.test(st)) { stamp = 'PAY ON DELIVERY'; cls = 'pod'; }
   const isBank = /bank transfer/i.test(st);
 

@@ -134,6 +134,155 @@
   <link rel="icon" type="image/png" sizes="48x48" href="images/favicon-48.png">
   <link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<style>
+/* PP TRAIL V2 */
+html body #ppCrumb{display:flex;flex-wrap:wrap;align-items:center;gap:2px 0;overflow:visible;white-space:normal;margin:0 0 12px;padding:0;background:none;border:0;box-shadow:none;font-size:.78rem;line-height:1.5;text-transform:uppercase;color:#8C8C8C;letter-spacing:.2px;}
+html body #ppCrumb a{display:inline;padding:0;margin:0;background:none;border:0;border-radius:0;color:#8C8C8C;font-weight:400;text-decoration:none;}
+html body #ppCrumb a:hover{color:#E56510;text-decoration:none;}
+html body #ppCrumb .pp-sep{font-size:0;margin:0 7px;color:#BBBBBB;}
+html body #ppCrumb .pp-sep::before{content:'/';font-size:.8rem;color:#BBBBBB;}
+@media (min-width:900px){html body #ppCrumb{font-size:.8rem;margin-bottom:10px;}}
+</style>
+<style>
+/* PP LAYOUT V1 */
+html body .pp-info{text-align:left;}
+html body .pp-title{margin:0 0 4px;}
+html body .pp-title::after{content:'';display:block;width:42px;height:3px;background:#E3DCD2;margin:14px 0 0;}
+html body .pp-price{margin:14px 0 8px;}
+html body .pp-buyrow{display:flex;align-items:stretch;gap:10px;margin:14px 0 18px;}
+html body .pp-buyrow .pp-qty-row{margin:0;}
+html body .pp-buyrow .pp-label{display:none;}
+html body .pp-buyrow .pp-btn-cart{flex:1 1 auto;width:auto;min-width:0;}
+html body .pp-det{margin:6px 0 14px;border-top:1px dotted #D8D0C4;}
+html body .pp-det-row{padding:9px 0;border-bottom:1px dotted #D8D0C4;font-size:.86rem;color:#2a2118;}
+html body .pp-det-row span{color:#E56510;}
+html body .pp-det-row a{color:#E56510;text-decoration:none;}
+html body .pp-det-row a:hover{text-decoration:underline;}
+html body .pp-share{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px;}
+html body .pp-share a{width:34px;height:34px;border:1.5px solid #CFC7BB;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#8C8C8C;font-size:.85rem;text-decoration:none;}
+html body .pp-share a:hover{border-color:#E56510;color:#E56510;}
+html body .pp-tabs{margin-top:36px;border-top:2px solid #FF7A1A;}
+html body .pp-tabbar{display:flex;flex-direction:column;}
+html body .pp-tab{background:none;border:0;text-align:left;padding:14px 0;font-family:inherit;font-size:.8rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#8C8C8C;cursor:pointer;}
+html body .pp-tab.on{color:#2a2118;}
+html body .pp-tabpanel{display:none;padding:6px 0 18px;}
+html body .pp-tabpanel.on{display:block;}
+@media (min-width:900px){html body .pp-tabbar{flex-direction:row;gap:26px;border-bottom:1px solid #E8E2DA;}html body .pp-tab{padding:16px 0 12px;border-bottom:3px solid transparent;margin-bottom:-1px;}html body .pp-tab.on{border-bottom-color:#FF7A1A;}html body .pp-tabpanel{padding-top:20px;}}
+</style>
+<script>
+document.addEventListener('click', function (e) {
+  var b = e.target.closest ? e.target.closest('.pp-tab') : null;
+  if (!b) return;
+  var all = document.querySelectorAll('.pp-tab');
+  for (var i = 0; i < all.length; i++) {
+    all[i].classList.remove('on');
+    var pn = document.getElementById(all[i].getAttribute('data-tab'));
+    if (pn) pn.classList.remove('on');
+  }
+  b.classList.add('on');
+  var tp = document.getElementById(b.getAttribute('data-tab'));
+  if (tp) tp.classList.add('on');
+});
+</script>
+<style>
+/* PP SIZE V1 */
+html body .pp-stock{padding:3px 10px;font-size:.72rem;margin:0 0 4px;}
+html body .pp-buyrow{gap:8px;margin:10px 0 10px;align-items:center;}
+html body .pp-buyrow .pp-qty{height:36px;}
+html body .pp-buyrow .pp-qty-btn{width:30px;height:36px;font-size:.85rem;}
+html body .pp-buyrow .pp-qty input{width:38px;height:36px;font-size:.88rem;}
+html body .pp-btn{height:38px;min-height:0;padding:0 20px;font-size:.74rem;letter-spacing:.6px;gap:7px;box-shadow:none;}
+html body .pp-btn i{font-size:.8rem;}
+html body .pp-buyrow .pp-btn-cart{flex:0 0 auto;width:auto;}
+html body .pp-actions{flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:8px;margin:0 0 14px;}
+html body .pp-actions .pp-btn-wa{height:36px;flex:0 0 auto;width:auto;padding:0 18px;font-size:.72rem;}
+</style>
+<style>
+/* PP RELATED V1 */
+html body .pp-rel-wrap{position:relative;}
+html body .pp-related .product-grid{display:flex;flex-wrap:nowrap;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:4px 2px 10px;}
+html body .pp-related .product-grid::-webkit-scrollbar{display:none;}
+html body .pp-related .product-grid .product-card{flex:0 0 calc((100% - 12px) / 2);min-width:0;scroll-snap-align:start;}
+html body .pp-rel-arrow{position:absolute;top:34%;z-index:3;width:32px;height:32px;border-radius:50%;border:1px solid #E3DCD2;background:#FFFFFF;color:#2a2118;font-size:1.2rem;line-height:1;display:flex;align-items:center;justify-content:center;padding:0 0 3px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+html body .pp-rel-arrow:hover{border-color:#E56510;color:#E56510;}
+html body .pp-rel-prev{left:-4px;}
+html body .pp-rel-next{right:-4px;}
+html body .pp-rel-arrow.off{display:none;}
+@media (min-width:900px){
+html body .pp-related .product-grid{gap:16px;}
+html body .pp-related .product-grid .product-card{flex:0 0 calc((100% - 48px) / 4);}
+html body .pp-rel-prev{left:-14px;}
+html body .pp-rel-next{right:-14px;}
+}
+</style>
+<style>
+/* PP PINNED V1 */
+html body .pp-pin{display:none;}
+@media (max-width:899px){
+html body.pp-has-bar{padding-bottom:58px;}
+html body .pp-pin{position:fixed;left:0;right:0;bottom:0;z-index:900;display:flex;align-items:center;gap:8px;background:#FFFFFF;border-top:1px solid #E8E2DA;box-shadow:0 -4px 14px rgba(0,0,0,.10);padding:7px 10px;transform:translateY(115%);transition:transform .2s ease;}
+html body .pp-pin.show{transform:none;}
+html body .pp-pin img{width:38px;height:38px;object-fit:contain;border-radius:8px;background:#FFFFFF;border:1px solid #F0E9DF;flex:0 0 auto;}
+html body .pp-pin-price{font-weight:700;font-size:.86rem;color:#E56510;white-space:nowrap;}
+html body .pp-pin-qty{display:flex;align-items:center;border:1px solid #E3DCD2;border-radius:999px;margin-left:auto;flex:0 0 auto;}
+html body .pp-pin-qty button{width:26px;height:30px;border:0;background:none;font-size:.9rem;color:#2a2118;cursor:pointer;padding:0;}
+html body .pp-pin-n{min-width:20px;text-align:center;font-size:.85rem;font-weight:700;}
+html body .pp-pin-add{height:34px;border:0;border-radius:999px;background:#FF7A1A;color:#FFFFFF;font-family:inherit;font-size:.7rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:0 14px;cursor:pointer;flex:0 0 auto;}
+}
+</style>
+<style>
+/* PP PINNED V2 */
+@media (max-width:899px){
+html,body{max-width:100%;overflow-x:hidden;}
+html body.pp-has-bar{padding-bottom:46px;}
+html body .pp-pin{box-sizing:border-box;width:100%;max-width:100vw;overflow:hidden;gap:6px;padding:5px 8px;}
+html body .pp-pin *{box-sizing:border-box;}
+html body .pp-pin img{width:30px;height:30px;border-radius:6px;}
+html body .pp-pin-price{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:.74rem;}
+html body .pp-pin-qty{margin-left:0;flex:0 0 auto;}
+html body .pp-pin-qty button{width:22px;height:26px;font-size:.8rem;}
+html body .pp-pin-n{min-width:16px;font-size:.78rem;}
+html body .pp-pin-add{height:30px;padding:0 10px;font-size:.64rem;letter-spacing:.3px;white-space:nowrap;}
+}
+@media (max-width:360px){
+html body .pp-pin img{display:none;}
+}
+</style>
+<style>
+/* PP FIT V1 */
+@media (max-width:899px){
+html body .pp-wrap{max-width:100%;}
+html body .pp-layout{grid-template-columns:minmax(0,1fr);}
+html body .pp-layout > *{min-width:0;max-width:100%;}
+html body .pp-info,html body .pp-tabs,html body .pp-tabpanel{min-width:0;max-width:100%;}
+html body .pp-desc,html body .pp-title,html body .pp-det-row{overflow-wrap:anywhere;}
+html body .pp-wrap img{max-width:100%;}
+html body .pp-pin{left:0;right:0;width:auto;max-width:none;}
+}
+</style>
+<style>
+/* PP FIT V2 */
+html{overflow-x:visible;}
+@media (max-width:899px){
+html body .pp-related{min-width:0;max-width:100%;width:100%;box-sizing:border-box;}
+html body .pp-related .product-grid{max-width:100%;width:100%;box-sizing:border-box;scrollbar-width:none;-ms-overflow-style:none;}
+html body .pp-related .product-grid::-webkit-scrollbar{display:none;width:0;height:0;}
+html body .pp-thumbs{max-width:100%;scrollbar-width:none;-ms-overflow-style:none;}
+html body .pp-thumbs::-webkit-scrollbar{display:none;width:0;height:0;}
+}
+</style>
+<style>
+/* PP PINNED V3 */
+@media (max-width:899px){
+html body .pp-pin{padding:4px 8px;gap:6px;}
+html body .pp-pin img{width:26px;height:26px;border-radius:5px;}
+html body .pp-pin-price{font-size:.7rem;}
+html body .pp-pin-qty button{width:22px;height:26px;font-size:.8rem;}
+html body .pp-pin-n{min-width:16px;font-size:.78rem;}
+html body .pp-pin-add{height:30px;padding:0 12px;font-size:.7rem;letter-spacing:.2px;white-space:nowrap;}
+html body.pp-has-bar{padding-bottom:40px;}
+}
+</style>
 </head>
 <body class="has-site-header">
 
@@ -256,7 +405,7 @@ function renderProduct(p) {
   if (p.subcategory && catPage) {
     crumb += '<span class="pp-sep">&rsaquo;</span><a href="' + catPage + '?subcategory=' + encodeURIComponent(p.subcategory) + '">' + esc(p.subcategory) + '</a>';
   }
-  crumb += '<span class="pp-sep">&rsaquo;</span><span class="pp-current">' + esc(p.title) + '</span>';
+  
 
   let stockHtml;
   if (!inStock) {
@@ -291,31 +440,55 @@ function renderProduct(p) {
   const desc = p.description ? esc(p.description) : 'Message us on WhatsApp for sizes, colours and more details about this item.';
 
   root.innerHTML =
-    '<div class="pp-breadcrumb" id="ppCrumb" role="navigation" aria-label="Breadcrumb">' + crumb + '</div>' +
+    '' +
     '<div class="pp-layout">' +
       '<div class="pp-gallery"><div class="pp-image-box" id="ppImageBox">' +
         '<img id="ppMainImg" src="' + esc(img) + '" alt="' + esc(p.title) + '">' + (galleryList.length > 1 ? '<button type="button" class="pp-arrow pp-prev" aria-label="Previous photo">&lsaquo;</button><button type="button" class="pp-arrow pp-next" aria-label="Next photo">&rsaquo;</button>' : '') +
         (inStock ? '' : '<span class="pp-badge-out">Sold Out</span>') +
       '</div>' +
-      galleryThumbs + '</div>' + '<div class="pp-info">' +
-        '<span class="pp-cat">' + esc(p.subcategory || p.category) + '</span>' +
-        '<h1 class="pp-title">' + esc(p.title) + '</h1>' + (p.product_code ? '<span class="pp-code" style="display:inline-block;background:#FFF1E6;color:#E56510;border:1px solid #FFD2B0;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;letter-spacing:.5px;margin:2px 0 8px;">' + esc(p.product_code) + '</span>' : '') +
+      galleryThumbs + '</div>' + '<div class="pp-info">' + '<div class="pp-breadcrumb" id="ppCrumb" role="navigation" aria-label="Breadcrumb">' + crumb + '</div>' +
+        '' +
+        '<h1 class="pp-title">' + esc(p.title) + '</h1>' + 
         '<p class="pp-price">' + naira(price) + '</p>' +
         stockHtml +
-        '<p class="pp-desc">' + desc + '</p>' +
-        qtyHtml +
-        '<div class="pp-actions">' +
-          addHtml +
+        
+        '<div class="pp-buyrow">' + qtyHtml + addHtml + '</div>' +
+'<div class="pp-actions">' +
           '<a class="pp-btn pp-btn-wa" id="ppWhatsApp" href="#" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> ' + waLabel + '</a>' +
         '</div>' +
-        '<ul class="pp-notes">' +
+        (function () {
+  var rows = '';
+  var cats = '';
+  if (catPage) { cats = '<a href="' + catPage + '">' + esc(p.category) + '</a>'; } else if (p.category) { cats = esc(p.category); }
+  if (p.subcategory) { cats += (cats ? ', ' : '') + (catPage ? '<a href="' + catPage + '?subcategory=' + encodeURIComponent(p.subcategory) + '">' + esc(p.subcategory) + '</a>' : esc(p.subcategory)); }
+  var tg = String(p.tags || '').split(',').map(function (x) { return x.trim(); }).filter(Boolean).map(function (x) { return esc(x); }).join(', ');
+  if (p.product_code) rows += '<div class="pp-det-row">SKU: <span>' + esc(p.product_code) + '</span></div>';
+  if (cats) rows += '<div class="pp-det-row">Category: <span>' + cats + '</span></div>';
+  if (tg) rows += '<div class="pp-det-row">Tags: <span>' + tg + '</span></div>';
+  if (p.brand) rows += '<div class="pp-det-row">Brand: <span>' + esc(p.brand) + '</span></div>';
+  return rows ? '<div class="pp-det">' + rows + '</div>' : '';
+})() +
+'<div class="pp-share">' +
+'<a href="https://wa.me/?text=' + encodeURIComponent(p.title + ' ' + location.href) + '" target="_blank" rel="noopener" aria-label="Share on WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>' +
+'<a href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(location.href) + '" target="_blank" rel="noopener" aria-label="Share on Facebook"><i class="fa-brands fa-facebook-f"></i></a>' +
+'<a href="https://twitter.com/intent/tweet?url=' + encodeURIComponent(location.href) + '&amp;text=' + encodeURIComponent(p.title) + '" target="_blank" rel="noopener" aria-label="Share on Twitter"><i class="fa-brands fa-twitter"></i></a>' +
+'<a href="mailto:?subject=' + encodeURIComponent(p.title) + '&amp;body=' + encodeURIComponent(location.href) + '" aria-label="Share by email"><i class="fa-solid fa-envelope"></i></a>' +
+'<a href="https://t.me/share/url?url=' + encodeURIComponent(location.href) + '&amp;text=' + encodeURIComponent(p.title) + '" target="_blank" rel="noopener" aria-label="Share on Telegram"><i class="fa-brands fa-telegram"></i></a>' +
+'</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="pp-tabs"><div class="pp-tabbar">' +
+'<button type="button" class="pp-tab on" data-tab="ppTabDesc">Description</button>' +
+'<button type="button" class="pp-tab" data-tab="ppTabDel">Delivery &amp; Payment</button></div>' +
+'<div class="pp-tabpanel on" id="ppTabDesc"><p class="pp-desc">' + desc + '</p></div>' +
+'<div class="pp-tabpanel" id="ppTabDel">' +
+'<ul class="pp-notes">' +
           '<li><i class="fa-solid fa-truck-fast"></i> Fast doorstep delivery in Abuja &amp; nationwide</li>' +
           '<li><i class="fa-solid fa-hand-holding-dollar"></i> Pay on delivery available in Abuja</li>' +
           '<li><i class="fa-solid fa-building-columns"></i> Secure bank transfer payment</li>' +
         '</ul>' +
-      '</div>' +
-    '</div>' +
-    '<section class="pp-related" id="ppRelated"></section>';
+'</div></div>' +
+'<section class="pp-related" id="ppRelated"></section>';
 
   document.title = p.title + ' | Betah Kids Beauty World LTD';
   const meta = document.getElementById('metaDesc');
@@ -324,7 +497,7 @@ function renderProduct(p) {
     meta.setAttribute('content', text);
   }
 
-  try { if (window.bkTrail) { var tfb = []; if (catPage) { tfb.push({ l: p.category, u: catPage }); } if (p.subcategory && catPage) { tfb.push({ l: p.subcategory, u: catPage + '?subcategory=' + encodeURIComponent(p.subcategory) }); } window.bkTrail.visit(p.title, 'product.html?id=' + encodeURIComponent(p.id), { fallback: tfb }); window.bkTrail.render(document.getElementById('ppCrumb')); } } catch (te) { console.error('[trail]', te); }
+  try { if (window.bkTrail) { var tfb = []; if (catPage) { tfb.push({ l: p.category, u: catPage }); } if (p.subcategory && catPage) { tfb.push({ l: p.subcategory, u: catPage + '?subcategory=' + encodeURIComponent(p.subcategory) }); } window.bkTrail.visit(p.title, 'product.html?id=' + encodeURIComponent(p.id), { fallback: tfb });  } } catch (te) { console.error('[trail]', te); }
   bindBuyControls(); bindGallery();
   updateWhatsApp();
 }
@@ -390,6 +563,21 @@ function relatedCard(r) {
     '</article>';
 }
 
+function bkRelArrows(box) {
+  var g = box.querySelector('.product-grid');
+  var pv = box.querySelector('.pp-rel-prev');
+  var nx = box.querySelector('.pp-rel-next');
+  if (!g || !pv || !nx) return;
+  function upd() {
+    pv.classList.toggle('off', g.scrollLeft < 8);
+    nx.classList.toggle('off', g.scrollLeft + g.clientWidth >= g.scrollWidth - 8);
+  }
+  pv.addEventListener('click', function () { g.scrollBy({ left: -g.clientWidth, behavior: 'smooth' }); });
+  nx.addEventListener('click', function () { g.scrollBy({ left: g.clientWidth, behavior: 'smooth' }); });
+  g.addEventListener('scroll', upd);
+  window.addEventListener('resize', upd);
+  upd();
+}
 async function loadRelated(p) {
   if (!p.category) return;
   try {
@@ -399,13 +587,14 @@ async function loadRelated(p) {
       .eq('category', p.category)
       .neq('id', p.id)
       .order('created_at', { ascending: false })
-      .limit(4);
+      .limit(10);
     if (error) throw error;
     if (!data || data.length === 0) return;
     const box = document.getElementById('ppRelated');
     if (!box) return;
-    box.innerHTML = '<h2 class="pp-related-title">You may also like</h2>' +
-      '<div class="product-grid">' + data.map(relatedCard).join('') + '</div>';
+    box.innerHTML = '<h2 class="pp-related-title">Related Products</h2>' +
+      '<div class="pp-rel-wrap"><button type="button" class="pp-rel-arrow pp-rel-prev off" aria-label="Previous">&#8249;</button><div class="product-grid">' + data.map(relatedCard).join('') + '</div><button type="button" class="pp-rel-arrow pp-rel-next" aria-label="Next">&#8250;</button></div>';
+bkRelArrows(box);
   } catch (err) {
     console.error('[product page] Could not load related products:', err);
   }
@@ -445,6 +634,43 @@ async function loadProduct() {
 }
 
 loadProduct();
+</script>
+<script>
+(function () {
+  var tries = 0;
+  var iv = setInterval(function () {
+    tries++;
+    var add = document.getElementById('ppAdd');
+    if (!add) { if (tries > 80) clearInterval(iv); return; }
+    clearInterval(iv);
+    if (add.disabled) return;
+    var img = document.getElementById('ppMainImg');
+    var pr = document.querySelector('.pp-price');
+    var inp = document.getElementById('ppQty');
+    var mi = document.getElementById('ppMinus');
+    var pl = document.getElementById('ppPlus');
+    if (!inp || !mi || !pl) return;
+    var bar = document.createElement('div');
+    bar.className = 'pp-pin';
+    bar.innerHTML = '<img alt=""><span class="pp-pin-price"></span><div class="pp-pin-qty"><button type="button" class="pp-pin-m" aria-label="Decrease quantity">&minus;</button><span class="pp-pin-n">1</span><button type="button" class="pp-pin-p" aria-label="Increase quantity">+</button></div><button type="button" class="pp-pin-add">Add to cart</button>';
+    if (img) bar.querySelector('img').src = img.src;
+    bar.querySelector('.pp-pin-price').textContent = pr ? pr.textContent : '';
+    var n = bar.querySelector('.pp-pin-n');
+    function sync() { n.textContent = inp.value; }
+    bar.querySelector('.pp-pin-m').addEventListener('click', function () { mi.click(); setTimeout(sync, 0); });
+    bar.querySelector('.pp-pin-p').addEventListener('click', function () { pl.click(); setTimeout(sync, 0); });
+    bar.querySelector('.pp-pin-add').addEventListener('click', function () { add.click(); });
+    inp.addEventListener('change', sync);
+    document.body.appendChild(bar);
+    document.body.classList.add('pp-has-bar');
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        var e = es[0];
+        bar.classList.toggle('show', !e.isIntersecting && e.boundingClientRect.top < 0);
+      }).observe(add);
+    }
+  }, 250);
+})();
 </script>
 </body>
 </html>

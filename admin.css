@@ -510,3 +510,16 @@ html::-webkit-scrollbar-thumb { background: #FFB066; border-radius: 10px; }
     -webkit-tap-highlight-color: transparent;
   }
 }
+
+/* ADMIN SCROLLBAR V1 (visible scrollbar with arrow buttons) */
+body.admin-body::-webkit-scrollbar, .admin-main::-webkit-scrollbar { width: 14px; height: 14px; }
+body.admin-body::-webkit-scrollbar-track, .admin-main::-webkit-scrollbar-track { background: #FBFAF8; }
+body.admin-body::-webkit-scrollbar-thumb, .admin-main::-webkit-scrollbar-thumb { background: #8C8C8C; border-radius: 999px; border: 2px solid #FBFAF8; min-height: 40px; }
+body.admin-body::-webkit-scrollbar-thumb:hover, .admin-main::-webkit-scrollbar-thumb:hover { background: #6E6E6E; }
+body.admin-body::-webkit-scrollbar-button:single-button, .admin-main::-webkit-scrollbar-button:single-button { display: block; width: 14px; height: 16px; background-color: #FBFAF8; background-repeat: no-repeat; background-position: center; background-size: 10px 10px; }
+body.admin-body::-webkit-scrollbar-button:single-button:vertical:decrement, .admin-main::-webkit-scrollbar-button:single-button:vertical:decrement { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 8 L5 2 L9 8 Z' fill='%23777777'/%3E%3C/svg%3E"); }
+body.admin-body::-webkit-scrollbar-button:single-button:vertical:increment, .admin-main::-webkit-scrollbar-button:single-button:vertical:increment { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 2 L5 8 L9 2 Z' fill='%23777777'/%3E%3C/svg%3E"); }
+@media (max-width: 900px) {
+  body.admin-body::-webkit-scrollbar, .admin-main::-webkit-scrollbar { width: 12px; height: 12px; }
+  body.admin-body::-webkit-scrollbar-button:single-button, .admin-main::-webkit-scrollbar-button:single-button { width: 12px; height: 14px; }
+}
