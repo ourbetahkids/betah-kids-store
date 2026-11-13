@@ -262,9 +262,9 @@ function renderProduct(p) {
   if (!inStock) {
     stockHtml = '<span class="pp-stock pp-out">Sold Out</span>';
   } else if (stockQty !== null && stockQty <= 3) {
-    stockHtml = '<span class="pp-stock pp-low">Only ' + stockQty + ' left</span>';
+    stockHtml = '<span class="pp-stock pp-low">Stock: ' + stockQty + '</span>';
   } else {
-    stockHtml = '<span class="pp-stock pp-in">In Stock</span>';
+    stockHtml = '<span class="pp-stock pp-in">' + (stockQty !== null ? 'Stock: ' + stockQty : 'In Stock') + '</span>';
   }
 
   const qtyHtml = inStock

@@ -1,4 +1,4 @@
-﻿<header class="site-header" id="siteHeader">
+<header class="site-header" id="siteHeader">
 
   <!-- MOBILE TOP ROW: hamburger + logo + icons (mobile only) -->
   <div class="header-top">
@@ -115,6 +115,7 @@
           <li><a href="shoes.html?subcategory=Baby%20Shoes">Baby Shoes</a></li>
           <li><a href="shoes.html?subcategory=Boys%20Shoes">Boys Shoes</a></li>
           <li><a href="shoes.html?subcategory=Girls%20Shoes">Girls Shoes</a></li>
+          <li><a href="shoes.html?subcategory=Unisex%20Shoes">Unisex Shoes</a></li>
           <li><a href="shoes.html?subcategory=School%20Shoes">School Shoes</a></li>
         </ul>
       </li>

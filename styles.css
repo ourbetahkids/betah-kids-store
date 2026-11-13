@@ -2493,3 +2493,40 @@ nav.cp-breadcrumb {
   .product-img:hover::before { opacity: 1; }
   .product-img:hover::after { opacity: 1; transform: translate(-50%, 0); }
 }
+
+/* HOME ROWS V2 (Featured sideways row, New Arrivals grid, View More) */
+#featuredGrid{display:flex;flex-wrap:nowrap;justify-content:flex-start;gap:12px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:8px 2px 14px;scrollbar-width:thin;scrollbar-color:#FF7A1A #F6E7DA;}
+#featuredGrid::-webkit-scrollbar{height:6px;}
+#featuredGrid::-webkit-scrollbar-track{background:#F6E7DA;border-radius:999px;}
+#featuredGrid::-webkit-scrollbar-thumb{background:#FF7A1A;border-radius:999px;}
+#featured .product-card{flex:0 0 calc((100% - 12px) / 2);max-width:none;scroll-snap-align:start;}
+#featuredGrid .empty-state-msg{flex:1 1 100%;}
+@media (min-width: 561px) and (max-width: 900px) {
+  #featured .product-card{flex:0 0 calc((100% - 24px) / 3);}
+}
+@media (min-width: 901px) {
+  #featuredGrid{gap:16px;}
+  #featured .product-card{flex:0 0 calc((100% - 64px) / 5);}
+  #trendingGrid{display:grid;grid-template-columns:repeat(5, minmax(0, 1fr));gap:16px;justify-content:stretch;}
+  #trending .product-card{flex:none;max-width:none;width:auto;}
+  #trendingGrid .empty-state-msg{grid-column:1 / -1;}
+}
+.bk-more-wrap{display:flex;justify-content:center;margin:18px 0 6px;}
+.bk-more-btn{background:linear-gradient(135deg,#FF8A2A,#FF6A00);color:#fff;border:0;border-radius:16px;padding:13px 40px;font-size:.95rem;font-weight:800;letter-spacing:.6px;text-transform:uppercase;box-shadow:0 6px 16px rgba(255,106,0,.28);cursor:pointer;}
+.bk-more-btn:active{transform:scale(.97);}
+
+/* HOME ARROWS V3 (Featured side arrows, scrollbar hidden) */
+#featuredGrid{scrollbar-width:none;padding:8px 2px;}
+#featuredGrid::-webkit-scrollbar{display:none;}
+.bk-row-wrap{position:relative;}
+.bk-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:34px;height:34px;border-radius:50%;border:0;background:#fff;color:#FF6A00;box-shadow:0 3px 10px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;padding:0;cursor:pointer;}
+.bk-arrow:active{transform:translateY(-50%) scale(.94);}
+.bk-prev{left:-4px;}
+.bk-next{right:-4px;}
+.bk-arrow.bk-hide{display:none;}
+@media (min-width: 901px) {
+  .bk-arrow{width:42px;height:42px;font-size:16px;}
+  .bk-prev{left:-20px;}
+  .bk-next{right:-20px;}
+  .bk-arrow:hover{background:#FF6A00;color:#fff;}
+}

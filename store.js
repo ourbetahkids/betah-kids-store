@@ -23,8 +23,8 @@ const CATEGORIES = [
 document.addEventListener('DOMContentLoaded', () => {
   loadLiveHeroSlides().finally(function () { var h = document.querySelector('.hero-slider-section'); if (!h) return; if (h.querySelector('.hero-swiper .swiper-slide')) { h.classList.add('hero-ready'); } else { h.classList.add('hero-empty'); } });
   loadCategoryTiles();
-  loadFeaturedProducts();
-  loadTrendingProducts();
+  loadFeaturedProducts().then(bkFeaturedArrows).catch(function () {});
+  loadTrendingProducts().then(bkViewMoreInit).catch(function () {});
 });
 
 // ---------- HERO SLIDE LINKS ----------
@@ -181,7 +181,7 @@ async function loadFeaturedProducts() {
       .select('*')
       .eq('is_featured', true)
       .order('created_at', { ascending: false })
-      .limit(8);
+      .limit(10);
 
     if (error) throw error;
 
@@ -213,7 +213,7 @@ async function loadTrendingProducts() {
       .select('*')
       .eq('is_trending', true)
       .order('created_at', { ascending: false })
-      .limit(8);
+      .limit(10);
 
     if (error) throw error;
 
@@ -259,4 +259,80 @@ function renderProductCard(prod) {
       </div>
     </article>
   `;
+}
+
+// HOME VIEW MORE (New Arrivals)
+function bkViewMoreInit() {
+  var grid = document.getElementById('trendingGrid');
+  if (!grid || document.getElementById('bkMoreWrap')) return;
+  var shown = grid.querySelectorAll('.product-card').length;
+  var PAGE = 10;
+  if (shown < PAGE) return;
+  var wrap = document.createElement('div');
+  wrap.className = 'bk-more-wrap';
+  wrap.id = 'bkMoreWrap';
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'bk-more-btn';
+  btn.textContent = 'View More';
+  wrap.appendChild(btn);
+  grid.insertAdjacentElement('afterend', wrap);
+  var busy = false;
+  btn.addEventListener('click', async function () {
+    if (busy) return;
+    busy = true;
+    btn.textContent = 'Loading...';
+    try {
+      var res = await supabase.from('products').select('*').eq('is_trending', true).order('created_at', { ascending: false }).range(shown, shown + PAGE - 1);
+      if (res.error) throw res.error;
+      var rows = res.data || [];
+      if (rows.length) {
+        grid.insertAdjacentHTML('beforeend', rows.map(function (p) { return renderProductCard(p); }).join(''));
+        shown += rows.length;
+      }
+      if (rows.length < PAGE) { wrap.remove(); } else { btn.textContent = 'View More'; }
+    } catch (e) {
+      console.error('View More failed:', e);
+      btn.textContent = 'View More';
+    }
+    busy = false;
+  });
+}
+
+// HOME FEATURED ARROWS
+function bkFeaturedArrows() {
+  var grid = document.getElementById('featuredGrid');
+  if (!grid || document.getElementById('bkFeatWrap')) return;
+  var wrap = document.createElement('div');
+  wrap.className = 'bk-row-wrap';
+  wrap.id = 'bkFeatWrap';
+  grid.parentNode.insertBefore(wrap, grid);
+  wrap.appendChild(grid);
+  var prev = document.createElement('button');
+  prev.type = 'button';
+  prev.className = 'bk-arrow bk-prev';
+  prev.setAttribute('aria-label', 'Previous products');
+  prev.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+  var next = document.createElement('button');
+  next.type = 'button';
+  next.className = 'bk-arrow bk-next';
+  next.setAttribute('aria-label', 'Next products');
+  next.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+  wrap.appendChild(prev);
+  wrap.appendChild(next);
+  function step() {
+    var gap = parseFloat(getComputedStyle(grid).columnGap) || 0;
+    return grid.clientWidth + gap;
+  }
+  function update() {
+    var max = grid.scrollWidth - grid.clientWidth;
+    prev.classList.toggle('bk-hide', grid.scrollLeft <= 4);
+    next.classList.toggle('bk-hide', max <= 4 || grid.scrollLeft >= max - 4);
+  }
+  prev.addEventListener('click', function () { grid.scrollBy({ left: -step(), behavior: 'smooth' }); });
+  next.addEventListener('click', function () { grid.scrollBy({ left: step(), behavior: 'smooth' }); });
+  grid.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+  setTimeout(update, 600);
 }

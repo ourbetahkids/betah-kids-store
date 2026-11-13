@@ -7,7 +7,7 @@ const subcategoryMap = {
   'Clothing': ['Baby Boy Clothing', 'Baby Girl Clothing', 'Boys Clothing', 'Girls Clothing', 'Boys Underwear', 'Girls Underwear'],
   'Maternity': ['Maternity Dresses', 'Maternity Trousers', 'Maternity Sleepwear'],
   'School': ['Uniforms', 'Bags & Backpacks', 'Lunch Boxes & Bottles', 'Stationery & Supplies', 'Books'],
-  'Shoes': ['Baby Shoes', 'Boys Shoes', 'Girls Shoes', 'School Shoes'],
+  'Shoes': ['Baby Shoes', 'Boys Shoes', 'Girls Shoes', 'Unisex Shoes', 'School Shoes'],
   'Toys': ['Babies & Preschoolers (0-2)', 'Toddlers (2+)', 'Kids (4+)', 'Big Kids (7+)', 'Playmats & Activity', 'Costumes & Dress-Up', 'Bicycles, Scooters & Ride-Ons', 'Outdoor & Garden Play', 'Swimming & Beach', 'Party & Balloons']
 };
 
@@ -123,7 +123,7 @@ function showDashboard(email) {
   if (loginOverlay) loginOverlay.style.display = 'none';
   if (adminDashboard) adminDashboard.style.display = 'flex';
   const emailDisplay = document.getElementById('currentUserEmail');
-  if (emailDisplay) emailDisplay.textContent = email;
+  if (emailDisplay) emailDisplay.textContent = 'Welcome, Betah Kids';
 }
 
 // MASTER DATA LOAD FUNCTION
