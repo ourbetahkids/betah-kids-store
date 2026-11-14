@@ -48,7 +48,7 @@ function render(d) {
   }).join('');
 
   const where = pickup
-    ? 'Pickup. We will send the pickup address and time on WhatsApp.'
+    ? 'Pickup from our Head Office (Wuse Modern Market) or Branch Office (Lugbe). We will confirm which one, and the time, on WhatsApp.'
     : esc(d.address) + (d.city ? ', ' + esc(d.city) : '');
 
   let extra = '';

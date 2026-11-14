@@ -48,11 +48,11 @@
 <div class="bk-col">
       <h4>Visit &amp; Contact</h4>
       <ul class="bk-contact">
-        <li><i class="fa-solid fa-location-dot"></i><span>No. 41T IS, Shop 457,<br>Wuse Market, Abuja, Nigeria</span></li>
+        <li><i class="fa-solid fa-location-dot"></i><span><span style="display:block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#FF7A1A;margin:0 0 4px;">Head Office</span><span style="display:block;text-transform:none;letter-spacing:0;line-height:1.6;">Block 43, Shop 459<br>Wuse Modern Market<br>FCT Abuja</span><span style="display:block;height:1px;background:rgba(255,255,255,.18);margin:10px 0;"></span><span style="display:block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#FF7A1A;margin:0 0 4px;">Branch Office</span><span style="display:block;text-transform:none;letter-spacing:0;line-height:1.6;">#92, Trademore Avenue<br>Phase 2 Trademore Estate<br>Lugbe, FCT Abuja<br>Nigeria</span></span></li>
         <li><i class="fa-solid fa-phone"></i><span>Call us:<br><a href="tel:+2348053016355">+234 805 301 6355</a><br><a href="tel:+2348127710425">+234 812 771 0425</a></span></li>
         <li><i class="fa-brands fa-whatsapp"></i><span>WhatsApp:<br><a href="https://wa.me/2348033016335" target="_blank" rel="noopener">0803 301 6335</a></span></li>
         <li><i class="fa-solid fa-envelope"></i><span>Email us:<br><a href="mailto:betahkids@gmail.com">betahkids@gmail.com</a><br><a href="mailto:ourbetahkids@gmail.com">ourbetahkids@gmail.com</a></span></li>
-        <li><i class="fa-regular fa-clock"></i><span>Mon &ndash; Sat: 9:00 AM &ndash; 6:00 PM<br>Sunday: By appointment only</span></li>
+        <li><i class="fa-regular fa-clock"></i><span>Mon &ndash; Sat: 9AM &ndash; 6PM<br>Sunday: By appointment only</span></li>
         <li><i class="fa-solid fa-truck"></i><span>Delivery across Abuja and nationwide</span></li>
       </ul>
     </div>

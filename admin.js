@@ -1275,7 +1275,7 @@ async function handleCategoryPicClick(ev) {
     else if (k === 'paid') line = 'We have confirmed your payment. Thank you!' + (url ? ' Your receipt: ' + url : '');
     else if (k === 'processing') line = 'Your order is being prepared. We will tell you as soon as it is ready.';
     else if (k === 'out') line = 'Your order is on its way to you. Please keep your phone close, as we will call you when it arrives.';
-    else if (k === 'ready') line = 'Your order is ready for pickup. Please tell us a time that suits you and we will send you the pickup address.';
+    else if (k === 'ready') line = 'Your order is ready for pickup. You can collect from our Head Office (Block 43, Shop 459, Wuse Modern Market, FCT Abuja) or our Branch Office (#92, Trademore Avenue, Phase 2 Trademore Estate, Lugbe, FCT Abuja). Please tell us which one and a time that suits you.';
     else if (k === 'delivered') line = (pick ? 'Thank you for collecting your order.' : 'Your order has been delivered.') + ' Thank you for shopping with Betah Kids Beauty World!' + (url ? ' Your receipt: ' + url : '');
     else if (k === 'cancelled') line = 'Your order has been cancelled. If you did not ask for this, please message us here.';
     var msgText = 'Hello ' + first + ', this is Betah Kids Beauty World. Order ' + no + ' (' + money(total) + '): ' + line;

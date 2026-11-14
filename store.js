@@ -96,7 +96,7 @@ async function loadLiveHeroSlides() {
           <div class="slide-overlay"></div>
           ${heroSlideLinkHtml(slide)}
           <div class="hero-text-lux">
-            <span class="overline">Wuse Market, Abuja &mdash; Featured</span>
+            <span class="overline">Wuse Modern Market, Abuja &mdash; Featured</span>
             <h1>${slide.title}</h1>
             <p class="subtitle">${slide.subtitle}</p>
             <div class="cta-group">

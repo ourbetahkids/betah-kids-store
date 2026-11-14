@@ -335,6 +335,15 @@ html body .pp-related .add-cart-btn{min-height:30px;padding:5px 6px;font-size:11
 html body .pp-related-title{font-size:13px;padding:7px 14px;}
 }
 </style>
+<style>
+/* PP NAV V1 */
+html body .pp-info{position:relative;}
+html body .pp-nav{position:absolute;top:0;right:0;display:flex;gap:6px;z-index:2;}
+html body .pp-navbtn{box-sizing:border-box;width:26px;height:26px;border-radius:50%;border:1px solid #E1E4E8;background:#FFFFFF;color:#555555;display:flex;align-items:center;justify-content:center;font-size:12px;line-height:1;text-decoration:none;}
+html body a.pp-navbtn:hover{border-color:#FF7A1A;color:#FF7A1A;}
+html body .pp-navbtn.off{opacity:.35;}
+html body #ppCrumb{padding-right:66px;box-sizing:border-box;}
+</style>
 </head>
 <body class="has-site-header">
 
@@ -630,6 +639,30 @@ function bkRelArrows(box) {
   window.addEventListener('resize', upd);
   upd();
 }
+async function bkPrevNext(p) {
+  if (!p.category || !p.created_at) return;
+  try {
+    const q = () => supabase.from('products').select('id').eq('category', p.category).neq('id', p.id);
+    const res = await Promise.all([
+      q().gt('created_at', p.created_at).order('created_at', { ascending: true }).limit(1),
+      q().lt('created_at', p.created_at).order('created_at', { ascending: false }).limit(1)
+    ]);
+    const prev = res[0].data && res[0].data[0];
+    const next = res[1].data && res[1].data[0];
+    const info = document.querySelector('.pp-info');
+    if (!info || document.getElementById('ppNav')) return;
+    const mk = function (r, label, icon) {
+      return r
+        ? '<a class="pp-navbtn" href="product.html?id=' + encodeURIComponent(r.id) + '" aria-label="' + label + '">' + icon + '</a>'
+        : '<span class="pp-navbtn off" aria-hidden="true">' + icon + '</span>';
+    };
+    const box = document.createElement('div');
+    box.className = 'pp-nav';
+    box.id = 'ppNav';
+    box.innerHTML = mk(prev, 'Previous product', '&#10094;') + mk(next, 'Next product', '&#10095;');
+    info.insertBefore(box, info.firstChild);
+  } catch (e) { /* arrows are optional */ }
+}
 async function loadRelated(p) {
   if (!p.category) return;
   try {
@@ -679,6 +712,7 @@ async function loadProduct() {
     product = data;
     renderProduct(data);
     loadRelated(data);
+  bkPrevNext(data);
   } catch (err) {
     console.error('[product page] Could not load product:', err);
     showMessage('Product not found', 'We could not load this item. <a href="index.html#shop-by-category">Browse the shop</a> or <a href="index.html">go back home</a>.');
