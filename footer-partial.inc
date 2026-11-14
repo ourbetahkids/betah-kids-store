@@ -61,7 +61,7 @@
 
   <div class="bk-footer-bottom">
     <div class="bk-footer-bottom-inner">
-      <p>&copy; 2026 Betah Kids Beauty World LTD. All rights reserved.</p>
+      <p><span id="bkAdminTap" onclick="var t=this;t.c=(t.c||0)+1;clearTimeout(t.k);t.k=setTimeout(function(){t.c=0},2000);if(t.c>=5){t.c=0;location.href='admin.html';}" style="cursor:default;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;">&copy; 2026</span> Betah Kids Beauty World LTD. All rights reserved.</p>
       <p>Imported &amp; Affordable Children's Fashion</p>
     </div>
   </div>

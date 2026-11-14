@@ -686,3 +686,180 @@ async function processDirectOrder(orderData) {
     bkOrderBusy = false;
   }
 }
+
+/* ACCOUNT BOX V1: customer sign up / log in with a phone number (no SMS). Opens from the Account icons. */
+(function () {
+    var DOMAIN = '@phone.betahkids.com';
+    var mode = 'login';
+    var busy = false;
+
+    function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+    function toPhone(v) {
+        var d = String(v || '').replace(/\D/g, '');
+        if (d.length === 11 && d.charAt(0) === '0') return '234' + d.slice(1);
+        if (d.length === 13 && d.slice(0, 3) === '234') return d;
+        if (d.length === 10 && /^[789]/.test(d)) return '234' + d;
+        return '';
+    }
+    function pretty(email) {
+        var e = String(email || '');
+        if (e.slice(-DOMAIN.length) === DOMAIN) {
+            var n = e.slice(0, -DOMAIN.length);
+            if (/^234\d{10}$/.test(n)) return '0' + n.slice(3);
+        }
+        return e;
+    }
+    function friendly(m) {
+        m = String(m || '');
+        if (/already|registered|exists/i.test(m)) return 'This phone number already has an account. Please use Log in.';
+        if (/invalid login|credentials/i.test(m)) return 'Wrong phone number or password.';
+        if (/rate|too many|seconds/i.test(m)) return 'Too many tries. Please wait a minute and try again.';
+        return 'Could not continue: ' + m;
+    }
+    function addStyle() {
+        if (document.getElementById('bkAcStyle')) return;
+        var css = [
+            '.bkac-ov{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(20,15,10,.55);z-index:100002;display:flex;align-items:center;justify-content:center}',
+            '.bkac-box{background:#fff;width:86%;max-width:320px;max-height:90vh;max-height:90dvh;overflow-y:auto;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.35)}',
+            '.bkac-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 10px 18px;border-bottom:1px solid #f0e6da;font-weight:700;color:#2a2118;font-size:16px}',
+            '.bkac-x{border:1px solid #d9cfc2;background:#fff;color:#4a3f33;border-radius:999px;padding:5px 12px;font-size:13px;font-weight:700;cursor:pointer}',
+            '.bkac-body{padding:14px 18px 18px}',
+            '.bkac-tabs{display:flex;gap:8px;margin-bottom:12px}',
+            '.bkac-tab{flex:1;border:1px solid #d9cfc2;background:#fff;color:#4a3f33;border-radius:999px;padding:8px 6px;font-size:13px;font-weight:700;cursor:pointer}',
+            '.bkac-tab.on{background:#fff3e8;border-color:#FF7A1A;color:#E56510}',
+            '.bkac-box input{display:block;width:100%;box-sizing:border-box;border:1px solid #d9cfc2;border-radius:10px;padding:11px 12px;font-size:16px;margin:0 0 10px;background:#fff;color:#2a2118}',
+            '.bkac-go{width:100%;border:none;border-radius:999px;padding:12px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;background:linear-gradient(135deg,#FF7A1A,#E56510)}',
+            '.bkac-go:disabled{opacity:.6}',
+            '.bkac-pw{position:relative;margin:0 0 10px}',
+            '.bkac-box .bkac-pw input{margin:0;padding-right:46px}',
+            '.bkac-eye{position:absolute;top:0;bottom:0;right:4px;width:42px;border:none;background:none;color:#7a6c5d;font-size:16px;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center}',
+            '.bkac-msg{min-height:18px;margin:0 0 8px;font-size:13px;color:#d6303c}',
+            '.bkac-note{margin:12px 0 0;font-size:12px;color:#7a6c5d;line-height:1.4;text-align:center}',
+            '.bkac-note a{color:#E56510;font-weight:700}',
+            '.bkac-who{margin:0 0 4px;font-size:13px;color:#7a6c5d}',
+            '.bkac-num{margin:0 0 14px;font-size:18px;font-weight:700;color:#2a2118;word-break:break-all}'
+        ].join('');
+        var st = document.createElement('style');
+        st.id = 'bkAcStyle';
+        st.textContent = css;
+        document.head.appendChild(st);
+    }
+    function close() {
+        var o = document.getElementById('bkAcOv');
+        if (o && o.parentNode) o.parentNode.removeChild(o);
+    }
+    function msg(t) {
+        var m = document.getElementById('bkAcMsg');
+        if (m) m.textContent = t || '';
+    }
+    function shell(title, inner) {
+        var box = document.getElementById('bkAcBox');
+        if (!box) return null;
+        box.innerHTML = '<div class="bkac-head"><span>' + title + '</span><button type="button" class="bkac-x" id="bkAcClose">Close</button></div><div class="bkac-body">' + inner + '</div>';
+        document.getElementById('bkAcClose').addEventListener('click', close);
+        return box;
+    }
+    function showIn(email) {
+        if (!shell('My Account', '<p class="bkac-who">You are logged in as</p><p class="bkac-num">' + esc(pretty(email)) + '</p><button type="button" class="bkac-go" id="bkAcOut">Log out</button>')) return;
+        document.getElementById('bkAcOut').addEventListener('click', async function () {
+            try { await supabase.auth.signOut(); } catch (e) {}
+            close();
+        });
+    }
+    function showOut(keepPhone) {
+        var signup = (mode === 'signup');
+        var note = signup
+            ? 'Your phone number is your username. No SMS code is needed.'
+            : 'Forgot your password? <a href="https://wa.me/2348033016335?text=Hello%20Betah%20Kids%2C%20I%20forgot%20my%20password." target="_blank" rel="noopener">Message us on WhatsApp</a>';
+        var html = '<div class="bkac-tabs">'
+            + '<button type="button" class="bkac-tab' + (signup ? '' : ' on') + '" data-m="login">Log in</button>'
+            + '<button type="button" class="bkac-tab' + (signup ? ' on' : '') + '" data-m="signup">Create account</button>'
+            + '</div>'
+            + '<form id="bkAcForm" novalidate>'
+            + (signup ? '<input type="text" id="bkAcName" autocomplete="name" placeholder="Your name">' : '')
+            + '<input type="tel" id="bkAcPhone" inputmode="numeric" autocomplete="tel" placeholder="Phone number e.g. 08033016335">'
+            + '<div class="bkac-pw"><input type="password" id="bkAcPass" autocomplete="' + (signup ? 'new-password' : 'current-password') + '" placeholder="Password (6 or more characters)"><button type="button" class="bkac-eye" id="bkAcEye" aria-label="Show password"><i class="fa-regular fa-eye"></i></button></div>'
+            + '<div class="bkac-msg" id="bkAcMsg"></div>'
+            + '<button type="submit" class="bkac-go" id="bkAcGo">' + (signup ? 'Create account' : 'Log in') + '</button>'
+            + '</form>'
+            + '<p class="bkac-note">' + note + '</p>';
+        if (!shell(signup ? 'Create account' : 'Log in', html)) return;
+        var phoneEl = document.getElementById('bkAcPhone');
+        var passEl = document.getElementById('bkAcPass');
+        if (keepPhone) phoneEl.value = keepPhone;
+        var eyeEl = document.getElementById('bkAcEye');
+        eyeEl.addEventListener('click', function () {
+            var show = (passEl.type === 'password');
+            passEl.type = show ? 'text' : 'password';
+            eyeEl.innerHTML = '<i class="fa-regular ' + (show ? 'fa-eye-slash' : 'fa-eye') + '"></i>';
+            eyeEl.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('.bkac-tab'), function (b) {
+            b.addEventListener('click', function () {
+                mode = b.getAttribute('data-m');
+                showOut(phoneEl.value);
+            });
+        });
+        document.getElementById('bkAcForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            if (busy) return;
+            var phone = toPhone(phoneEl.value);
+            var pw = passEl.value;
+            var nameEl = document.getElementById('bkAcName');
+            var nm = nameEl ? nameEl.value.trim() : '';
+            if (signup && nm.length < 2) { msg('Please enter your name.'); return; }
+            if (!phone) { msg('Please enter a valid Nigerian phone number, e.g. 08033016335.'); return; }
+            if (pw.length < 6) { msg('Password must be at least 6 characters.'); return; }
+            var go = document.getElementById('bkAcGo');
+            busy = true;
+            go.disabled = true;
+            go.textContent = 'Please wait...';
+            msg('');
+            var email = phone + DOMAIN;
+            try {
+                var res = signup
+                    ? await supabase.auth.signUp({ email: email, password: pw, options: { data: { phone: phone, full_name: nm } } })
+                    : await supabase.auth.signInWithPassword({ email: email, password: pw });
+                if (res.error) {
+                    msg(friendly(res.error.message));
+                } else if (signup && !(res.data && res.data.session)) {
+                    msg('Account created, but you are not logged in yet. Please use Log in.');
+                } else {
+                    location.href = 'account.html'; /* ACCOUNT GO V1 */ return;
+                }
+            } catch (err) {
+                msg('Something went wrong. Check your internet and try again.');
+            } finally {
+                busy = false;
+                var g2 = document.getElementById('bkAcGo');
+                if (g2) { g2.disabled = false; g2.textContent = signup ? 'Create account' : 'Log in'; }
+            }
+        });
+    }
+    async function openBox() {
+        addStyle();
+        close();
+        var ov = document.createElement('div');
+        ov.className = 'bkac-ov';
+        ov.id = 'bkAcOv';
+        ov.innerHTML = '<div class="bkac-box" id="bkAcBox"></div>';
+        ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+        document.body.appendChild(ov);
+        var email = '';
+        try {
+            var r = await supabase.auth.getSession();
+            if (r && r.data && r.data.session && r.data.session.user) email = r.data.session.user.email || '';
+        } catch (e) {}
+        if (!document.getElementById('bkAcBox')) return;
+        if (email) { /* ACCOUNT GO V1 */ if (/account\.html$/i.test(location.pathname)) { close(); } else { location.href = 'account.html'; } } else { showOut(''); }
+    }
+    document.addEventListener('click', function (e) {
+        var t = e.target;
+        if (!t || !t.closest) return;
+        var a = t.closest('a.icon-link[aria-label^="Account"]');
+        if (!a) return;
+        e.preventDefault();
+        openBox();
+    }, true);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+})();

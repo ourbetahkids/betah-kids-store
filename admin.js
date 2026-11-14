@@ -52,12 +52,24 @@ if (editProdCategorySelect) {
   });
 }
 
+// ADMIN CHECK V1: asks the database if the logged-in person is an admin (true, false, or null if it could not check)
+async function bkIsAdmin() {
+    try {
+        const r = await supabase.rpc('is_admin');
+        if (r.error) return null;
+        return r.data === true;
+    } catch (e) { return null; }
+}
+
 // INITIALIZATION ON PAGE LOAD
 document.addEventListener('DOMContentLoaded', async () => {
   const { data: { session } } = await supabase.auth.getSession();
   if (session && session.user) {
-    showDashboard(session.user.email);
-    loadAllAdminData();
+      const ok = await bkIsAdmin();
+      if (ok === true) {
+          showDashboard(session.user.email);
+          loadAllAdminData();
+      } // not an admin: say nothing and keep the customer's shop login
   }
 });
 
@@ -108,8 +120,14 @@ adminLoginForm.addEventListener('submit', async (e) => {
   }
 
   if (data && data.user) {
-    showDashboard(data.user.email);
-    loadAllAdminData();
+      const ok = await bkIsAdmin();
+      if (ok !== true) {
+          await supabase.auth.signOut();
+          alert(ok === false ? 'Login Failed: Invalid login credentials' : 'Login Failed: Please try again.');
+          return;
+      }
+      showDashboard(data.user.email);
+      loadAllAdminData();
   }
 });
 
@@ -447,13 +465,12 @@ async function loadProducts() {
       <td>${qty}</td>
       <td>${statusBadge}</td>
       <td>
-        <button onclick="window.editProduct('${p.id}')" style="color:#2A6EBB; cursor:pointer; background:none; border:none; font-size:1rem; margin-right:10px;">
-          <i class="fa-solid fa-pen"></i> Edit
-        </button>
-        <button onclick="window.deleteProduct('${p.id}')" style="color:#ff4d4d; cursor:pointer; background:none; border:none; font-size:1rem;">
-          <i class="fa-solid fa-trash"></i> Delete
-        </button>
-      </td>
+<div class="bk-act-row" style="display:flex; align-items:center; gap:18px; white-space:nowrap;">
+<button onclick="window.editProduct('${p.id}')" style="color:#2A6EBB; cursor:pointer; background:#EAF2FB; border:none; border-radius:8px; padding:8px 14px; font-size:1rem;"><i class="fa-solid fa-pen"></i> Edit</button>
+<span style="width:1px; height:22px; background:#E5DDD5;"></span>
+<button onclick="window.deleteProduct('${p.id}')" style="color:#ff4d4d; cursor:pointer; background:none; border:none; font-size:0.85rem; padding:8px 4px;"><i class="fa-solid fa-trash"></i> Delete</button>
+</div>
+</td>
     </tr>
   `;
   }).join('');
@@ -1421,4 +1438,75 @@ async function handleCategoryPicClick(ev) {
   var overlay = document.getElementById('adminOverlay');
   if (!closeBtn || !overlay) return;
   closeBtn.addEventListener('click', function () { overlay.click(); });
+})();
+
+// CUSTOMERS TAB V1
+(function () {
+  var list = document.getElementById('custList');
+  var msg = document.getElementById('custMsg');
+  if (!list) return;
+  function h(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  async function load() {
+    msg.textContent = '';
+    list.innerHTML = '<p class="empty-text">Loading...</p>';
+    var res = await supabase.from('customers').select('user_id,name,phone,created_at').order('created_at', { ascending: false });
+    if (res.error) {
+      list.innerHTML = '';
+      msg.style.color = '#c0392b';
+      msg.textContent = 'Could not load customers: ' + res.error.message;
+      return;
+    }
+    var rows = res.data || [];
+    if (!rows.length) { list.innerHTML = '<p class="empty-text">No customer accounts yet.</p>'; return; }
+    msg.style.color = '#555';
+    msg.textContent = rows.length + (rows.length === 1 ? ' customer' : ' customers');
+    list.innerHTML = rows.map(function (c) {
+      var nm = (c.name || '').trim();
+      var ph = (c.phone || '').trim();
+      var d = c.created_at ? new Date(c.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+      var digits = ph.replace(/\D/g, '');
+      var wa = digits ? 'https://wa.me/234' + digits.replace(/^0/, '') : '';
+      var phHtml = wa
+        ? '<a href="' + wa + '" target="_blank" rel="noopener" style="color:#128C7E;font-weight:700;text-decoration:none;"><i class="fa-brands fa-whatsapp"></i> ' + h(ph) + '</a>'
+        : '<span style="color:#888;">No phone</span>';
+      return '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #eee;">' +
+        '<div style="min-width:0;"><div style="font-weight:700;font-size:0.98rem;color:#222;word-break:break-word;">' + (nm ? h(nm) : '<span style="color:#999;font-weight:600;">(no name)</span>') + '</div>' +
+        '<div style="margin-top:3px;font-size:0.88rem;">' + phHtml + '</div></div>' +
+        '<div style="flex:none;font-size:0.78rem;color:#777;text-align:right;">Joined<br><b style="color:#444;">' + h(d) + '</b></div>' +
+        '</div>';
+    }).join('');
+  }
+  var tabBtn = document.querySelector('.admin-nav-item[data-tab="tab-customers"]');
+  if (tabBtn) tabBtn.addEventListener('click', load);
+  var rf = document.getElementById('custRefresh');
+  if (rf) rf.addEventListener('click', load);
+})();
+
+// CUSTOMERS TITLE V1
+(function () {
+  var h1 = document.getElementById('pageTitle');
+  if (!h1 || !h1.parentElement) return;
+  var sub = null;
+  var all = h1.parentElement.querySelectorAll('*');
+  for (var i = 0; i < all.length; i++) {
+    var k = all[i];
+    if (k !== h1 && !h1.contains(k) && !k.children.length && /at a glance/i.test(k.textContent)) { sub = k; break; }
+  }
+  var MY_T = 'Our <em>Customers</em>';
+  var MY_S = 'Every account created on your shop, with name, phone and date joined.';
+  var saved = null;
+  function go(id) {
+    if (id === 'tab-customers') {
+      if (h1.innerHTML !== MY_T) saved = { t: h1.innerHTML, s: sub ? sub.textContent : null };
+      h1.innerHTML = MY_T;
+      if (sub) sub.textContent = MY_S;
+    } else if (saved && h1.innerHTML === MY_T) {
+      h1.innerHTML = saved.t;
+      if (sub && saved.s !== null) sub.textContent = saved.s;
+      saved = null;
+    }
+  }
+  document.querySelectorAll('.admin-nav-item[data-tab]').forEach(function (b) {
+    b.addEventListener('click', function () { go(b.getAttribute('data-tab')); });
+  });
 })();

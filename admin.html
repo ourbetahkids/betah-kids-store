@@ -59,6 +59,7 @@
         <button class="admin-nav-item" data-tab="tab-products"><i class="fa-solid fa-boxes-stacked"></i> Product Catalog</button>
         <button class="admin-nav-item" data-tab="tab-orders"><i class="fa-solid fa-receipt"></i> Orders &amp; Sales</button>
         <button class="admin-nav-item" data-tab="tab-enquiries"><i class="fa-solid fa-envelope-open-text"></i> Enquiries <span class="enq-badge" id="enqBadge" style="display:none;">0</span></button>
+<button class="admin-nav-item" data-tab="tab-customers"><i class="fa-solid fa-users"></i> Customers</button>
       </div>
 
       <div class="admin-sidebar-footer">
@@ -177,7 +178,16 @@
     </section>
 
       <!-- TAB: ABOUT PAGE VIDEO -->
-      <section class="admin-tab-content" id="tab-enquiries">
+      <section class="admin-tab-content" id="tab-customers">
+<div class="admin-card">
+<h2><i class="fa-solid fa-users"></i> Customers</h2>
+<p style="margin:0 0 14px;color:#555;font-size:0.9rem;">Everyone who created an account on the shop. Newest first.</p>
+<div style="margin-bottom:12px;"><button type="button" class="admin-btn" id="custRefresh"><i class="fa-solid fa-rotate"></i> Refresh</button></div>
+<p id="custMsg" style="margin:0 0 10px;font-size:0.9rem;"></p>
+<div id="custList"><p class="empty-text">Loading...</p></div>
+</div>
+</section>
+<section class="admin-tab-content" id="tab-enquiries">
         <div class="admin-card">
           <h2><i class="fa-solid fa-envelope-open-text"></i> Enquiries</h2>
           <p style="margin:0 0 14px;color:#555;font-size:0.9rem;">Messages sent from the Contact page. Newest first. Tap a phone number to call, or an email to write back.</p>

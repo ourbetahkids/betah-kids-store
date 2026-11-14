@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="cart.css">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="images/favicon-48.png">
+<link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<title>My Account | Betah Kids Beauty World</title>
+<style>
+/* ACCOUNT PAGE V2 */
+.bkacc{max-width:720px;margin:0 auto;padding:6px 0 30px}
+.bkacc *{box-sizing:border-box}
+.bkacc-msg{margin:0 0 12px;color:#7a6c5d;font-size:14px;line-height:1.5}
+.bkacc-hero{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#FF7A1A,#E56510);border-radius:20px;padding:18px;color:#fff;box-shadow:0 8px 22px rgba(229,101,16,.28);position:relative;overflow:hidden}
+.bkacc-hero:after{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.14)}
+.bkacc-av{width:54px;height:54px;border-radius:50%;background:#fff;color:#E56510;display:flex;align-items:center;justify-content:center;font-size:22px;flex:0 0 auto;position:relative;z-index:1}
+.bkacc-hi{min-width:0;position:relative;z-index:1}
+.bkacc-hi small{display:block;font-size:12px;opacity:.92;letter-spacing:.08em;text-transform:uppercase}
+.bkacc-hi h1{margin:2px 0 0;font-size:22px;line-height:1.2;color:#fff;word-break:break-all}
+.bkacc-hi h1{word-break:break-word}
+.bkacc-ph{margin:3px 0 0;font-size:14px;opacity:.95;position:relative;z-index:1}
+.bkacc-stats{display:flex;gap:10px;margin:14px 0 0}
+.bkacc-stat{flex:1;min-width:0;background:#fff;border:1px solid #f0e6da;border-radius:16px;padding:12px 8px;text-align:center;font-size:13px;color:#7a6c5d;box-shadow:0 2px 10px rgba(60,40,20,.05)}
+.bkacc-stat i{display:flex;width:34px;height:34px;margin:0 auto 6px;border-radius:50%;background:#fff3e8;color:#E56510;align-items:center;justify-content:center;font-size:15px}
+.bkacc-stat span{display:block;font-size:18px;font-weight:700;color:#2a2118;margin-bottom:2px}
+.bkacc-h{display:flex;align-items:center;gap:8px;margin:26px 0 12px;font-size:19px;color:#2a2118}
+.bkacc-h i{color:#E56510;font-size:16px}
+.bkacc-h:after{content:"";flex:1;height:1px;background:#f0e6da}
+.bkacc-card{background:#fff;border:1px solid #f0e6da;border-left-width:4px;border-left-color:#f0e6da;border-radius:16px;padding:14px;margin:0 0 14px;box-shadow:0 2px 10px rgba(60,40,20,.05)}
+.bkacc-card.green{border-left-color:#1f8a4c}
+.bkacc-card.amber{border-left-color:#e0a21a}
+.bkacc-card.blue{border-left-color:#2A6EBB}
+.bkacc-card.red{border-left-color:#d6303c}
+.bkacc-card.grey{border-left-color:#bbb}
+.bkacc-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.bkacc-no{background:#fff3e8;color:#E56510;font-weight:700;font-size:14px;border-radius:999px;padding:4px 12px}
+.bkacc-date{color:#7a6c5d;font-size:13px;margin:0 0 8px}
+.bkacc-badge{font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px}
+.bkacc-badge.green{background:#e8f7ee;color:#1f8a4c}
+.bkacc-badge.amber{background:#fff6e0;color:#a86a00}
+.bkacc-badge.blue{background:#e8f0fb;color:#2A6EBB}
+.bkacc-badge.red{background:#fde9ea;color:#d6303c}
+.bkacc-badge.grey{background:#eee;color:#555}
+.bkacc-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px dashed #eadfd2}
+.bkacc-item img{width:52px;height:52px;object-fit:cover;border-radius:10px;flex:0 0 auto;background:#f6efe6}
+.bkacc-it{flex:1;min-width:0;font-size:14px;color:#2a2118;overflow-wrap:anywhere}
+.bkacc-it small{display:block;color:#7a6c5d;font-size:12px;margin-top:2px}
+.bkacc-pr{font-size:14px;font-weight:700;white-space:nowrap}
+.bkacc-tot{display:flex;justify-content:space-between;border-top:1px solid #f0e6da;margin-top:6px;padding-top:10px;font-weight:700;font-size:16px;color:#2a2118}
+.bkacc-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.bkacc-btn{display:inline-block;border:none;border-radius:999px;padding:10px 18px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;text-decoration:none;background:linear-gradient(135deg,#FF7A1A,#E56510)}
+.bkacc-btn.alt{background:#fff;color:#4a3f33;border:1px solid #d9cfc2}
+.bkacc-btn .fa-whatsapp{color:#25D366;font-size:16px;vertical-align:-1px}
+.bkacc-pay{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-top:1px solid #f0e6da;font-size:14px;color:#2a2118}
+.bkacc-pay:first-child{border-top:none}
+.bkacc-pay small{display:block;color:#7a6c5d;font-size:12px;margin-top:2px}
+.bkacc-pay div:last-child{text-align:right;font-weight:700}
+.bkacc-pay small.green{color:#1f8a4c}
+.bkacc-pay small.amber{color:#a86a00}
+.bkacc-pay small.blue{color:#2A6EBB}
+.bkacc-pay small.red{color:#d6303c}
+.bkacc-foot{text-align:center;margin-top:22px}
+.bkacc-out{text-align:center;padding:22px 18px;margin-top:14px}
+.bkacc-lock{width:56px;height:56px;margin:0 auto 12px;border-radius:50%;background:#fff3e8;color:#E56510;display:flex;align-items:center;justify-content:center;font-size:22px}
+.bkacc-perks{list-style:none;margin:0 0 16px;padding:0;text-align:left;display:inline-block;font-size:14px;color:#4a3f33}
+.bkacc-perks li{margin:0 0 6px}
+.bkacc-perks i{color:#1f8a4c;margin-right:6px}
+/* ACCOUNT PHONE COLOUR V1 */ #bkAcc .bkacc-ph{color:#ffffff !important;opacity:1 !important;}
+#bkAcc{font-family:"Nunito",system-ui,sans-serif;} #bkAcc button,#bkAcc a,#bkAcc input{font-family:inherit;} #bkAcc h1,#bkAcc h2,#bkAcc h3,#bkAcc h4,#bkAcc b,#bkAcc strong,#bkAcc button,#bkAcc [class*="name"],#bkAcc [class*="title"],#bkAcc [class*="num"],#bkAcc [class*="stat"],#bkAcc [class*="badge"]{font-family:"Baloo 2","Nunito",system-ui,sans-serif;letter-spacing:.2px;} #bkAcc .bkacc-ph{font-family:"Nunito",system-ui,sans-serif;font-weight:700;letter-spacing:.6px;}
+</style>
+<meta name="description" content="Your Betah Kids account: orders and payment history.">
+<!-- ACCOUNT FONTS V1 --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="has-site-header">
+<div id="header-placeholder"></div>
+<main class="pol-wrap">
+<div class="pol-crumb"><a href="index.html">Home</a> / My Account</div>
+<div class="bkacc" id="bkAcc"><p class="bkacc-msg">Loading...</p></div>
+</main>
+<div id="footer-placeholder"></div>
+<script src="partials.js"></script><script src="trail.js"></script>
+<script type="module" src="cart.js"></script>
+<script type="module" src="nav.js"></script>
+<script type="module">
+import { supabase } from './db.js';
+
+var DOMAIN = '@phone.betahkids.com';
+var root = document.getElementById('bkAcc');
+var shownFor = '__none__';
+var seq = 0;
+
+function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function naira(n) { return '\u20A6' + Number(n || 0).toLocaleString('en-NG'); }
+function pretty(email) {
+  var e = String(email || '');
+  if (e.slice(-DOMAIN.length) === DOMAIN) {
+    var n = e.slice(0, -DOMAIN.length);
+    if (/^234\d{10}$/.test(n)) return '0' + n.slice(3);
+  }
+  return e;
+}
+function fmtDate(iso) {
+  try { return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); } catch (e) { return ''; }
+}
+function info(s) {
+  s = String(s || '');
+  if (/^cancelled$/i.test(s)) return { t: 'Cancelled', c: 'red', paid: false, pay: 'Cancelled' };
+  if (/^(paid|processing|out for delivery|ready for pickup|delivered)$/i.test(s)) return { t: s, c: 'green', paid: true, pay: 'Paid' };
+  if (/pay on delivery/i.test(s)) return { t: 'Pay on Delivery', c: 'blue', paid: false, pay: 'To pay on delivery' };
+  if (/pending/i.test(s)) return { t: 'Awaiting payment confirmation', c: 'amber', paid: false, pay: 'Awaiting confirmation' };
+  return { t: s || 'Received', c: 'grey', paid: false, pay: s || 'Received' };
+}
+function itemsOf(o) {
+  var it = o.items;
+  if (typeof it === 'string') { try { it = JSON.parse(it); } catch (e) { it = []; } }
+  return Array.isArray(it) ? it : [];
+}
+function card(o) {
+  var st = info(o.payment_status);
+  var h = '<div class="bkacc-card ' + st.c + '"><div class="bkacc-top"><span class="bkacc-no">' + esc(o.order_no) + '</span><span class="bkacc-badge ' + st.c + '">' + esc(st.t) + '</span></div>';
+  h += '<p class="bkacc-date">' + esc(fmtDate(o.created_at)) + (o.delivery_method === 'pickup' ? ' &middot; Pickup' : ' &middot; Delivery') + '</p>';
+  itemsOf(o).forEach(function (it) {
+    var q = Number(it.qty || 1);
+    h += '<div class="bkacc-item">';
+    if (it.image) h += '<img src="' + esc(it.image) + '" alt="" onerror="this.style.display=\'none\'">';
+    h += '<div class="bkacc-it">' + esc(it.title) + '<small>' + esc(it.product_code || '') + ' &times; ' + q + '</small></div>';
+    h += '<div class="bkacc-pr">' + naira(Number(it.price || 0) * q) + '</div></div>';
+  });
+  h += '<div class="bkacc-tot"><span>Total</span><span>' + naira(o.total_amount) + '</span></div>';
+  h += '<div class="bkacc-btns">';
+  if (o.order_no && o.invoice_token) h += '<a class="bkacc-btn" href="invoice.html?o=' + encodeURIComponent(o.order_no) + '&amp;k=' + encodeURIComponent(o.invoice_token) + '"><i class="fa-solid fa-file-invoice"></i> View invoice</a>';
+  h += '<a class="bkacc-btn alt" target="_blank" rel="noopener" href="https://wa.me/2348033016335?text=' + encodeURIComponent('Hello Betah Kids, I have a question about my order ' + (o.order_no || '')) + '"><i class="fa-brands fa-whatsapp"></i> Ask on WhatsApp</a>';
+  h += '</div></div>';
+  return h;
+}
+function loggedOut() {
+  root.innerHTML = '<div class="bkacc-hero"><div class="bkacc-av"><i class="fa-solid fa-user"></i></div><div class="bkacc-hi"><small>Welcome</small><h1>My Account</h1></div></div>'
+    + '<div class="bkacc-card bkacc-out"><div class="bkacc-lock"><i class="fa-solid fa-lock"></i></div><p class="bkacc-msg">Log in or create an account with your phone number. No SMS code is needed.</p><ul class="bkacc-perks"><li><i class="fa-solid fa-check"></i> See all your orders in one place</li><li><i class="fa-solid fa-check"></i> Open your invoices any time</li><li><i class="fa-solid fa-check"></i> Check your payment status</li></ul><div><button type="button" class="bkacc-btn" id="bkAccLogin">Log in / Create account</button></div></div>';
+  document.getElementById('bkAccLogin').addEventListener('click', function () {
+    var a = document.querySelector('a.icon-link[aria-label^="Account"]');
+    if (a) a.click();
+  });
+}
+function loggedIn(user, orders) {
+  var spent = 0;
+  orders.forEach(function (o) { if (info(o.payment_status).paid) spent += Number(o.total_amount || 0); });
+  var h = '<div class="bkacc-hero"><div class="bkacc-av"><i class="fa-solid fa-user"></i></div><div class="bkacc-hi"><small>Welcome back</small><h1>' + esc(((user.user_metadata && user.user_metadata.full_name) || '').trim() || pretty(user.email)) + '</h1>' + (((user.user_metadata && user.user_metadata.full_name) || '').trim() ? '<p class="bkacc-ph">' + esc(pretty(user.email)) + '</p>' : '') + '</div></div>';
+  h += '<div class="bkacc-stats"><div class="bkacc-stat"><i class="fa-solid fa-bag-shopping"></i><span>' + orders.length + '</span>Orders</div><div class="bkacc-stat"><i class="fa-solid fa-circle-check"></i><span>' + naira(spent) + '</span>Paid so far</div></div>';
+  h += '<h2 class="bkacc-h"><i class="fa-solid fa-box-open"></i> My Orders</h2>';
+  if (!orders.length) {
+    h += '<div class="bkacc-card"><p class="bkacc-msg">No orders on this account yet. Orders you place while logged in will appear here.</p><a class="bkacc-btn" href="index.html">Start shopping</a></div>';
+  } else {
+    orders.forEach(function (o) { h += card(o); });
+    h += '<h2 class="bkacc-h"><i class="fa-solid fa-receipt"></i> Payment History</h2><div class="bkacc-card">';
+    orders.forEach(function (o) {
+      var st = info(o.payment_status);
+      h += '<div class="bkacc-pay"><div>' + esc(o.order_no) + '<small>' + esc(fmtDate(o.created_at)) + '</small></div><div>' + naira(o.total_amount) + '<small class="' + st.c + '">' + esc(st.pay) + '</small></div></div>';
+    });
+    h += '</div>';
+  }
+  h += '<div class="bkacc-foot"><button type="button" class="bkacc-btn alt" id="bkAccOut"><i class="fa-solid fa-right-from-bracket"></i> Log out</button></div>';
+  root.innerHTML = h;
+  document.getElementById('bkAccOut').addEventListener('click', async function () {
+    try { await supabase.auth.signOut(); } catch (e) {}
+    location.replace('index.html'); /* ACCOUNT LOGOUT V1 */
+  });
+}
+async function render() {
+  var my = ++seq;
+  var s = null;
+  try {
+    var r = await supabase.auth.getSession();
+    s = r && r.data ? r.data.session : null;
+  } catch (e) {}
+  if (my !== seq) return;
+  if (!s || !s.user) { shownFor = ''; loggedOut(); return; }
+  shownFor = s.user.id;
+  root.innerHTML = '<p class="bkacc-msg">Loading your orders...</p>';
+  try {
+    var res = await supabase.from('orders')
+      .select('order_no,created_at,items,total_amount,payment_status,delivery_method,invoice_token')
+      .eq('user_id', s.user.id)
+      .order('created_at', { ascending: false });
+    if (my !== seq) return;
+    if (res.error) { root.innerHTML = '<p class="bkacc-msg">Could not load your orders. Please refresh the page.</p>'; return; }
+    loggedIn(s.user, res.data || []);
+  } catch (e) {
+    if (my === seq) root.innerHTML = '<p class="bkacc-msg">Could not load your orders. Please check your internet and refresh.</p>';
+  }
+}
+supabase.auth.onAuthStateChange(function (ev, session) {
+  var id = session && session.user ? session.user.id : '';
+  if (ev === 'SIGNED_OUT') { if (shownFor !== '__none__' && shownFor !== '') { location.replace('index.html'); } /* ACCOUNT LOGOUT V1 */ return; }
+  if (ev === 'SIGNED_IN' && id !== shownFor) setTimeout(render, 0);
+});
+render();
+</script>
+</body>
+</html>
