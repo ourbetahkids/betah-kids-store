@@ -42,7 +42,8 @@ function render(d) {
     const qty = Number(it.qty || it.quantity || 1);
     const price = Number(it.price || 0);
     const code = it.product_code ? '<span class="inv-code">' + esc(it.product_code) + '</span>' : '';
-    return '<div class="inv-row"><div class="inv-name"><b>' + esc(name) + '</b>' + code + '</div>' +
+    /* INVOICE VARIANTS V1 */ const vt = [it.colour, it.size].filter(Boolean).join(' \u00B7 '); const vtHtml = vt ? '<span class="inv-code">' + esc(vt) + '</span>' : '';
+    return '<div class="inv-row"><div class="inv-name"><b>' + esc(name) + '</b>' + vtHtml + code + '</div>' +
       '<div class="inv-q">' + qty + ' &times; ' + money(price) + '</div>' +
       '<div class="inv-amt">' + money(price * qty) + '</div></div>';
   }).join('');

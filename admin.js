@@ -374,6 +374,8 @@ if (productAddForm) {
     const description = document.getElementById('prodDesc').value.trim();
   const brand = document.getElementById('prodBrand').value.trim() || null;
   const tags = document.getElementById('prodTags').value.trim() || null;
+  const sizes = bkList(document.getElementById('prodSizes').value);
+  const colours = bkList(document.getElementById('prodColours').value);
     const fileInput = document.getElementById('prodImage');
     const files = Array.from(fileInput.files).slice(0, 5); const file = files[0];
 
@@ -401,7 +403,7 @@ if (productAddForm) {
           price,
           category,
           subcategory,
-          description, brand, tags,
+          description, brand, tags, sizes, colours,
           image_url: imageUrl, gallery_images: extraUrls,
           stock_quantity: stockQuantity,
           in_stock: stockQuantity > 0,
@@ -508,6 +510,8 @@ window.editProduct = (id) => {
   document.getElementById('editProdDesc').value = product.description || '';
   document.getElementById('editProdBrand').value = product.brand || '';
   document.getElementById('editProdTags').value = product.tags || '';
+  document.getElementById('editProdSizes').value = Array.isArray(product.sizes) ? product.sizes.join(', ') : '';
+  document.getElementById('editProdColours').value = Array.isArray(product.colours) ? product.colours.join(', ') : '';
   currentEditImageUrl = product.image_url; window.bkEditOpen(product);
 
   if (editProductOverlay) editProductOverlay.style.display = 'flex';
@@ -544,6 +548,8 @@ if (editProductForm) {
     const description = document.getElementById('editProdDesc').value.trim();
   const brand = document.getElementById('editProdBrand').value.trim() || null;
   const tags = document.getElementById('editProdTags').value.trim() || null;
+  const sizes = bkList(document.getElementById('editProdSizes').value);
+  const colours = bkList(document.getElementById('editProdColours').value);
     const fileInput = document.getElementById('editProdImage');
     const newFile = null;
 
@@ -578,7 +584,7 @@ if (editProductForm) {
           price,
           category,
           subcategory,
-          description, brand, tags,
+          description, brand, tags, sizes, colours,
           image_url: imageUrl, gallery_images: extraUrls,
           stock_quantity: stockQuantity,
           in_stock: stockQuantity > 0,
@@ -1320,7 +1326,7 @@ async function handleCategoryPicClick(ev) {
       var nm = x.name || x.title || x.product_name || 'Item';
       var q = Number(x.quantity || x.qty || 1);
       var p = Number(x.price);
-      return '<li><span>' + esc(nm) + (x.product_code ? ' <span class="ord-code">' + esc(x.product_code) + '</span>' : '') + ' &times; ' + esc(q) + '</span><span>' + (isFinite(p) && p > 0 ? money(p * q) : '') + '</span></li>';
+      return '<li><span>' + esc(nm) + bkVarTxt(x) + (x.product_code ? ' <span class="ord-code">' + esc(x.product_code) + '</span>' : '') + ' &times; ' + esc(q) + '</span><span>' + (isFinite(p) && p > 0 ? money(p * q) : '') + '</span></li>';
     }).join('') + '</ul>' : '<span style="color:#999">No item list saved</span>';
     var ph = esc(o.phone || '');
     var em = esc(o.customer_email || '');
@@ -1510,3 +1516,22 @@ async function handleCategoryPicClick(ev) {
     b.addEventListener('click', function () { go(b.getAttribute('data-tab')); });
   });
 })();
+
+// SIZES HELPER V1
+function bkList(s) {
+  var seen = {};
+  return String(s || '').split(',').map(function (x) { return x.trim(); }).filter(function (x) {
+    var k = x.toLowerCase();
+    if (!x || seen[k]) return false;
+    seen[k] = true;
+    return true;
+  });
+}
+
+// ORDERS VARIANTS V1
+function bkVarTxt(x) {
+  var t = [x && x.colour, x && x.size].filter(Boolean).join(' \u00B7 ');
+  if (!t) return '';
+  t = String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return ' <span style="display:inline-block;margin-left:4px;padding:1px 8px;border-radius:50px;background:#FFF3EA;color:#E56510;font-size:.78rem;font-weight:700;">' + t + '</span>';
+}

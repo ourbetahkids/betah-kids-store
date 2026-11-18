@@ -435,13 +435,9 @@ function bindBuyControls() {
   if (add && !add.disabled) {
     add.addEventListener('click', function () {
       if (typeof window.addToCart === 'function') {
-        window.addToCart(
-          String(product.id),
-          product.title,
-          Number(product.price) || 0,
-          product.image_url || 'images/logo.png',
-          qty
-        );
+        var ch = window.bkPickVariant ? window.bkPickVariant() : { colour: '', size: '' };
+        if (!ch) return;
+        window.addToCart(String(product.id), product.title, Number(product.price) || 0, product.image_url || 'images/logo.png', qty, ch.colour, ch.size);
       }
     });
   }
@@ -477,6 +473,53 @@ function renderProduct(p) {
     stockHtml = '<span class="pp-stock pp-in">' + (stockQty !== null ? 'Stock: ' + stockQty : 'In Stock') + '</span>';
   }
 
+  // PRODUCT VARIANTS V2
+const vCols = Array.isArray(p.colours) ? p.colours : [];
+const vSizes = Array.isArray(p.sizes) ? p.sizes : [];
+window.bkStockFor = function (colour, size) {
+  var q = p.stock_quantity;
+  return q == null ? null : Number(q);
+};
+window.bkVarChange = function () {
+  var m = document.getElementById('ppVarMsg');
+  if (m) m.textContent = '';
+  var c = document.getElementById('bkColour');
+  var s = document.getElementById('bkSize');
+  var box = document.getElementById('ppVarStock');
+  if (!box) return;
+  if ((c && !c.value) || (s && !s.value)) { box.textContent = ''; return; }
+  var q = window.bkStockFor(c ? c.value : '', s ? s.value : '');
+  box.textContent = (q == null) ? '' : (q > 0 ? q + ' in stock' : 'Sold out');
+};
+window.bkPickVariant = function () {
+  var out = { colour: '', size: '' };
+  var groups = [['bkColour', 'colour', 'a colour'], ['bkSize', 'size', 'a size']];
+  for (var i = 0; i < groups.length; i++) {
+    var box = document.getElementById(groups[i][0]);
+    if (!box) continue;
+    if (!box.value) {
+      var m = document.getElementById('ppVarMsg');
+      if (m) m.textContent = 'Please choose ' + groups[i][2] + ' first.';
+      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return null;
+    }
+    out[groups[i][1]] = box.value;
+  }
+  return out;
+};
+function bkSelRow(id, label, list) {
+  if (!list.length) return '';
+  return '<div class="pp-var-row"><span class="pp-label">' + label + '</span>' +
+    '<select class="pp-sel" id="' + id + '" onchange="bkVarChange()"><option value="">Choose an option</option>' +
+    list.map(function (v) { return '<option value="' + esc(v) + '">' + esc(v) + '</option>'; }).join('') +
+    '</select></div>';
+}
+const variantHtml = (inStock && (vCols.length || vSizes.length))
+  ? '<style>/* VARIANTS COMPACT V1 */.pp-var-row{display:flex;align-items:center;gap:10px;margin:0 0 8px;}.pp-var-row .pp-label{flex:none;min-width:46px;margin:0;font-size:12px !important;letter-spacing:0 !important;}.pp-sel{display:block;width:auto;flex:0 1 170px;max-width:170px;height:34px;margin:0;padding:0 8px;border:1.5px solid #ddd;border-radius:8px;background:#fff;/* VARIANTS FONT V1 */color:#333;font-size:13px;font-family:inherit;}.pp-sel:focus{outline:none;border-color:#FF7A1A;}#ppVarStock{margin:0 0 6px;font-size:.76rem;font-weight:700;color:#1e8e3e;}#ppVarMsg{margin:0 0 10px;font-size:.85rem;font-weight:600;color:#c0392b;}</style>' +
+    bkSelRow('bkColour', 'Colour', vCols) + bkSelRow('bkSize', 'Size', vSizes) + '<p id="ppVarStock"></p><p id="ppVarMsg"></p>'
+  : '';
+// STOCK TOP HIDE V1
+  if (inStock && (vCols.length || vSizes.length)) { try { stockHtml = ''; } catch (e) {} }
   const qtyHtml = inStock
     ? '<div class="pp-qty-row"><span class="pp-label">Quantity</span>' +
         '<div class="pp-qty">' +
@@ -513,7 +556,7 @@ function renderProduct(p) {
         '<p class="pp-price">' + naira(price) + '</p>' +
         stockHtml +
         
-        '<div class="pp-buyrow">' + qtyHtml + addHtml + '</div>' +
+        variantHtml + '<div class="pp-buyrow">' + qtyHtml + addHtml + '</div>' +
 '<div class="pp-actions">' +
           '<a class="pp-btn pp-btn-wa" id="ppWhatsApp" href="#" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> ' + waLabel + '</a>' +
         '</div>' +

@@ -446,13 +446,22 @@ function closeCheckoutModal() {
 }
 
 // GLOBAL ADD TO CART FUNCTION
-window.addToCart = (id, title, price, image, qty = 1) => {
+// CART VARIANTS V1
+function bkLine(i) { return String(i.id) + '|' + (i.colour || '') + '|' + (i.size || ''); }
+function bkAttr(i) { return encodeURIComponent(bkLine(i)).replace(/'/g, '%27'); }
+function bkIdx(key) {
+  var k = String(key);
+  try { k = decodeURIComponent(k); } catch (e) {}
+  var n = cart.findIndex(function (i) { return bkLine(i) === k; });
+  if (n < 0 && k.indexOf('|') < 0) n = cart.findIndex(function (i) { return String(i.id) === k; });
+  return n;
+}window.addToCart = (id, title, price, image, qty = 1, colour = '', size = '') => {
   const addQty = Math.max(1, parseInt(qty, 10) || 1);
-  const existingIndex = cart.findIndex(item => item.id === id);
+  const existingIndex = cart.findIndex(item => bkLine(item) === bkLine({ id, colour, size }));
   if (existingIndex > -1) {
     cart[existingIndex].qty += addQty;
   } else {
-    cart.push({ id, title, price: Number(price), image, qty: addQty });
+    cart.push({ id, title, price: Number(price), image, qty: addQty, colour: colour || '', size: size || '' });
   }
 
   saveCart();
@@ -462,12 +471,12 @@ window.addToCart = (id, title, price, image, qty = 1) => {
 };
 
 window.updateCartQty = (id, change) => {
-  const item = cart.find(i => i.id === id);
+  const idx = bkIdx(id); const item = idx > -1 ? cart[idx] : null;
   if (!item) return;
 
   item.qty += change;
   if (item.qty <= 0) {
-    cart = cart.filter(i => i.id !== id);
+    cart.splice(idx, 1);
   }
 
   saveCart();
@@ -476,7 +485,7 @@ window.updateCartQty = (id, change) => {
 };
 
 window.removeFromCart = (id) => {
-  cart = cart.filter(i => i.id !== id);
+  { var r = bkIdx(id); if (r > -1) cart.splice(r, 1); }
   saveCart();
   updateCartBadge();
   renderCartDrawer();
@@ -517,15 +526,15 @@ function renderCartDrawer() {
     <div class="cart-item-row">
       <img src="${item.image}" class="cart-item-img" alt="${item.title}">
       <div class="cart-item-info">
-        <div class="cart-item-title">${item.title}</div>
+        <div class="cart-item-title">${item.title}</div>${(item.colour || item.size) ? '<div style="font-size:.78rem;color:#777;margin:2px 0 4px;">' + [item.colour, item.size].filter(Boolean).join(' \u00B7 ') + '</div>' : ''}
         <div class="cart-item-price">\u20A6${(item.price * item.qty).toLocaleString()}</div>
         <div class="cart-qty-controls">
-          <button class="qty-btn" onclick="window.updateCartQty('${item.id}', -1)">-</button>
+          <button class="qty-btn" onclick="window.updateCartQty('${bkAttr(item)}', -1)">-</button>
           <span class="qty-num">${item.qty}</span>
-          <button class="qty-btn" onclick="window.updateCartQty('${item.id}', 1)">+</button>
+          <button class="qty-btn" onclick="window.updateCartQty('${bkAttr(item)}', 1)">+</button>
         </div>
       </div>
-      <button class="remove-cart-item" onclick="window.removeFromCart('${item.id}')">&times;</button>
+      <button class="remove-cart-item" onclick="window.removeFromCart('${bkAttr(item)}')">&times;</button>
     </div>
   `).join('');
 
@@ -665,7 +674,7 @@ async function processDirectOrder(orderData) {
       p_address: pickup ? '' : orderData.address,
       p_city: pickup ? '' : orderData.city,
       p_payment: isTransfer ? 'transfer' : 'pod',
-      p_items: cart.map(function (i) { return { id: String(i.id), qty: Number(i.qty) || 1 }; }),
+      p_items: cart.map(function (i) { /* CHECKOUT VARIANTS V1 */ return { id: String(i.id), qty: Number(i.qty) || 1, colour: i.colour || '', size: i.size || '' }; }),
       p_delivery: pickup ? 'pickup' : 'delivery'
     });
 

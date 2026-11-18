@@ -63,6 +63,14 @@ body { margin: 0; background: #f7f4ef; color: #2a2118; font-family: 'Inter', 'Se
   .inv-actions { display: none; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+/* INVOICE LAYOUT V1 */
+.inv-head{display:none !important;}
+.inv-row{display:grid !important;grid-template-columns:minmax(0,1fr) auto !important;grid-template-areas:"name name" "q amt" !important;gap:4px 12px !important;}
+.inv-name{grid-area:name !important;display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0;}
+.inv-name b{flex:1 1 100%;min-width:0;overflow-wrap:anywhere;}
+.inv-name .inv-code{margin:0 !important;white-space:nowrap;}
+.inv-q{grid-area:q !important;}
+.inv-amt{grid-area:amt !important;}
 </style>
 </head>
 <body>
