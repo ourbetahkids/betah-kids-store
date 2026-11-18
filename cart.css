@@ -1,4 +1,4 @@
-﻿/* Betah Kids Slide-Out Cart & Checkout Modal Styles */
+/* Betah Kids Slide-Out Cart & Checkout Modal Styles */
 
 /* CART OVERLAY BACKDROP */
 .cart-overlay {
@@ -317,6 +317,16 @@
   box-shadow: 0 10px 25px rgba(229, 101, 16, 0.4);
 }
 
+/* PAY BUTTON V1: keep "I Have Made Payment" on one line on phones */
+@media (max-width: 600px) {
+  .pay-submit-btn {
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    padding: 15px 10px;
+    gap: 8px;
+    white-space: nowrap;
+  }
+}
 /* BANK TRANSFER DETAILS BOX */
 .bank-transfer-details {
   background: #FFF8F0;
