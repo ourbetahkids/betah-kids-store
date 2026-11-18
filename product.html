@@ -436,7 +436,14 @@ function bindBuyControls() {
     add.addEventListener('click', function () {
       if (typeof window.addToCart === 'function') {
         var ch = window.bkPickVariant ? window.bkPickVariant() : { colour: '', size: '' };
-        if (!ch) return;
+    if (!ch) return;
+    if (document.getElementById('ppVarStock') && typeof window.bkStockFor === 'function') {
+      var bkq = window.bkStockFor(ch.colour, ch.size);
+      var bkm = document.getElementById('ppVarMsg');
+      var bkqi = document.getElementById('ppQty');
+      if (bkq != null && bkq <= 0) { if (bkm) bkm.textContent = 'Sorry, this option is sold out.'; return; }
+      if (bkq != null && bkqi && Number(bkqi.value) > bkq) { bkqi.value = bkq; if (bkm) bkm.textContent = 'Only ' + bkq + ' left in this option.'; return; }
+    }
         window.addToCart(String(product.id), product.title, Number(product.price) || 0, product.image_url || 'images/logo.png', qty, ch.colour, ch.size);
       }
     });
@@ -477,6 +484,13 @@ function renderProduct(p) {
 const vCols = Array.isArray(p.colours) ? p.colours : [];
 const vSizes = Array.isArray(p.sizes) ? p.sizes : [];
 window.bkStockFor = function (colour, size) {
+  /* VARIANT STOCK PAGE V1 */
+  var vs = p.variant_stock;
+  if (vs && typeof vs === 'object' && !Array.isArray(vs)) {
+    var k = (colour || '') + '|' + (size || '');
+    var n = Number(vs[k]);
+    return isNaN(n) ? 0 : n;
+  }
   var q = p.stock_quantity;
   return q == null ? null : Number(q);
 };
@@ -490,6 +504,8 @@ window.bkVarChange = function () {
   if ((c && !c.value) || (s && !s.value)) { box.textContent = ''; return; }
   var q = window.bkStockFor(c ? c.value : '', s ? s.value : '');
   box.textContent = (q == null) ? '' : (q > 0 ? q + ' in stock' : 'Sold out');
+  var bkQi = document.getElementById('ppQty');
+  if (bkQi && q != null && q > 0) { bkQi.max = q; if (Number(bkQi.value) > q) bkQi.value = q; }
 };
 window.bkPickVariant = function () {
   var out = { colour: '', size: '' };

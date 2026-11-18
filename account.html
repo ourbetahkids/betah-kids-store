@@ -131,7 +131,7 @@ function card(o) {
     var q = Number(it.qty || 1);
     h += '<div class="bkacc-item">';
     if (it.image) h += '<img src="' + esc(it.image) + '" alt="" onerror="this.style.display=\'none\'">';
-    h += '<div class="bkacc-it">' + esc(it.title) + '<small>' + esc(it.product_code || '') + ' &times; ' + q + '</small></div>';
+    h += '<div class="bkacc-it">' + /* ACCOUNT VARIANTS V1 */ esc(it.title) + ([it.colour, it.size].filter(Boolean).length ? '<span style="display:block;margin-top:2px;color:#E56510;font-size:.78rem;font-weight:700;">' + esc([it.colour, it.size].filter(Boolean).join(' \u00B7 ')) + '</span>' : '') + '<small>' + esc(it.product_code || '') + ' &times; ' + q + '</small></div>';
     h += '<div class="bkacc-pr">' + naira(Number(it.price || 0) * q) + '</div></div>';
   });
   h += '<div class="bkacc-tot"><span>Total</span><span>' + naira(o.total_amount) + '</span></div>';

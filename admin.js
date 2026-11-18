@@ -368,7 +368,7 @@ if (productAddForm) {
     const price = Number(document.getElementById('prodPrice').value);
     const category = document.getElementById('prodCategory').value;
     const subcategory = document.getElementById('prodSubcategory').value;
-    const stockQuantity = Number(document.getElementById('prodStock').value) || 0;
+    const bkVs = bkVarRead('prod'), stockQuantity = bkVs ? bkVs.total : (Number(document.getElementById('prodStock').value) || 0);
     const isFeatured = document.getElementById('prodFeatured').checked;
     const isTrending = document.getElementById('prodTrending').checked;
     const description = document.getElementById('prodDesc').value.trim();
@@ -406,7 +406,7 @@ if (productAddForm) {
           description, brand, tags, sizes, colours,
           image_url: imageUrl, gallery_images: extraUrls,
           stock_quantity: stockQuantity,
-          in_stock: stockQuantity > 0,
+          in_stock: stockQuantity > 0, variant_stock: bkVs ? bkVs.obj : null,
           is_featured: isFeatured,
           is_trending: isTrending
         }
@@ -512,6 +512,7 @@ window.editProduct = (id) => {
   document.getElementById('editProdTags').value = product.tags || '';
   document.getElementById('editProdSizes').value = Array.isArray(product.sizes) ? product.sizes.join(', ') : '';
   document.getElementById('editProdColours').value = Array.isArray(product.colours) ? product.colours.join(', ') : '';
+  bkVarFill('editProd', product);
   currentEditImageUrl = product.image_url; window.bkEditOpen(product);
 
   if (editProductOverlay) editProductOverlay.style.display = 'flex';
@@ -542,7 +543,7 @@ if (editProductForm) {
     const price = Number(document.getElementById('editProdPrice').value);
     const category = document.getElementById('editProdCategory').value;
     const subcategory = document.getElementById('editProdSubcategory').value;
-    const stockQuantity = Number(document.getElementById('editProdStock').value) || 0;
+    const bkVs = bkVarRead('editProd'), stockQuantity = bkVs ? bkVs.total : (Number(document.getElementById('editProdStock').value) || 0);
     const isFeatured = document.getElementById('editProdFeatured').checked;
     const isTrending = document.getElementById('editProdTrending').checked;
     const description = document.getElementById('editProdDesc').value.trim();
@@ -587,7 +588,7 @@ if (editProductForm) {
           description, brand, tags, sizes, colours,
           image_url: imageUrl, gallery_images: extraUrls,
           stock_quantity: stockQuantity,
-          in_stock: stockQuantity > 0,
+          in_stock: stockQuantity > 0, variant_stock: bkVs ? bkVs.obj : null,
           is_featured: isFeatured,
           is_trending: isTrending
         })
@@ -1535,3 +1536,103 @@ function bkVarTxt(x) {
   t = String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   return ' <span style="display:inline-block;margin-left:4px;padding:1px 8px;border-radius:50px;background:#FFF3EA;color:#E56510;font-size:.78rem;font-weight:700;">' + t + '</span>';
 }
+
+// VARIANT STOCK V1: stock count for each colour and size
+function bkVarEsc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function bkVarCombos(p) {
+  var sizes = bkList(document.getElementById(p + 'Sizes').value);
+  var cols = bkList(document.getElementById(p + 'Colours').value);
+  var out = [];
+  if (!sizes.length && !cols.length) return out;
+  var cs = cols.length ? cols : [''];
+  var ss = sizes.length ? sizes : [''];
+  cs.forEach(function (c) {
+    ss.forEach(function (s) {
+      out.push({ key: c + '|' + s, label: [c, s].filter(Boolean).join(' \u00B7 ') });
+    });
+  });
+  return out;
+}
+function bkVarTotal(p) {
+  var grid = document.getElementById(p + 'VarGrid');
+  var stock = document.getElementById(p + 'Stock');
+  if (!grid || !stock) return;
+  var sum = 0;
+  grid.querySelectorAll('input[data-k]').forEach(function (i) { sum += Math.max(0, parseInt(i.value, 10) || 0); });
+  stock.value = sum;
+  var t = document.getElementById(p + 'VarSum');
+  if (t) t.textContent = 'Total in stock: ' + sum;
+}
+function bkVarRender(p, preset) {
+  var on = document.getElementById(p + 'VarOn');
+  var grid = document.getElementById(p + 'VarGrid');
+  var stock = document.getElementById(p + 'Stock');
+  if (!on || !grid || !stock) return;
+  if (!on.checked) { grid.innerHTML = ''; stock.readOnly = false; return; }
+  var combos = bkVarCombos(p);
+  if (!combos.length) {
+    grid.innerHTML = '<p style="font-size:12px;color:#888;margin:6px 0;">Type the Sizes and/or Colours above first, then each one appears here.</p>';
+    stock.readOnly = false;
+    return;
+  }
+  var old = {};
+  grid.querySelectorAll('input[data-k]').forEach(function (i) { old[i.getAttribute('data-k')] = i.value; });
+  var src = preset || old;
+  var h = '';
+  combos.forEach(function (c) {
+    var v = (src[c.key] !== undefined && src[c.key] !== null) ? src[c.key] : 0;
+    h += '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0;">'
+      + '<span style="font-size:13px;">' + bkVarEsc(c.label) + '</span>'
+      + '<input type="number" min="0" data-k="' + bkVarEsc(c.key) + '" value="' + bkVarEsc(v) + '" style="width:80px;">'
+      + '</div>';
+  });
+  h += '<div id="' + p + 'VarSum" style="font-weight:700;margin-top:8px;"></div>';
+  grid.innerHTML = h;
+  stock.readOnly = true;
+  bkVarTotal(p);
+}
+function bkVarRead(p) {
+  var on = document.getElementById(p + 'VarOn');
+  var grid = document.getElementById(p + 'VarGrid');
+  if (!on || !grid || !on.checked) return null;
+  var combos = bkVarCombos(p);
+  if (!combos.length) return null;
+  var obj = {};
+  var total = 0;
+  combos.forEach(function (c) {
+    var el = null;
+    grid.querySelectorAll('input[data-k]').forEach(function (i) { if (i.getAttribute('data-k') === c.key) el = i; });
+    var n = el ? Math.max(0, parseInt(el.value, 10) || 0) : 0;
+    obj[c.key] = n;
+    total += n;
+  });
+  return { obj: obj, total: total };
+}
+function bkVarFill(p, product) {
+  var on = document.getElementById(p + 'VarOn');
+  if (!on) return;
+  var vs = product && product.variant_stock;
+  var has = !!(vs && typeof vs === 'object' && !Array.isArray(vs));
+  on.checked = has;
+  var grid = document.getElementById(p + 'VarGrid');
+  if (grid) grid.innerHTML = '';
+  bkVarRender(p, has ? vs : null);
+}
+document.addEventListener('change', function (e) {
+  var id = e.target && e.target.id;
+  if (id === 'prodVarOn') bkVarRender('prod');
+  if (id === 'editProdVarOn') bkVarRender('editProd');
+});
+document.addEventListener('input', function (e) {
+  var t = e.target;
+  if (!t) return;
+  if (t.id === 'prodSizes' || t.id === 'prodColours') { bkVarRender('prod'); }
+  else if (t.id === 'editProdSizes' || t.id === 'editProdColours') { bkVarRender('editProd'); }
+  else if (t.getAttribute && t.getAttribute('data-k') !== null) {
+    var g = t.closest('[id$="VarGrid"]');
+    if (g) bkVarTotal(g.id.replace('VarGrid', ''));
+  }
+});
+document.addEventListener('reset', function () {
+  setTimeout(function () { bkVarRender('prod'); bkVarRender('editProd'); }, 0);
+});
