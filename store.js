@@ -67,7 +67,7 @@ async function loadLiveHeroSlides() {
 
     // A slide with no title and no subtitle is a finished banner: picture only.
     const isBannerSlide = (s) => !String(s.title || '').trim() && !String(s.subtitle || '').trim();
-    const allBanners = slides.every(s => isBannerSlide(s) && s.media_type !== 'video');
+    const allBanners = slides.every(s => isBannerSlide(s)); /* HERO VIDEO V1: video slides can be banners */
 
     swiperWrapper.innerHTML = slides.map(slide => {
       if (isBannerSlide(slide)) {

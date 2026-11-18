@@ -198,6 +198,8 @@ function initCartDOM() {
       '<p id="bkRecvNote" style="margin:8px 0 0;font-size:.78rem;line-height:1.45;color:#6b5f52;"></p>' +
       '<p id="bkRecvWarn" style="display:none;margin:6px 0 0;font-size:.78rem;line-height:1.45;color:#c0392b;font-weight:600;"></p>';
     addrGroup.parentNode.insertBefore(wrap, addrGroup);
+    /* STATE FIRST V1: State above Address */
+    addrGroup.parentNode.insertBefore(cityGroup, addrGroup);
 
     const dBtn = document.getElementById('bkOptDelivery');
     const pBtn = document.getElementById('bkOptPickup');
