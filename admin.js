@@ -149,7 +149,6 @@ function loadAllAdminData() {
   loadOverviewStats();
   loadHeroSlides();
   loadProducts();
-  loadOrders();
 }
 
 // 1. OVERVIEW STATS
@@ -608,33 +607,6 @@ if (editProductForm) {
       submitBtn.textContent = 'Save Changes';
     }
   });
-}
-
-// 5. ORDERS FETCHING LOGIC
-async function loadOrders() {
-  const tbody = document.getElementById('ordersTableBody');
-  if (!tbody) return;
-
-  const { data: orders, error } = await supabase
-    .from('orders')
-    .select('*')
-    .order('created_at', { ascending: false });
-
-  if (error || !orders || orders.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center">No orders recorded yet.</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = orders.map(o => `
-    <tr>
-      <td><code>${o.id.substring(0, 8)}</code></td>
-      <td><strong>${o.customer_name}</strong><br><small>${o.customer_email}</small></td>
-      <td>${o.phone}</td>
-      <td>${o.address}, ${o.city}</td>
-      <td>₦${Number(o.total_amount).toLocaleString()}</td>
-      <td><span style="background:#e8f8ee; color:#27ae60; padding:4px 10px; border-radius:50px; font-weight:700; font-size:0.75rem;">${o.payment_status}</span></td>
-    </tr>
-  `).join('');
 }
 
 // ---------- UPLOAD SPINNER ----------
